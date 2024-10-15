@@ -1,11 +1,20 @@
-import { useState } from 'react';
-import '../assets/styles/login.css';
-import { login } from '../services/authService';
+import { useEffect, useState } from 'react';
+import '../../assets/styles/login.css';
+import { login } from '../../services/authService';
+import { useNavigate } from 'react-router-dom';
+import { isAuthenticated } from '../../utils/helpers';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate('/home');
+    }
+  }, [navigate]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);

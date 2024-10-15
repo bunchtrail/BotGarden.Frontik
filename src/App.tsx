@@ -1,26 +1,32 @@
+// /src/App.tsx
 import {
-  Navigate,
-  Route,
   BrowserRouter as Router,
+  Route,
   Routes,
+  Navigate,
 } from 'react-router-dom';
-import Login from './pages/Login';
-import { isAuthenticated } from './utils/helpers';
-import HomePage from './pages/homePage';
-// Компонент для защищенных маршрутов
+import LoginPage from './pages/Login/LoginPage.tsx';
+import HomePage from './pages/Home/HomePage.tsx';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+
+// Компонент для защищённых маршрутов
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  if (!isAuthenticated()) {
-    return <Navigate to='/login' />; // Если пользователь не авторизован, перенаправляем на страницу входа
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to='/login' />;
   }
+
   return children;
 };
+
 function App() {
   return (
-    <>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           {/* Маршрут для страницы авторизации */}
-          <Route path='/login' element={<Login />} />
+          <Route path='/login' element={<LoginPage />} />
 
           {/* Защищённый маршрут для домашней страницы */}
           <Route
@@ -32,8 +38,8 @@ function App() {
             }
           />
         </Routes>
-      </Router>
-    </>
+      </AuthProvider>
+    </Router>
   );
 }
 
