@@ -18,12 +18,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     setError(null);
     try {
       const data = await login(email, password);
-      localStorage.setItem('token', data.token);
+      localStorage.setItem('token', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
       onSuccess();
     } catch (error) {
       setError('Ошибка авторизации');
     }
   };
+
   return (
     <form className='login-form' onSubmit={handleSubmit}>
       {error && <ErrorMessage message={error} />}

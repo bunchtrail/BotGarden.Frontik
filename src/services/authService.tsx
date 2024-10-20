@@ -1,9 +1,8 @@
-import axios from 'axios';
-import API_URL from '../utils/data';
+import api from './api.ts'; // Вместо прямого импорта axios
 
 export const login = async (email: string, password: string) => {
   try {
-    const response = await axios.post(`${API_URL}/api/Account/login`, {
+    const response = await api.post('/api/Account/login', {
       email,
       password,
     });
@@ -12,8 +11,4 @@ export const login = async (email: string, password: string) => {
   } catch (error) {
     throw new Error('Ошибка авторизации');
   }
-};
-
-export const logout = () => {
-  localStorage.removeItem('token');
 };
