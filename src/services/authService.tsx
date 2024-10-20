@@ -1,16 +1,20 @@
-export const login = async (email: string, password: string) => {
-  const response = await fetch('https://localhost:7076/api/Account/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  });
+import axios from 'axios';
+import API_URL from '../utils/data';
 
-  if (!response.ok) {
+export const login = async (email: string, password: string) => {
+  try {
+    // Используем axios для выполнения POST-запроса
+    const response = await axios.post(`${API_URL}/api/Account/login`, {
+      email,
+      password,
+    });
+
+    // Возвращаем данные ответа
+    return response.data;
+  } catch (error) {
+    // Обрабатываем ошибку, если запрос не успешен
     throw new Error('Ошибка авторизации');
   }
-  return response.json();
 };
 
 export const logout = () => {

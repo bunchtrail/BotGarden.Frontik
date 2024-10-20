@@ -37,6 +37,15 @@ function App() {
               </ProtectedRoute>
             }
           />
+          {/* Защищённый маршрут для корневой страницы */}
+          <Route
+            path='/'
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </Router>
