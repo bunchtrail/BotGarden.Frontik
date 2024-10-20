@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import InputField from '../Field/InputField';
 import ErrorMessage from '../Misc/ErrorMessage';
+import { login } from '../../services/authService';
+import Button from '../Misc/Button';
 
 interface LoginFormProps {
-  onSucces: () => void;
+  onSuccess: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSucces }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +19,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSucces }) => {
     try {
       const data = await login(email, password);
       localStorage.setItem('token', data.token);
-      onSucces();
+      onSuccess();
     } catch (error) {
       setError('Ошибка авторизации');
     }
@@ -39,9 +41,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSucces }) => {
         value={password}
         onChange={setPassword}
       />
-      <button type='submit' className='login-button'>
+      <Button type='submit' className='login-button'>
         Вход
-      </button>
+      </Button>
     </form>
   );
 };
+
+export default LoginForm;
