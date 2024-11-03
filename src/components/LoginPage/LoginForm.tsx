@@ -1,11 +1,11 @@
+// /src/components/LoginPage/LoginForm.tsx
 import { useState } from 'react';
 import InputField from '../Field/InputField';
 import ErrorMessage from '../Misc/ErrorMessage';
-import { login } from '../../services/authService';
 import Button from '../Misc/Button';
 
 interface LoginFormProps {
-  onSuccess: () => void;
+  onSuccess: (email: string, password: string) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
@@ -17,10 +17,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     e.preventDefault();
     setError(null);
     try {
-      const data = await login(email, password);
-      localStorage.setItem('token', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      onSuccess();
+      await onSuccess(email, password);
     } catch (error) {
       setError('Ошибка авторизации');
     }
@@ -31,7 +28,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
       {error && <ErrorMessage message={error} />}
       <InputField
         label='Почта'
-        type='text'
+        type='email'
         id='email'
         value={email}
         onChange={setEmail}

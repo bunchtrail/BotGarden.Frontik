@@ -1,4 +1,5 @@
-import api from './api.ts'; // Вместо прямого импорта axios
+// /src/services/authService.ts
+import api from './api';
 
 export const login = async (email: string, password: string) => {
   try {

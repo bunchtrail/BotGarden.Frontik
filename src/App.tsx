@@ -5,20 +5,11 @@ import {
   Routes,
   Navigate,
 } from 'react-router-dom';
-import LoginPage from './pages/Login/LoginPage.tsx';
-import HomePage from './pages/Home/HomePage.tsx';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-
-// Компонент для защищённых маршрутов
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const { isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <Navigate to='/login' />;
-  }
-
-  return children;
-};
+import LoginPage from './pages/Login/LoginPage';
+import HomePage from './pages/Home/HomePage';
+import AddPlantPage from './pages/AddPlant/AddPlant';
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/Misc/ProtectedRoute';
 
 function App() {
   return (
@@ -28,12 +19,20 @@ function App() {
           {/* Маршрут для страницы авторизации */}
           <Route path='/login' element={<LoginPage />} />
 
-          {/* Защищённый маршрут для домашней страницы */}
+          {/* Защищённые маршруты */}
           <Route
             path='/home'
             element={
               <ProtectedRoute>
                 <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/add-plant'
+            element={
+              <ProtectedRoute>
+                <AddPlantPage sectorId={0} />
               </ProtectedRoute>
             }
           />
@@ -46,6 +45,9 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* 404 Страница (опционально) */}
+          <Route path='*' element={<Navigate to='/' replace />} />
         </Routes>
       </AuthProvider>
     </Router>
