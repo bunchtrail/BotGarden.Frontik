@@ -1,13 +1,18 @@
-import React from "react";
+import React from 'react';
+import NavbarItem, { NavbarItemProps } from './NavbarItem';
 
 interface NavbarContainerProps {
-  icon: React.ReactNode;
-  text: string;
-  onClick: () => void;
+  items: NavbarItemProps[];
 }
 
-const NavbarContainer: React.FC<> = () => {
-  return <div className='navbar-container'>
-    
-  </div>;
-}
+const NavbarContainer: React.FC<NavbarContainerProps> = ({ items }) => {
+  return (
+    <div className='navbar-container'>
+      {items.map((item) => (
+        <NavbarItem key={item.id} {...item} />
+      ))}
+    </div>
+  );
+};
+
+export default NavbarContainer;

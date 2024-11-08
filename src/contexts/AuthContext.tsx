@@ -1,5 +1,11 @@
-// /src/contexts/AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect } from 'react';
+// src/contexts/AuthContext.tsx
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import {
   getAccessToken,
   getRefreshToken,
@@ -9,12 +15,18 @@ import {
 import { login as loginService } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import refreshApi from '../services/refreshApi';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   loading: boolean;
+}
+
+interface DecodedToken {
+  exp: number;
+  // Добавьте другие поля, если необходимо
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,39 +38,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = getAccessToken();
-    console.log('Проверка токена при загрузке:', token);
-    if (token && !isTokenExpired(token)) {
-      setIsAuthenticated(true);
-      console.log('Токен валиден. Пользователь аутентифицирован.');
-    } else {
-      clearTokens();
-      setIsAuthenticated(false);
-      console.log(
-        'Токен недействителен или отсутствует. Пользователь не аутентифицирован.'
-      );
-    }
-    setLoading(false);
-  }, []);
-
+  // Функция для проверки срока действия токена
   const isTokenExpired = (token: string): boolean => {
     try {
-      const decodedToken: any = jwtDecode(token);
+      const decodedToken: DecodedToken = jwtDecode(token);
       const currentTime = Date.now() / 1000;
       const expired = decodedToken.exp < currentTime;
-      console.log('Проверка истечения токена:', expired);
       return expired;
     } catch (error) {
-      console.error('Ошибка при декодировании токена:', error);
       return true;
     }
   };
 
+  // Функция для логина
   const login = async (email: string, password: string) => {
     try {
       const data = await loginService(email, password);
-      console.log('Успешный логин. Получены токены:', data);
       setTokens(data.accessToken, data.refreshToken);
       setIsAuthenticated(true);
       navigate('/home');
@@ -68,28 +63,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Функция для выхода из системы
   const logout = () => {
     clearTokens();
     setIsAuthenticated(false);
-    console.log('Пользователь вышел из системы.');
     navigate('/login');
   };
 
-  // Подписка на изменения токенов
+  const hasCheckedAuth = useRef(false);
+
+  // Проверка токена при загрузке
   useEffect(() => {
-    const interval = setInterval(() => {
+    if (hasCheckedAuth.current) return;
+    hasCheckedAuth.current = true;
+
+    const checkAuth = async () => {
       const token = getAccessToken();
-      console.log('Периодическая проверка токена:', token);
+      const refreshTokenValue = getRefreshToken();
+
       if (token && !isTokenExpired(token)) {
         setIsAuthenticated(true);
-        console.log('Токен всё ещё валиден.');
+        setLoading(false);
+      } else if (refreshTokenValue) {
+        try {
+          const { data } = await refreshApi.post('/api/Account/refresh', {
+            token: token,
+            refreshToken: refreshTokenValue,
+          });
+          setTokens(data.accessToken, data.refreshToken);
+          setIsAuthenticated(true);
+        } catch (error) {
+          clearTokens();
+          setIsAuthenticated(false);
+        } finally {
+          setLoading(false);
+        }
       } else {
+        clearTokens();
         setIsAuthenticated(false);
-        console.log('Токен истёк или отсутствует.');
-      }
-    }, 1000 * 60); // Проверка каждую минуту
 
-    return () => clearInterval(interval);
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
   }, []);
 
   return (

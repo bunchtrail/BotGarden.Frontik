@@ -8,8 +8,6 @@ interface AddPlantPageProps {
 
 const AddPlantPage: React.FC<AddPlantPageProps> = ({ sectorId }) => {
   const { isAuthenticated } = useAuth();
-  console.log('sectorId:', sectorId);
-  console.log('isAuthenticated:', isAuthenticated);
   const navigate = useNavigate();
 
   useEffect(() => {
