@@ -13,21 +13,23 @@ import AddPlantPage from './pages/AddPlant/AddPlant';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/Misc/ProtectedRoute';
 import Navbar from './components/Navbar/Navbar';
-import './assets/styles/global.css'; // Импорт глобальных стилей
 
 const AppRoutes: React.FC = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
 
+  const sectorMatch = location.pathname.match(/\/add-plant\/(\d+)/);
+  const sectorId = sectorMatch ? parseInt(sectorMatch[1], 10) : undefined;
+
   return (
     <>
-      {!isLoginPage && <Navbar />}
+      {!isLoginPage && <Navbar sectorId={sectorId} />}
       <div className='app-container'>
         <Routes>
           {/* Маршрут для страницы авторизации */}
           <Route path='/login' element={<LoginPage />} />
 
-          {/* Защищённые маршруты */}
+          {/* Защищённые маршруты с динамическим sectorId */}
           <Route
             path='/home'
             element={
@@ -37,18 +39,10 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
-            path='/flora'
+            path='/add-plant/:sectorId'
             element={
               <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/flowers'
-            element={
-              <ProtectedRoute>
-                <HomePage />
+                <AddPlantPage />
               </ProtectedRoute>
             }
           />
@@ -60,46 +54,8 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path='/add-plant'
-            element={
-              <ProtectedRoute>
-                <AddPlantPage sectorId={0} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/add-plant/dendrology'
-            element={
-              <ProtectedRoute>
-                <AddPlantPage sectorId={1} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/add-plant/flora'
-            element={
-              <ProtectedRoute>
-                <AddPlantPage sectorId={2} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/add-plant/flowers'
-            element={
-              <ProtectedRoute>
-                <AddPlantPage sectorId={3} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/add-plant/map'
-            element={
-              <ProtectedRoute>
-                <AddPlantPage sectorId={4} />
-              </ProtectedRoute>
-            }
-          />
+
+          {/* Другие маршруты, если необходимо */}
 
           {/* 404 Страница */}
           <Route path='*' element={<Navigate to='/home' replace />} />

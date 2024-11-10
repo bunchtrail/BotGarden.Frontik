@@ -1,51 +1,25 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+// src/pages/AddPlant/AddPlant.tsx
+import React from 'react';
+import { useParams } from 'react-router-dom';
 
-interface AddPlantPageProps {
-  sectorId: number;
-}
+interface AddPlantPageProps {}
 
-const AddPlantPage: React.FC<AddPlantPageProps> = ({ sectorId }) => {
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+const AddPlantPage: React.FC<AddPlantPageProps> = () => {
+  const { sectorId } = useParams<{ sectorId: string }>();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      // Если пользователь не авторизован, перенаправляем на страницу логина
-      navigate('/login');
-    }
-  }, [isAuthenticated, navigate]);
+  const numericSectorId = sectorId ? parseInt(sectorId, 10) : 0;
 
-  if (!isAuthenticated) {
-    return null; // Можно вернуть лоадер или пустую разметку, пока проверяется авторизация
-  }
+  const handleSave = (formState: any) => {
+    // Реализация сохранения данных с использованием numericSectorId
+    console.log('Сохранение данных для сектора:', numericSectorId);
+    // Добавьте вашу логику сохранения здесь
+  };
 
   return (
     <div>
-      <h1>Добавить растение</h1>
-      <form>
-        <div>
-          <label htmlFor='name'>Название</label>
-          <input type='text' id='name' />
-        </div>
-        <div>
-          <label htmlFor='description'>Описание</label>
-          <textarea id='description' />
-        </div>
-        <div>
-          <label htmlFor='watering'>Полив</label>
-          <input type='text' id='watering' />
-        </div>
-        <div>
-          <label htmlFor='fertilizing'>Удобрение</label>
-          <input type='text' id='fertilizing' />
-        </div>
-        <div>
-          <label htmlFor='pruning'>Обрезка</label>
-          <input type='text' id='pruning' />
-        </div>
-      </form>
+      <h1>Add Plant - Sector ID: {numericSectorId}</h1>
+      {/* Ваша форма для добавления растения */}
+      <button onClick={() => handleSave({})}>Save</button>
     </div>
   );
 };

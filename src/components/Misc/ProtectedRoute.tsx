@@ -1,16 +1,17 @@
-// /src/components/Misc/ProtectedRoute.tsx
-import { useAuth } from '../../contexts/AuthContext';
+// src/components/Misc/ProtectedRoute.tsx
+import React from 'react';
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const { isAuthenticated, loading } = useAuth();
+interface ProtectedRouteProps {
+  children: React.ReactElement;
+}
 
-  if (loading) {
-    return <div>Загрузка...</div>; // Можно вернуть лоадер или пустую страницу
-  }
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to='/login' />;
+    return <Navigate to='/login' replace />;
   }
 
   return children;
