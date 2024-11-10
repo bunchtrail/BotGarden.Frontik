@@ -1,16 +1,8 @@
 /* src/assets/styles/login.css */
 
-/* Existing styles */
-
+/* Общие настройки */
 * {
   box-sizing: border-box;
-}
-
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
 }
 
 .login-page {
@@ -21,6 +13,14 @@
   background-color: var(--color-background);
 }
 
+/* Контейнер логина */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
 .login-form {
   width: 100%;
   max-width: 400px;
@@ -29,8 +29,10 @@
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   animation: fadeIn 0.5s ease-in-out;
+  position: relative;
 }
 
+/* Анимация появления формы */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -70,11 +72,13 @@
   font-size: 0.875rem;
   text-align: center;
   opacity: 0;
-  animation: slideIn 0.5s forwards;
+  transform: translateY(-10px);
+  animation: fadeInError 0.5s forwards;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-@keyframes slideIn {
-  to { opacity: 1; }
+@keyframes fadeInError {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .login-button {
@@ -88,6 +92,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
   position: relative;
+  box-shadow: var(--box-shadow);
 }
 
 .login-button:disabled {
@@ -114,6 +119,7 @@
   to { transform: rotate(360deg); }
 }
 
+/* Адаптивные стили */
 @media (max-width: 480px) {
   .login-container {
     padding: 1rem;
@@ -125,15 +131,22 @@
   }
 }
 
-/* New styles for error handling */
-
+/* Стили для ошибок */
 .input-error {
-  border-color: red;
+  border-color: var(--color-error);
   box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
 
 .field-error {
-  color: red;
+  color: var(--color-error);
   font-size: 0.875rem;
   margin-top: 0.5rem;
+  opacity: 0;
+  transform: translateY(-5px);
+  animation: fadeInFieldError 0.3s forwards;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+@keyframes fadeInFieldError {
+  to { opacity: 1; transform: translateY(0); }
 }

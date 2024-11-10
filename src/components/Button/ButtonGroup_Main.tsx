@@ -1,6 +1,6 @@
 // src/components/ButtonGroup_Main.tsx
 import { useNavigate } from 'react-router-dom';
-import Button from './Button.';
+import Button from './Button';
 import '../../assets/styles/button.css';
 
 const ButtonGroup_Main = () => {

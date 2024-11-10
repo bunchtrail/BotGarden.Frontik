@@ -1,5 +1,5 @@
-// src/components/LoginForm.tsx
-import { useState } from 'react';
+// src/components/LoginPage/LoginForm.tsx
+import { useState, useEffect } from 'react';
 import ErrorMessage from '../Misc/ErrorMessage';
 import Button from '../Misc/Button';
 import '../../assets/styles/login.css';
@@ -11,12 +11,23 @@ interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{
+    message: string;
+    type?: 'general' | 'unauthorized';
+  } | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string;
     password?: string;
   }>({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Скрываем общую ошибку при изменении полей
+    if (error) {
+      setError(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [email, password]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,16 +51,25 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     setLoading(true);
     try {
       await onSuccess(email, password);
-    } catch (error) {
-      setError('Ошибка авторизации');
+    } catch (err: any) {
+      // Предполагается, что ошибка содержит информацию о типе ошибки
+      // Например, err.type === 'unauthorized'
+      if (err.type === 'unauthorized') {
+        setError({
+          message: 'Неавторизован. Пожалуйста, проверьте свои учетные данные.',
+          type: 'unauthorized',
+        });
+      } else {
+        setError({ message: 'Ошибка авторизации', type: 'general' });
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form className='login-form' onSubmit={handleSubmit}>
-      {error && <ErrorMessage message={error} />}
+    <form className='login-form' onSubmit={handleSubmit} noValidate>
+      {error && <ErrorMessage message={error.message} type={error.type} />}
       <div className='form-group'>
         <label htmlFor='email'>Почта</label>
         <input
@@ -59,9 +79,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={loading}
+          required
+          aria-invalid={fieldErrors.email ? 'true' : 'false'}
+          aria-describedby={fieldErrors.email ? 'email-error' : undefined}
         />
         {fieldErrors.email && (
-          <div className='field-error'>{fieldErrors.email}</div>
+          <div className='field-error' id='email-error'>
+            {fieldErrors.email}
+          </div>
         )}
       </div>
       <div className='form-group'>
@@ -73,13 +98,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={loading}
+          required
+          aria-invalid={fieldErrors.password ? 'true' : 'false'}
+          aria-describedby={fieldErrors.password ? 'password-error' : undefined}
         />
         {fieldErrors.password && (
-          <div className='field-error'>{fieldErrors.password}</div>
+          <div className='field-error' id='password-error'>
+            {fieldErrors.password}
+          </div>
         )}
       </div>
       <Button type='submit' className='login-button' disabled={loading}>
-        {loading ? <div className='spinner'></div> : 'Вход'}
+        {loading ? (
+          <div className='spinner' aria-label='Загрузка'></div>
+        ) : (
+          'Вход'
+        )}
       </Button>
     </form>
   );

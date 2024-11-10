@@ -1,5 +1,6 @@
 /* src/assets/styles/errorMessage.css */
 
+/* Базовые стили для сообщения об ошибке */
 .error-message {
     color: var(--color-error);
     margin-bottom: 1rem;
@@ -8,11 +9,42 @@
     opacity: 0;
     transform: translateY(-10px);
     animation: fadeInError 0.5s forwards;
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
   
+  /* Дополнительные стили для ошибки типа 'unauthorized' */
+  .error-message.unauthorized {
+    color: #ff9800; /* Оранжевый цвет для особых ошибок */
+    background-color: rgba(255, 152, 0, 0.1);
+    padding: 0.5rem;
+    border-radius: 4px;
+    position: relative;
+  }
+  
+  /* Иконка перед сообщением для 'unauthorized' */
+  .error-message.unauthorized::before {
+    content: '⚠️ ';
+    margin-right: 0.5rem;
+  }
+  
+  /* Анимация появления ошибки */
   @keyframes fadeInError {
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
+  
+  /* Анимация исчезновения ошибки */
+  @keyframes fadeOutError {
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+  
+  /* Классы для управления исчезновением ошибки */
+  .error-message.hide {
+    animation: fadeOutError 0.3s forwards;
+  }
+  
