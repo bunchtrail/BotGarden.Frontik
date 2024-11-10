@@ -1,33 +1,52 @@
 /* Импорт шрифта */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+:root {
+  --btn-padding: 0.75rem 3rem;
+  --btn-padding-md: 0.6rem 2.5rem;
+  --btn-padding-sm: 0.5rem 2rem;
+  --btn-font-size: 1rem;
+  --btn-font-size-md: 0.9rem;
+  --btn-font-size-sm: 0.8rem;
+  --btn-border-radius: 30px;
+  --btn-transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 6px 8px rgba(0, 0, 0, 0.15);
+  --transform-hover: translateY(-2px);
+}
+
 button {
-  padding: 12px 48px; 
+  padding: var(--btn-padding);
   border: none;
-  border-radius: 30px; 
+  border-radius: var(--btn-border-radius);
   color: white;
   text-align: center;
   text-decoration: none;
-  font-size: 16px;
-  font-family: 'Roboto', sans-serif; 
-  transition:
-    background-color 0.3s ease,
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    color 0.3s ease; 
+  font-size: var(--btn-font-size);
+  font-family: 'Roboto', sans-serif;
+  transition: var(--btn-transition);
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--box-shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 button:hover {
-  transform: translateY(-2px); 
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  transform: var(--transform-hover);
+  box-shadow: var(--box-shadow-hover);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(76, 177, 124, 0.5);
 }
 
 .btn-main {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 0.625rem;
+  flex-wrap: wrap;
 }
 
 .btn-primary {
@@ -46,25 +65,44 @@ button:hover {
   background-color: #bf0505;
 }
 
-.btn-primary:hover, .btn-primary1:hover {
+.btn-primary:hover,
+.btn-primary1:hover {
   color: #ffffff;
+}
+
+/* Адаптивная верстка */
+@media (max-width: 1200px) {
+  button {
+    padding: 0.7rem 2.8rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .btn-main {
+    gap: 0.5rem;
+  }
 }
 
 @media (max-width: 768px) {
   button {
-    padding: 10px 24px; 
-    font-size: 14px; 
+    padding: var(--btn-padding-md);
+    font-size: var(--btn-font-size-md);
   }
 
   .btn-main {
-    flex-direction: column; 
-    gap: 5px; 
+    flex-direction: column;
+    gap: 2.5625rem;
   }
 }
 
 @media (max-width: 480px) {
   button {
-    padding: 8px 16px; 
-    font-size: 12px; 
+    padding: var(--btn-padding-sm);
+    font-size: var(--btn-font-size-sm);
+  }
+
+  .btn-main {
+    gap: 3rem;
   }
 }
