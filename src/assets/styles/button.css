@@ -49,3 +49,22 @@ button:hover {
 .btn-primary:hover, .btn-primary1:hover {
   color: #ffffff;
 }
+
+@media (max-width: 768px) {
+  button {
+    padding: 10px 24px; 
+    font-size: 14px; 
+  }
+
+  .btn-main {
+    flex-direction: column; 
+    gap: 5px; 
+  }
+}
+
+@media (max-width: 480px) {
+  button {
+    padding: 8px 16px; 
+    font-size: 12px; 
+  }
+}
