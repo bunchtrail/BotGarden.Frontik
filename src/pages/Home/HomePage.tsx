@@ -1,14 +1,12 @@
-import { useNavigate } from 'react-router-dom';
-import Button from '../../components/Misc/Button';
+import ButtonGroup_Main from '../../components/Button/ButtonGroup_Main';
 import HeaderTitle from '../../components/Misc/headerTitle';
 
 const HomePage = () => {
-  const navigate = useNavigate();
-
   return (
     <div>
       <div className='homeContainer'>
         <HeaderTitle title='Выберите раздел для дальнейшей работы' />
+        <ButtonGroup_Main />
       </div>
     </div>
   );
