@@ -1,11 +1,32 @@
 /* src/assets/styles/global.css */
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  /* Шрифты и типографика */
+  --font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --line-height: 1.5;
+  --font-weight: 400;
+
+  /* Цветовая схема */
+  --color-scheme: light dark;
+  --color-text: #213547;
+  --color-background: #f0f2f5;
+  --color-primary: #3cb371;
+  --color-primary-hover: #2e8b57;
+  --color-error: #d9534f;
+  --color-link: #646cff;
+  --color-link-hover: #535bf2;
+
+  /* Отступы и размеры */
+  --border-radius: 8px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  /* Общие стили */
+  font-family: var(--font-family);
+  line-height: var(--line-height);
+  font-weight: var(--font-weight);
+  color-scheme: var(--color-scheme);
+  color: var(--color-text);
+  background-color: var(--color-background);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -15,18 +36,20 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: rgba(255, 255, 255, 0.87);
+  background-color: var(--color-background);
+  font-family: var(--font-family);
 }
 
 .app-container {
-  max-width: 1280px;
+  
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem 2rem 2rem; 
-  text-align: center;
+  padding: 2rem;
+  
 }
 
 h1 {
-  font-size: 24px;
+  font-size: 1.5rem; /* Используем rem для консистентности */
   color: #333333;
   font-weight: 600;
   margin-bottom: 1.5rem;
@@ -34,28 +57,36 @@ h1 {
 
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  color: var(--color-link);
+  text-decoration: none; /* Предпочтительно явно указывать */
+  transition: color 0.3s ease;
 }
 
 a:hover {
-  color: #535bf2;
+  color: var(--color-link-hover);
 }
 
+button {
+  /* Добавим базовые стили для кнопок, если необходимо */
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
 
-
-
-
+/* Светлая тема */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --color-text: #213547;
+    --color-background: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
 }
-

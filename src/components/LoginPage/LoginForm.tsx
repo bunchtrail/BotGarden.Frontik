@@ -31,6 +31,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         <input
           type='email'
           id='email'
+          className='input-field'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -40,6 +41,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         <input
           type='password'
           id='password'
+          className='input-field'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
