@@ -16,6 +16,7 @@ import { login as loginService } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import refreshApi from '../services/refreshApi';
+import { AuthenticationError } from '../utils/errors';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -57,7 +58,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsAuthenticated(true);
       navigate('/home');
     } catch (error) {
-      throw new Error('Ошибка авторизации');
+      // Prevent error from being logged to console
+      const authError = new AuthenticationError(
+        'Неверные учетные данные',
+        'unauthorized'
+      );
+      authError.stack = ''; // Clear stack trace
+      throw authError;
     }
   };
 

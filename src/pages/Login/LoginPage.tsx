@@ -5,6 +5,7 @@ import LoginContainer from '../../components/LoginPage/LoginContainer';
 import LoginForm from '../../components/LoginPage/LoginForm';
 import { useAuth } from '../../contexts/AuthContext';
 import '../../assets/styles/login.css';
+import { AuthenticationError } from '../../utils/errors';
 
 function Login() {
   const navigate = useNavigate();
@@ -20,7 +21,10 @@ function Login() {
     try {
       await login(email, password);
     } catch (error) {
-      // Handle login errors
+      if (error instanceof AuthenticationError) {
+        throw error;  // Передаем структурированную ошибку в LoginForm
+      }
+      throw new AuthenticationError('Ошибка авторизации', 'general');
     }
   };
 

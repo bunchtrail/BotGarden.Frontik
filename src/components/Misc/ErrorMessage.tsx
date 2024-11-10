@@ -4,7 +4,7 @@ import '../../assets/styles/errorMessage.css';
 
 interface ErrorMessageProps {
   message: string;
-  type?: 'general' | 'unauthorized'; // Тип ошибки
+  type?: 'general' | 'unauthorized';
 }
 
 const ErrorMessage: React.FC<ErrorMessageProps> = ({
@@ -14,7 +14,6 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    // Автоматически скрывать сообщение через 5 секунд
     const timer = setTimeout(() => {
       setVisible(false);
     }, 5000);

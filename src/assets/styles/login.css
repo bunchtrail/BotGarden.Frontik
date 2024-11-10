@@ -30,8 +30,12 @@
   box-shadow: var(--box-shadow);
   animation: fadeIn 0.5s ease-in-out;
   position: relative;
+  transition: all 0.3s ease;
+  min-height: 0;
 }
-
+.login-form-with-error {
+  margin-top: 60px; 
+}
 /* Анимация появления формы */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-20px); }

@@ -52,8 +52,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     try {
       await onSuccess(email, password);
     } catch (err: any) {
-      // Предполагается, что ошибка содержит информацию о типе ошибки
-      // Например, err.type === 'unauthorized'
       if (err.type === 'unauthorized') {
         setError({
           message: 'Неавторизован. Пожалуйста, проверьте свои учетные данные.',
@@ -68,7 +66,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <form className='login-form' onSubmit={handleSubmit} noValidate>
+    <form
+      className={`login-form ${error ? 'login-form-with-error' : ''}`}
+      onSubmit={handleSubmit}
+      noValidate
+    >
       {error && <ErrorMessage message={error.message} type={error.type} />}
       <div className='form-group'>
         <label htmlFor='email'>Почта</label>
