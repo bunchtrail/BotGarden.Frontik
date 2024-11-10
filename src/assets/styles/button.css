@@ -8,7 +8,7 @@
   --btn-font-size: 1rem;
   --btn-font-size-md: 0.9rem;
   --btn-font-size-sm: 0.8rem;
-  --btn-border-radius: 30px;
+  --btn-border-radius: 36px;
   --btn-transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --box-shadow-hover: 0 6px 8px rgba(0, 0, 0, 0.15);

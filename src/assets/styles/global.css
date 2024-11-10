@@ -48,6 +48,11 @@ body {
   
 }
 
+.homeContainer h1 {
+  display: flex;
+  justify-content: center;
+}
+
 h1 {
   font-size: 1.5rem; /* Используем rem для консистентности */
   color: #333333;
@@ -66,14 +71,7 @@ a:hover {
   color: var(--color-link-hover);
 }
 
-button {
-  /* Добавим базовые стили для кнопок, если необходимо */
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
+
 
 /* Светлая тема */
 @media (prefers-color-scheme: light) {

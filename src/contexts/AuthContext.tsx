@@ -26,7 +26,6 @@ interface AuthContextType {
 
 interface DecodedToken {
   exp: number;
-  // Добавьте другие поля, если необходимо
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -58,7 +57,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsAuthenticated(true);
       navigate('/home');
     } catch (error) {
-      console.error('Ошибка при логине:', error);
       throw new Error('Ошибка авторизации');
     }
   };
