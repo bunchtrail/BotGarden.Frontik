@@ -1,5 +1,5 @@
 // src/components/Misc/ErrorMessage.tsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../../assets/styles/errorMessage.css';
 
 interface ErrorMessageProps {
@@ -7,23 +7,27 @@ interface ErrorMessageProps {
   type?: 'general' | 'unauthorized';
 }
 
-const ErrorMessage: React.FC<ErrorMessageProps> = ({
-  message,
-  type = 'general',
-}) => {
-  const [visible, setVisible] = useState(true);
+const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, type }) => {
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisible(false);
-    }, 5000);
+    if (message) {
+      setVisible(true);
+      const timer = setTimeout(() => {
+        setVisible(false);
+      }, 5000); // Сообщение исчезнет через 5 секунд
 
-    return () => clearTimeout(timer);
-  }, []);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
+  if (!message) {
+    return null; // Не рендерить элемент, если сообщения нет
+  }
 
   return (
     <div
-      className={`error-message ${!visible ? 'hide' : ''} ${
+      className={`error-message ${visible ? 'visible' : ''} ${
         type === 'unauthorized' ? 'unauthorized' : ''
       }`}
       aria-live='assertive'

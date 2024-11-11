@@ -1,8 +1,8 @@
 // src/components/LoginPage/LoginForm.tsx
 import { useState, useEffect } from 'react';
-import ErrorMessage from '../Misc/ErrorMessage';
-import Button from '../Misc/Button';
-import '../../assets/styles/login.css';
+import ErrorMessage from '../../../components/Misc/ErrorMessage';
+import Button from '../../../components/Misc/Button';
+import './styles/login.css';
 
 interface LoginFormProps {
   onSuccess: (email: string, password: string) => void;

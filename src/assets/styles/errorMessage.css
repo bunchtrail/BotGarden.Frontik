@@ -1,56 +1,54 @@
 /* src/assets/styles/errorMessage.css */
 
-/* Базовые стили для сообщения об ошибке */
 .error-message {
-  margin-bottom: 0; /* Remove default margin */
-  height: auto;
   max-height: 0;
+  opacity: 0;
   overflow: hidden;
-  transition: all 0.3s ease;
+  margin-bottom: 0;
+  transition: max-height 0.5s ease, opacity 0.5s ease, margin-bottom 0.5s ease;
 }
 
-.error-message:not(.hide) {
-  max-height: 60px; /* Adjust based on content */
+
+.error-message.visible {
+  max-height: 200px; 
+  opacity: 1;
   margin-bottom: 1rem;
 }
 
-.error-message.hide {
-  max-height: 0;
-  margin-bottom: 0;
-}
-
-/* Дополнительные стили для ошибки типа 'unauthorized' */
 .error-message.unauthorized {
-  color: #ff9800; /* Оранжевый цвет для особых ошибок */
+  color: #ff9800;
   background-color: rgba(255, 152, 0, 0.1);
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   position: relative;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* Иконка перед сообщением для 'unauthorized' */
+
 .error-message.unauthorized::before {
-  content: '⚠️ ';
+  content: '⚠️';
   margin-right: 0.5rem;
 }
 
-/* Анимация появления ошибки */
-@keyframes fadeInError {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Анимация исчезновения ошибки */
-@keyframes fadeOutError {
-  to {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
 }
 
-/* Классы для управления исчезновением ошибки */
-.error-message.hide {
-  animation: fadeOutError 0.3s forwards;
+
+.error-message.visible {
+  animation: fadeIn 0.5s forwards;
+}
+
+
+.error-message:not(.visible) {
+  animation: fadeOut 0.5s forwards;
+  padding: 0;
 }

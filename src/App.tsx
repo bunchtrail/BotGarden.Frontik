@@ -7,7 +7,7 @@ import {
   Navigate,
   useLocation,
 } from 'react-router-dom';
-import LoginPage from './pages/Login/LoginPage';
+import { LoginPage } from './modules/login';
 import HomePage from './pages/Home/HomePage';
 import AddPlantPage from './pages/AddPlant/AddPlant';
 import { AuthProvider } from './contexts/AuthContext';

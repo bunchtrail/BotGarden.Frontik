@@ -9,7 +9,5 @@ export const login = async (email: string, password: string) => {
     });
 
     return response.data;
-  } catch (error) {
-    throw new Error('Ошибка авторизации');
-  }
+  } catch (error) {}
 };
