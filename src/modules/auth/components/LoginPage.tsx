@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginContainer from './LoginContainer';
 import LoginForm from './LoginForm';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import './styles/login.css';
 import { AuthenticationError } from '../../../utils/errors';
 
@@ -22,7 +22,7 @@ function Login() {
       await login(email, password);
     } catch (error) {
       if (error instanceof AuthenticationError) {
-        throw error;  // Передаем структурированную ошибку в LoginForm
+        throw error; // Передаем структурированную ошибку в LoginForm
       }
       throw new AuthenticationError('Ошибка авторизации', 'general');
     }

@@ -7,10 +7,10 @@ import {
   Navigate,
   useLocation,
 } from 'react-router-dom';
-import { LoginPage } from './modules/auth';
+import { LoginPage } from './modules/Auth';
 import HomePage from './pages/Home/HomePage';
-import AddPlantPage from './pages/AddPlant/AddPlant';
-import { AuthProvider } from './contexts/AuthContext';
+import AddPlantPage from './modules/Plants/Pages/AddPlant/AddPlant';
+import { AuthProvider } from './modules/Auth/contexts/AuthContext';
 import ProtectedRoute from './components/Misc/ProtectedRoute';
 import Navbar from './components/Navbar/Navbar';
 
