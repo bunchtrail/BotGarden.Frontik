@@ -1,47 +1,57 @@
 // src/components/Navbar/Navbar.tsx
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from '../../assets/styles/components/Navbar/Navbar.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faHome,
-  faTree,
-  faLeaf,
-  faSeedling,
-  faMap,
-} from '@fortawesome/free-solid-svg-icons';
+import './navbar.css';
+import LinkTitle from '../Misc/LinkTitle';
 
 interface NavbarProps {
-  onToggleTheme?: () => void;
+  sectorId?: number;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onToggleTheme }) => {
-  return (
-    <nav className={styles.navbar}>
-      <Link to='/home' className={styles.navLink}>
-        <FontAwesomeIcon icon={faHome} className={styles.icon} /> Главная
-      </Link>
-      <Link to='/dendrology-all' className={styles.navLink}>
-        <FontAwesomeIcon icon={faTree} className={styles.icon} /> Дендрология
-      </Link>
-      <Link to='/flora-all' className={styles.navLink}>
-        <FontAwesomeIcon icon={faLeaf} className={styles.icon} /> Флора
-      </Link>
-      <Link to='/floriculture-all' className={styles.navLink}>
-        <FontAwesomeIcon icon={faSeedling} className={styles.icon} />{' '}
-        Цветоводство
-      </Link>
-      <Link to='/map' className={styles.navLink}>
-        <FontAwesomeIcon icon={faMap} className={styles.icon} /> Карта
-      </Link>
-      {/* Пример кнопки для переключения темы */}
-      {onToggleTheme && (
-        <button onClick={onToggleTheme} className={styles.navLink}>
-          Сменить тему
+const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
+  const saveData = (formState: any, sectorId: number) => {
+    console.log('Сохранение данных для сектора:', sectorId);
+    // Добавьте вашу логику сохранения здесь
+  };
+
+  if (sectorId) {
+    return (
+      <div id='navbar' className='rounded-navbar fixed-top navsect'>
+        <Link to='/' className='nav-item'>
+          <i className='fas fa-home' /> Вернуться на главный экран
+        </Link>
+        <button
+          id='btn-Add'
+          className='btn btn-warning'
+          type='button'
+          onClick={() => saveData({}, sectorId)}
+        >
+          <i className='fas fa-save' />
         </button>
-      )}
-    </nav>
+      </div>
+    );
+  }
+
+  return (
+    <div className='navv'>
+      <div id='navbar' className='rounded-navbar'>
+        <Link to='/dendrology-all' className='nav-item'>
+          <LinkTitle title='Дендрология - все записи' className='fas fa-tree' />
+        </Link>
+        <Link to='/flora-all' className='nav-item'>
+          <LinkTitle title='Флора - все записи' className='fas fa-leaf' />
+        </Link>
+        <Link to='/floriculture-all' className='nav-item'>
+          <LinkTitle
+            title='Цветоводство - все записи'
+            className='fas fa-leaf'
+          />
+        </Link>
+        <Link to='/map' className='nav-item'>
+          <LinkTitle title='Карта' className='fas fa-map' />
+        </Link>
+      </div>
+    </div>
   );
 };
 
