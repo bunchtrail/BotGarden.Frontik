@@ -1,7 +1,7 @@
 // src/components/Navbar/Navbar.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './navbar.css';
+import styles from '../../assets/styles/components/Navbar/Navbar.module.css';
 import LinkTitle from '../Misc/LinkTitle';
 
 interface NavbarProps {
@@ -16,39 +16,42 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
 
   if (sectorId) {
     return (
-      <div id='navbar' className='rounded-navbar fixed-top navsect'>
-        <Link to='/' className='nav-item'>
-          <i className='fas fa-home' /> Вернуться на главный экран
-        </Link>
+      <div className={styles.navbarContainer}>
+        <div className={styles.navItems}>
+          <Link to='/' className={styles.navItem}>
+            <i className={`fas fa-home ${styles.icon}`} /> Вернуться на главный
+            экран
+          </Link>
+        </div>
         <button
-          id='btn-Add'
-          className='btn btn-warning'
+          className={styles.saveButton}
           type='button'
           onClick={() => saveData({}, sectorId)}
         >
-          <i className='fas fa-save' />
+          <i className={`fas fa-save ${styles.saveIcon}`} /> Сохранить
         </button>
       </div>
     );
   }
 
   return (
-    <div className='navv'>
-      <div id='navbar' className='rounded-navbar'>
-        <Link to='/dendrology-all' className='nav-item'>
-          <LinkTitle title='Дендрология - все записи' className='fas fa-tree' />
+    <div className={styles.navbarContainer}>
+      <div className={styles.navItems}>
+        <Link to='/dendrology-all' className={styles.navItem}>
+          <i className={`fas fa-tree ${styles.icon}`} />
+          <LinkTitle title='Дендрология - все записи' />
         </Link>
-        <Link to='/flora-all' className='nav-item'>
-          <LinkTitle title='Флора - все записи' className='fas fa-leaf' />
+        <Link to='/flora-all' className={styles.navItem}>
+          <i className={`fas fa-leaf ${styles.icon}`} />
+          <LinkTitle title='Флора - все записи' />
         </Link>
-        <Link to='/floriculture-all' className='nav-item'>
-          <LinkTitle
-            title='Цветоводство - все записи'
-            className='fas fa-leaf'
-          />
+        <Link to='/floriculture-all' className={styles.navItem}>
+          <i className={`fas fa-seedling ${styles.icon}`} />
+          <LinkTitle title='Цветоводство - все записи' />
         </Link>
-        <Link to='/map' className='nav-item'>
-          <LinkTitle title='Карта' className='fas fa-map' />
+        <Link to='/map' className={styles.navItem}>
+          <i className={`fas fa-map ${styles.icon}`} />
+          <LinkTitle title='Карта' />
         </Link>
       </div>
     </div>

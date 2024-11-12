@@ -1,4 +1,6 @@
-import { ReactNode } from 'react';
+// src/components/LoginPage/LoginContainer.tsx
+import React, { ReactNode } from 'react';
+import './styles/login.css'; // Убедитесь, что стили импортированы
 
 interface LoginContainerProps {
   children: ReactNode;
