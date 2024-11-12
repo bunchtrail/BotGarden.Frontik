@@ -1,7 +1,7 @@
 // src/components/Form/FormGroup.tsx
 
 import React from 'react';
-import '../../assets/styles/formGroup.css';
+import styles from '../../assets/styles/components/Form/FormGroup.module.css'
 
 interface FormGroupProps {
   label: string;
@@ -20,13 +20,15 @@ const FormGroup: React.FC<FormGroupProps> = ({
 }) => {
   if (hidden) return null;
 
-  const className = `form-group col-md-${colSize}`;
+  const formGroupClass = styles.formGroup;
+  const colClass = `col-md-${colSize}`;
+
   return (
-    <div className={className}>
-      <label htmlFor={htmlFor} className='form-label'>
+    <div className={`${formGroupClass} ${colClass}`}>
+      <label htmlFor={htmlFor} className={styles.formLabel}>
         {label}
       </label>
-      <div className='form-input'>{children}</div>
+      <div className={styles.formInput}>{children}</div>
     </div>
   );
 };

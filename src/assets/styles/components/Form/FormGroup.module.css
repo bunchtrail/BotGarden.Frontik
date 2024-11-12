@@ -1,0 +1,19 @@
+/* src/components/Form/FormGroup.module.css */
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  
+  .formLabel {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+  
+  .formInput {
+    display: flex;
+    flex-direction: column;
+  }
+  

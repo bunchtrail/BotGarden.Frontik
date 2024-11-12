@@ -1,0 +1,16 @@
+/* src/components/Form/FormRow.module.css */
+
+.formRow {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  
+  .hide {
+    display: none;
+  }
+  
+  .show {
+    display: flex;
+  }
+  

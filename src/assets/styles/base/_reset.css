@@ -1,8 +1,6 @@
 /* src/assets/styles/base/_reset.css */
 
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;

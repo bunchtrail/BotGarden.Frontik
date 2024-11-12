@@ -1,6 +1,7 @@
 // src/components/Form/SelectInput.tsx
 
 import React from 'react';
+import styles from '../../assets/styles/components/Form/SelectInput.module.css';
 
 interface Option {
   value: string;
@@ -25,7 +26,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
   return (
     <select
       id={id}
-      className='form-control'
+      className={styles.selectInput}
       name={name}
       value={value}
       onChange={onChange}

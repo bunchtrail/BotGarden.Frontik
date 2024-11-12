@@ -14,19 +14,30 @@
 /* Пример специфических глобальных стилей */
 .homeContainer {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  min-height: 80vh;
 }
 
-/* Светлая тема */
-@media (prefers-color-scheme: light) {
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
   :root {
-    --color-text: #213547;
-    --color-background: #ffffff;
+    --color-text: #f0f2f5;
+    --color-background: #213547;
+    --color-primary: #66bb6a;
+    --color-primary-hover: #5aa15a;
+    --color-error: #e57373;
+    --color-link: #82b1ff;
+    --color-link-hover: #448aff;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
   }
 
   a:hover {
-    color: #747bff;
+    color: #99ccff;
   }
-
-  /* Дополнительные стили для светлой темы */
 }

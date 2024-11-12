@@ -1,0 +1,42 @@
+/* src/components/Navbar/Navbar.module.css */
+
+.navbar {
+    display: flex;
+    background-color: #343a40;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+  
+  .navLink {
+    color: #fff;
+    margin-right: 15px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+  }
+  
+  .navLink:hover {
+    color: #d1d1d1;
+  }
+  
+  .icon {
+    margin-right: 5px;
+  }
+  
+  /* Добавление адаптивности для навигационной панели */
+  @media (max-width: 768px) {
+    .navbar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .navLink {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  }
+  

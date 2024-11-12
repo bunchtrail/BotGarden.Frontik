@@ -1,7 +1,7 @@
 // src/components/Form/FormRow.tsx
 
 import React from 'react';
-import styles from '../../assets/styles/components/Form/FormRow.module.css';
+import styles from './FormRow.module.css';
 
 interface FormRowProps {
   children: React.ReactNode;

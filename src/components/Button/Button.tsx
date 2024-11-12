@@ -1,28 +1,31 @@
-interface ButtonProps {
-  text?: string;
-  onClick?: () => void;
-  className?: string;
-  disabled?: boolean;
-  type?: 'button' | 'submit' | 'reset';
-  children: React.ReactNode;
+// src/components/Button/Button.tsx
+
+import React from 'react';
+import styles from '../../assets/styles/components/Button/Button.module.css';
+import classNames from 'classnames';
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'danger';
 }
 
 const Button: React.FC<ButtonProps> = ({
-  text,
-  onClick,
-  className = 'btn-primary',
-  disabled = false,
-  type = 'button',
   children,
+  variant = 'primary',
+  className,
+  ...props
 }) => {
+  const btnClass = classNames(
+    styles.button,
+    {
+      [styles.primary]: variant === 'primary',
+      [styles.danger]: variant === 'danger',
+    },
+    className
+  );
+
   return (
-    <button
-      onClick={onClick}
-      className={className}
-      disabled={disabled}
-      type={type}
-    >
-      {text || children}
+    <button className={btnClass} {...props}>
+      {children}
     </button>
   );
 };

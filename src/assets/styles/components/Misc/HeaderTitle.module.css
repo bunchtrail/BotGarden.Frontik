@@ -1,0 +1,10 @@
+/* src/components/Misc/HeaderTitle.module.css */
+
+.headerTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--color-text);
+  }
+  

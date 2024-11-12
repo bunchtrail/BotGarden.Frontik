@@ -1,9 +1,11 @@
-// src/components/ButtonGroup_Main.tsx
+// src/components/Button/ButtonGroup_Main.tsx
+
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from './Button';
-import './button.css';
+import styles from '../../assets/styles/components/Button/Button.module.css';
 
-const ButtonGroup_Main = () => {
+const ButtonGroup_Main: React.FC = () => {
   const navigate = useNavigate();
 
   const sectors = [
@@ -13,14 +15,15 @@ const ButtonGroup_Main = () => {
   ];
 
   return (
-    <div className='btn-main'>
+    <div className={styles.btnMain}>
       {sectors.map((sector) => (
         <Button
           key={sector.id}
-          text={sector.name}
+          variant='primary'
           onClick={() => navigate(`/add-plant/${sector.id}`)}
-          children={undefined}
-        />
+        >
+          {sector.name}
+        </Button>
       ))}
     </div>
   );

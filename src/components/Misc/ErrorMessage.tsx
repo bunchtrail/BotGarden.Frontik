@@ -1,6 +1,8 @@
 // src/components/Misc/ErrorMessage.tsx
-import { useEffect, useState } from 'react';
-import '../../assets/styles/errorMessage.css';
+
+import React, { useEffect, useState } from 'react';
+import styles from '../../assets/styles/components/Misc/ErrorMessage.module.css';
+import classNames from 'classnames';
 
 interface ErrorMessageProps {
   message: string;
@@ -22,16 +24,16 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, type }) => {
   }, [message]);
 
   if (!message) {
-    return null; // Не рендерить элемент, если сообщения нет
+    return null;
   }
 
+  const messageClass = classNames(styles.errorMessage, {
+    [styles.visible]: visible,
+    [styles.unauthorized]: type === 'unauthorized',
+  });
+
   return (
-    <div
-      className={`error-message ${visible ? 'visible' : ''} ${
-        type === 'unauthorized' ? 'unauthorized' : ''
-      }`}
-      aria-live='assertive'
-    >
+    <div className={messageClass} aria-live='assertive'>
       {message}
     </div>
   );

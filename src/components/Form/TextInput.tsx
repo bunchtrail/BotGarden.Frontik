@@ -1,6 +1,8 @@
 // src/components/Form/TextInput.tsx
 
 import React from 'react';
+import styles from '../../assets/styles/components/Form/TextInput.module.css';
+import classNames from 'classnames';
 
 interface TextInputProps {
   id: string;
@@ -19,12 +21,14 @@ const TextInput: React.FC<TextInputProps> = ({
   hidden = false,
   type = 'text',
 }) => {
-  const inputType = hidden ? 'hidden' : type;
+  const inputClass = classNames(styles.textInput, {
+    [styles.hiddenInput]: hidden,
+  });
 
   return (
     <input
-      type={inputType}
-      className='form-control'
+      type={hidden ? 'hidden' : type}
+      className={inputClass}
       id={id}
       name={name}
       value={value}

@@ -1,0 +1,12 @@
+/* src/components/Form/SelectInput.module.css */
+
+.selectInput {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: var(--font-family);
+    background-color: white;
+    appearance: none;
+  }
+  

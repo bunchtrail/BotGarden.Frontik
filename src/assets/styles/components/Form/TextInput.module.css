@@ -1,0 +1,14 @@
+/* src/components/Form/TextInput.module.css */
+
+.textInput {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: var(--font-family);
+  }
+  
+  .hiddenInput {
+    display: none;
+  }
+  
