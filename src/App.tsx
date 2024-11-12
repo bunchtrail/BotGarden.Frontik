@@ -1,20 +1,12 @@
 // src/App.tsx
-import React from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-  useLocation,
-} from 'react-router-dom';
-import { LoginPage } from './modules/Auth';
-import HomePage from './pages/Home/HomePage';
-import { AddPlantPage } from './modules/Plants';
-import { AuthProvider } from './modules/Auth/contexts/AuthContext';
-import ProtectedRoute from './modules/Auth/components/misc/ProtectedRoute';
-import Navbar from './components/Navbar/Navbar';
 
-const AppRoutes: React.FC = () => {
+import React from 'react';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { AuthProvider } from './modules/Auth/contexts/AuthContext';
+import Navbar from './components/Navbar/Navbar';
+import AppRoutes from './routes';
+
+const AppWrapper: React.FC = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
 
@@ -25,41 +17,7 @@ const AppRoutes: React.FC = () => {
     <>
       {!isLoginPage && <Navbar sectorId={sectorId} />}
       <div className='app-container'>
-        <Routes>
-          {/* Маршрут для страницы авторизации */}
-          <Route path='/login' element={<LoginPage />} />
-
-          {/* Защищённые маршруты с динамическим sectorId */}
-          <Route
-            path='/home'
-            element={
-              <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/add-plant/:sectorId'
-            element={
-              <ProtectedRoute>
-                <AddPlantPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/map'
-            element={
-              <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Другие маршруты, если необходимо */}
-
-          {/* 404 Страница */}
-          <Route path='*' element={<Navigate to='/home' replace />} />
-        </Routes>
+        <AppRoutes sectorId={sectorId} />
       </div>
     </>
   );
@@ -69,7 +27,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <AuthProvider>
-        <AppRoutes />
+        <AppWrapper />
       </AuthProvider>
     </Router>
   );
