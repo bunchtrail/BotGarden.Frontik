@@ -1,0 +1,37 @@
+/* src/assets/styles/base/_variables.css */
+
+/* Импорт шрифта */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Переменные для кнопок */
+:root {
+  --btn-padding: 0.75rem 3rem;
+  --btn-padding-md: 0.6rem 2.5rem;
+  --btn-padding-sm: 0.5rem 2rem;
+  --btn-font-size: 1rem;
+  --btn-font-size-md: 0.9rem;
+  --btn-font-size-sm: 0.8rem;
+  --btn-border-radius: 36px;
+  --btn-transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 6px 8px rgba(0, 0, 0, 0.15);
+  --transform-hover: translateY(-2px);
+
+  /* Общие переменные */
+  --font-family: 'Roboto', sans-serif;
+  --line-height: 1.5;
+  --font-weight: 400;
+
+  /* Цветовая схема */
+  --color-scheme: light dark;
+  --color-text: #213547;
+  --color-background: #f0f2f5;
+  --color-primary: #3cb371;
+  --color-primary-hover: #2e8b57;
+  --color-error: #d9534f;
+  --color-link: #646cff;
+  --color-link-hover: #535bf2;
+
+  /* Отступы и размеры */
+  --border-radius: 8px;
+}

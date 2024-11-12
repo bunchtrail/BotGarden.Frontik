@@ -8,6 +8,7 @@ interface TextInputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   hidden?: boolean;
+  type?: string;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -16,8 +17,9 @@ const TextInput: React.FC<TextInputProps> = ({
   value,
   onChange,
   hidden = false,
+  type = 'text',
 }) => {
-  const inputType = hidden ? 'hidden' : 'text';
+  const inputType = hidden ? 'hidden' : type;
 
   return (
     <input

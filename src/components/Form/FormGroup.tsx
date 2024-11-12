@@ -1,7 +1,7 @@
 // src/components/Form/FormGroup.tsx
 
 import React from 'react';
-import './formGroup.css';
+import '../../assets/styles/formGroup.css';
 
 interface FormGroupProps {
   label: string;

@@ -9,20 +9,23 @@ import { PlantFormData } from '../../types/plantTypes';
 import { addPlant } from '../../services/plantService';
 import './PlantForm.css';
 
-const PlantForm: React.FC<{ sectorId: number; onSuccess?: () => void }> = ({
-  sectorId,
-  onSuccess,
-}) => {
+interface PlantFormProps {
+  sectorId: number;
+  onSuccess?: () => void;
+}
+
+const PlantForm: React.FC<PlantFormProps> = ({ sectorId, onSuccess }) => {
   const [formData, setFormData] = useState<PlantFormData>({
     name: '',
     species: '',
     age: 0,
     description: '',
     sectorId,
+    plantType: '',
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -44,64 +47,88 @@ const PlantForm: React.FC<{ sectorId: number; onSuccess?: () => void }> = ({
       await addPlant(formData);
       setLoading(false);
       if (onSuccess) onSuccess();
-    } catch (err) {
+      // Optionally, reset the form or show a success message
+    } catch (err: any) {
       setLoading(false);
-      setError('Ошибка при добавлении растения. Попробуйте снова.');
+      setError(
+        typeof err === 'string'
+          ? err
+          : 'Ошибка при добавлении растения. Пожалуйста, попробуйте снова.'
+      );
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className='plant-form'>
-      <FormRow>
-        <FormGroup label='Название' htmlFor='name' colSize={6}>
-          <TextInput
-            id='name'
-            name='name'
-            value={formData.name}
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <FormGroup label='Вид' htmlFor='species' colSize={6}>
-          <TextInput
-            id='species'
-            name='species'
-            value={formData.species}
-            onChange={handleChange}
-          />
-        </FormGroup>
-      </FormRow>
+    <div className='AddPlantContainer'>
+      <form onSubmit={handleSubmit} className='plant-form'>
+        <FormRow>
+          <FormGroup label='Название' htmlFor='name' colSize={6}>
+            <TextInput
+              id='name'
+              name='name'
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <FormGroup label='Вид' htmlFor='species' colSize={6}>
+            <TextInput
+              id='species'
+              name='species'
+              value={formData.species}
+              onChange={handleChange}
+            />
+          </FormGroup>
+        </FormRow>
 
-      <FormRow>
-        <FormGroup label='Возраст' htmlFor='age' colSize={4}>
-          <TextInput
-            id='age'
-            name='age'
-            value={formData.age.toString()}
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <FormGroup label='Описание' htmlFor='description' colSize={12}>
-          <textarea
-            id='description'
-            name='description'
-            className='form-control'
-            value={formData.description}
-            onChange={(e) =>
-              handleChange(e as React.ChangeEvent<HTMLTextAreaElement>)
-            }
-            rows={4}
-          />
-        </FormGroup>
-      </FormRow>
+        <FormRow>
+          <FormGroup label='Возраст' htmlFor='age' colSize={4}>
+            <TextInput
+              id='age'
+              name='age'
+              type='number'
+              value={formData.age.toString()}
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <FormGroup label='Тип растения' htmlFor='plantType' colSize={8}>
+            <SelectInput
+              id='plantType'
+              name='plantType'
+              value={formData.plantType}
+              onChange={handleChange}
+              options={[
+                { value: '', label: 'Выберите тип' },
+                { value: 'tree', label: 'Дерево' },
+                { value: 'shrub', label: 'Кустарник' },
+                { value: 'flower', label: 'Цветок' },
+                // Добавьте другие опции по необходимости
+              ]}
+            />
+          </FormGroup>
+        </FormRow>
 
-      {error && <div className='error-message'>{error}</div>}
+        <FormRow>
+          <FormGroup label='Описание' htmlFor='description' colSize={12}>
+            <textarea
+              id='description'
+              name='description'
+              className='form-control'
+              value={formData.description}
+              onChange={handleChange}
+              rows={4}
+            />
+          </FormGroup>
+        </FormRow>
 
-      <FormRow>
-        <button type='submit' className='btn btn-primary' disabled={loading}>
-          {loading ? 'Сохранение...' : 'Сохранить'}
-        </button>
-      </FormRow>
-    </form>
+        {error && <div className='error-message'>{error}</div>}
+
+        <FormRow>
+          <button type='submit' className='btn btn-primary' disabled={loading}>
+            {loading ? 'Сохранение...' : 'Сохранить'}
+          </button>
+        </FormRow>
+      </form>
+    </div>
   );
 };
 

@@ -1,77 +1,21 @@
 /* src/assets/styles/global.css */
 
-:root {
-  /* Шрифты и типографика */
-  --font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --line-height: 1.5;
-  --font-weight: 400;
+@import './base/_variables.css';
+@import './base/_reset.css';
+@import './base/_typography.css';
 
-  /* Цветовая схема */
-  --color-scheme: light dark;
-  --color-text: #213547;
-  --color-background: #f0f2f5;
-  --color-primary: #3cb371;
-  --color-primary-hover: #2e8b57;
-  --color-error: #d9534f;
-  --color-link: #646cff;
-  --color-link-hover: #535bf2;
-
-  /* Отступы и размеры */
-  --border-radius: 8px;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-  /* Общие стили */
-  font-family: var(--font-family);
-  line-height: var(--line-height);
-  font-weight: var(--font-weight);
-  color-scheme: var(--color-scheme);
-  color: var(--color-text);
-  background-color: var(--color-background);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--color-background);
-  font-family: var(--font-family);
-}
-
+/* Общие контейнеры */
 .app-container {
-  
-  max-width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  
 }
 
-.homeContainer h1 {
+/* Пример специфических глобальных стилей */
+.homeContainer {
   display: flex;
   justify-content: center;
 }
-
-h1 {
-  font-size: 1.5rem; /* Используем rem для консистентности */
-  color: #333333;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-
-a {
-  font-weight: 500;
-  color: var(--color-link);
-  text-decoration: none; /* Предпочтительно явно указывать */
-  transition: color 0.3s ease;
-}
-
-a:hover {
-  color: var(--color-link-hover);
-}
-
-
 
 /* Светлая тема */
 @media (prefers-color-scheme: light) {
@@ -84,7 +28,5 @@ a:hover {
     color: #747bff;
   }
 
-  button {
-    background-color: #f9f9f9;
-  }
+  /* Дополнительные стили для светлой темы */
 }

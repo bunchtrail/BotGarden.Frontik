@@ -1,0 +1,67 @@
+/* src/components/Button/Button.module.css */
+
+.button {
+    padding: var(--btn-padding);
+    border: none;
+    border-radius: var(--btn-border-radius);
+    color: white;
+    font-size: var(--btn-font-size);
+    transition: var(--btn-transition);
+    box-shadow: var(--box-shadow);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-primary);
+    font-family: var(--font-family);
+  }
+  
+  .button:hover {
+    transform: var(--transform-hover);
+    box-shadow: var(--box-shadow-hover);
+    background-color: var(--color-primary-hover);
+  }
+  
+  .button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 177, 124, 0.5);
+  }
+  
+  /* Модификаторы кнопок */
+  .primary {
+    background-color: var(--color-primary);
+  }
+  
+  .primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+  
+  .danger {
+    background-color: #e20606;
+  }
+  
+  .danger:hover {
+    background-color: #bf0505;
+  }
+  
+  /* Адаптивные стили */
+  @media (max-width: 1200px) {
+    .button {
+      padding: 0.7rem 2.8rem;
+      font-size: 0.95rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .button {
+      padding: var(--btn-padding-md);
+      font-size: var(--btn-font-size-md);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .button {
+      padding: var(--btn-padding-sm);
+      font-size: var(--btn-font-size-sm);
+    }
+  }
+  

@@ -14,12 +14,11 @@ const AddPlantPage: React.FC = () => {
   }
 
   const handleSuccess = () => {
-    // Перенаправление на страницу сектора или другую страницу после успешного добавления
     navigate(`/sectors/${sectorId}`);
   };
 
   return (
-    <div className='add-plant-page'>
+    <div className='AddPlantContainer'>
       <h1>Добавить растение в сектор: {sectorId}</h1>
       <PlantForm sectorId={parseInt(sectorId, 10)} onSuccess={handleSuccess} />
     </div>

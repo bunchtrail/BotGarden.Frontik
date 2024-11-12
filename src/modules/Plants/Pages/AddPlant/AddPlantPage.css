@@ -1,10 +1,13 @@
 /* src/modules/Plants/pages/AddPlantPage/AddPlantPage.css */
 
-.add-plant-page {
-  padding: 80px 20px 20px; 
+.AddPlantContainer {
+  padding: 20px;
+  text-align: center;
+  max-width: 1200px;
+  margin: auto;
+  margin-top: 40px;
 }
 
-.add-plant-page h1 {
-  text-align: center;
+.AddPlantContainer h1 {
   margin-bottom: 20px;
 }
