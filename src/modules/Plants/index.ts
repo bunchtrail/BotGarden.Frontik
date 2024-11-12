@@ -1,0 +1,1 @@
+export { default as AddPlantPage } from './Pages/AddPlant/AddPlantPage'

@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 import { LoginPage } from './modules/Auth';
 import HomePage from './pages/Home/HomePage';
-import AddPlantPage from './modules/Plants/Pages/AddPlant/AddPlant';
+import { AddPlantPage } from './modules/Plants';
 import { AuthProvider } from './modules/Auth/contexts/AuthContext';
 import ProtectedRoute from './modules/Auth/components/misc/ProtectedRoute';
 import Navbar from './components/Navbar/Navbar';

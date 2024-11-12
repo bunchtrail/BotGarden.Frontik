@@ -11,7 +11,6 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
   const saveData = (formState: any, sectorId: number) => {
     console.log('Сохранение данных для сектора:', sectorId);
-    // Добавьте вашу логику сохранения здесь
   };
 
   if (sectorId) {
