@@ -1,7 +1,7 @@
 // src/components/ButtonGroup_Main.tsx
 import { useNavigate } from 'react-router-dom';
 import Button from './Button';
-import '../../assets/styles/button.css';
+import './button.css';
 
 const ButtonGroup_Main = () => {
   const navigate = useNavigate();
@@ -19,6 +19,7 @@ const ButtonGroup_Main = () => {
           key={sector.id}
           text={sector.name}
           onClick={() => navigate(`/add-plant/${sector.id}`)}
+          children={undefined}
         />
       ))}
     </div>

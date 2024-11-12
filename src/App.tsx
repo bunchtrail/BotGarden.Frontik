@@ -11,7 +11,7 @@ import { LoginPage } from './modules/Auth';
 import HomePage from './pages/Home/HomePage';
 import AddPlantPage from './modules/Plants/Pages/AddPlant/AddPlant';
 import { AuthProvider } from './modules/Auth/contexts/AuthContext';
-import ProtectedRoute from './components/Misc/ProtectedRoute';
+import ProtectedRoute from './modules/Auth/components/misc/ProtectedRoute';
 import Navbar from './components/Navbar/Navbar';
 
 const AppRoutes: React.FC = () => {

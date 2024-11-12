@@ -1,7 +1,7 @@
 // src/components/LoginPage/LoginForm.tsx
 import { useState, useEffect } from 'react';
 import ErrorMessage from '../../../components/Misc/ErrorMessage';
-import Button from '../../../components/Misc/Button';
+import Button from '../../../components/Button/Button';
 import './styles/login.css';
 
 interface LoginFormProps {

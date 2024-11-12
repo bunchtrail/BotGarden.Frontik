@@ -1,7 +1,7 @@
 // src/components/Navbar/Navbar.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../../assets/styles/navbar.css';
+import './navbar.css';
 import LinkTitle from '../Misc/LinkTitle';
 
 interface NavbarProps {
