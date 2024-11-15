@@ -20,24 +20,22 @@
   min-height: 40vh;
 }
 
-/* Темная тема */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-text: #38404d;
-    --color-background: #e4e4e4;
-    --color-primary: #66bb6a;
-    --color-primary-hover: #5aa15a;
-    --color-error: #e57373;
-    --color-link: #82b1ff;
-    --color-link-hover: #448aff;
-  }
+/* Светлая тема */
+:root {
+  --color-text: #38404d;
+  --color-background: #ffffff;
+  --color-primary: #66bb6a;
+  --color-primary-hover: #5aa15a;
+  --color-error: #e57373;
+  --color-link: #82b1ff;
+  --color-link-hover: #448aff;
+}
 
-  body {
-    background-color: var(--color-background);
-    color: var(--color-text);
-  }
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
 
-  a:hover {
-    color: #99ccff;
-  }
+a:hover {
+  color: var(--color-link-hover);
 }

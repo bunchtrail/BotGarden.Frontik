@@ -7,9 +7,14 @@ import classNames from 'classnames';
 interface ErrorMessageProps {
   message: string;
   type?: 'general' | 'unauthorized';
+  onDismiss?: () => void;
 }
 
-const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, type }) => {
+const ErrorMessage: React.FC<ErrorMessageProps> = ({
+  message,
+  type,
+  onDismiss,
+}) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -17,15 +22,14 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, type }) => {
       setVisible(true);
       const timer = setTimeout(() => {
         setVisible(false);
-      }, 5000); // Сообщение исчезнет через 5 секунд
+        if (onDismiss) {
+          onDismiss();
+        }
+      }, 5000); // Message disappears after 5 seconds
 
       return () => clearTimeout(timer);
     }
-  }, [message]);
-
-  if (!message) {
-    return null;
-  }
+  }, [message, onDismiss]);
 
   const messageClass = classNames(styles.errorMessage, {
     [styles.visible]: visible,

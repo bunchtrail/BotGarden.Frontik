@@ -30,21 +30,20 @@ body, html, #root {
 .login-form {
   width: 100%;
   max-width: 400px;
-  background-color: var(--form-background);
+  background-color: var(--input-background); 
   padding: 2rem;
   border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow); 
   animation: fadeIn 0.5s ease-in-out;
   position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease; /* Ensure smooth transitions */
+  border: 1px solid #ccc; 
 }
 
-@media (prefers-color-scheme: dark) {
-  .login-form {
-    --form-background: #2c3e50;
-    --form-text-color: var(--color-text);
-    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
-  }
+/* Add space for error message */
+.login-form .error-message-wrapper {
+  min-height: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 /* Анимация появления формы */

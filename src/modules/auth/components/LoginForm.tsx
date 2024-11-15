@@ -1,5 +1,7 @@
 // src/components/LoginPage/LoginForm.tsx
-import { useState, useEffect } from 'react';
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../../components/Misc/ErrorMessage';
 import Button from '../../../components/Button/Button';
 import './styles/login.css';
@@ -20,9 +22,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     password?: string;
   }>({});
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Скрываем общую ошибку при изменении полей
+    // Hide general error when fields change
     if (error) {
       setError(null);
     }
@@ -65,9 +68,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     }
   };
 
+  const handleDismissError = () => {
+    setError(null);
+  };
+
   return (
     <form className='login-form' onSubmit={handleSubmit} noValidate>
-      {error && <ErrorMessage message={error.message} type={error.type} />}
+      {error && (
+        <ErrorMessage
+          message={error.message}
+          type={error.type}
+          onDismiss={handleDismissError}
+        />
+      )}
       <div className='form-group'>
         <label htmlFor='email'>Почта</label>
         <input
