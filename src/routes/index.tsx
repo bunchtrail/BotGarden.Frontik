@@ -6,6 +6,7 @@ import { LoginPage } from '../modules/Auth';
 import HomePage from '../pages/Home/HomePage';
 import { AddPlantPage } from '../modules/Plants';
 import ProtectedRoute from '../modules/Auth/components/misc/ProtectedRoute';
+import NotFound from '../pages/Home/NotFound';
 
 interface AppRoutesProps {
   sectorId?: number;
@@ -46,7 +47,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ sectorId }) => {
       {/* Другие маршруты, если необходимо */}
 
       {/* 404 Страница */}
-      <Route path='*' element={<Navigate to='/home' replace />} />
+      <Route path='*' element={<NotFound />} />
     </Routes>
   );
 };
