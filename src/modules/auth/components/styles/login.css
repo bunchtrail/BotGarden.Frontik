@@ -21,22 +21,30 @@ body, html, #root {
   flex-direction: column;
   align-items: center;
   justify-content: center; /* Центрирование по вертикали */
-  min-height: 100vh; /* Заполнение всей высоты экрана */
+  min-height: 80vh; /* Заполнение всей высоты экрана */
   padding: 2rem;
-  background-color: var(--color-background); /* Серый фон */
+  background-color: var(--color-background); /* Фон в зависимости от темы */
 }
 
 /* Форма логина */
 .login-form {
   width: 100%;
   max-width: 400px;
-  background-color: #ffffff;
+  background-color: var(--form-background);
   padding: 2rem;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   animation: fadeIn 0.5s ease-in-out;
   position: relative;
   transition: all 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .login-form {
+    --form-background: #2c3e50;
+    --form-text-color: var(--color-text);
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+  }
 }
 
 /* Анимация появления формы */
@@ -59,11 +67,11 @@ body, html, #root {
 .input-field {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ccc;
-  color: var(--color-text);
+  border: 1px solid var(--input-border);
+  color: var(--input-text);
   border-radius: var(--border-radius);
   font-size: 1rem;
-  background-color: #f9f9f9;
+  background-color: var(--input-background);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 

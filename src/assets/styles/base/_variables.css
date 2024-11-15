@@ -22,8 +22,7 @@
   --line-height: 1.5;
   --font-weight: 400;
 
-  /* Цветовая схема */
-  --color-scheme: light dark;
+  /* Цветовая схема - Light Mode */
   --color-text: #213547;
   --color-background: #f0f2f5;
   --color-primary: #3cb371;
@@ -32,6 +31,40 @@
   --color-link: #646cff;
   --color-link-hover: #535bf2;
 
+  /* Входные поля - Light Mode */
+  --input-background: #f9f9f9;
+  --input-border: #ccc;
+  --input-text: var(--color-text);
+  --input-error-border: var(--color-error);
+
   /* Отступы и размеры */
   --border-radius: 8px;
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: #f0f2f5;
+    --color-background: #213547;
+    --color-primary: #66bb6a;
+    --color-primary-hover: #5aa15a;
+    --color-error: #e57373;
+    --color-link: #82b1ff;
+    --color-link-hover: #448aff;
+
+    /* Входные поля - Dark Mode */
+    --input-background: #2c3e50;
+    --input-border: #34495e;
+    --input-text: #ecf0f1;
+    --input-error-border: #e74c3c;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+
+  a:hover {
+    color: #99ccff;
+  }
 }
