@@ -14,8 +14,12 @@ const NotFound: React.FC = () => {
   return (
     <div className='not-found-container'>
       <h1>404</h1>
-      <p>Страница не найдена</p>
-      <button onClick={handleGoBack}>Назад</button>
+      <h2>Ой! Что-то пошло не так.</h2>
+      <p>
+        Страница, которую вы ищете, не существует. Возможно, она была перемещена
+        или удалена.
+      </p>
+      <button onClick={handleGoBack}>Вернуться домой</button>
     </div>
   );
 };

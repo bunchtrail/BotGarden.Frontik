@@ -4,7 +4,6 @@ import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { LoginPage } from '../modules/Auth';
 import HomePage from '../pages/Home/HomePage';
-import { AddPlantPage } from '../modules/Plants';
 import ProtectedRoute from '../modules/Auth/components/misc/ProtectedRoute';
 import NotFound from '../pages/Home/NotFound';
 
@@ -24,14 +23,6 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ sectorId }) => {
         element={
           <ProtectedRoute>
             <HomePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path='/add-plant/:sectorId'
-        element={
-          <ProtectedRoute>
-            <AddPlantPage />
           </ProtectedRoute>
         }
       />

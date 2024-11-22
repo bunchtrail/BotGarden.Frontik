@@ -7,29 +7,42 @@
     justify-content: center;
     height: 80vh;
     text-align: center;
-  }
-  
-  .not-found-container h1 {
+}
+
+.not-found-container h1 {
     font-size: 4rem;
     margin-bottom: 1rem;
-  }
-  
-  .not-found-container p {
-    font-size: 1.5rem;
+}
+
+.not-found-container p {
+    font-size: 1.25rem;
     margin-bottom: 2rem;
-  }
-  
-  .not-found-container button {
-    padding: 0.5rem 1.5rem;
-    font-size: 1rem;
+    color: #666666;
+    max-width: 600px;
+}
+
+.not-found-container .not-found-image {
+    width: 200px;
+    margin-bottom: 1.5rem;
+}
+
+.not-found-container h2 {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+}
+
+.not-found-container button {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
     background-color: var(--color-primary);
     color: #ffffff;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .not-found-container button:hover {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.not-found-container button:hover {
     background-color: var(--color-primary-hover);
-  }
+    transform: scale(1.05);
+}
