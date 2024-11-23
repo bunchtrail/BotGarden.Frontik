@@ -24,6 +24,16 @@
   box-sizing: border-box;
 }
 
+.inputField:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+}
+
+.inputField::placeholder {
+  color: #aaa;
+}
+
 .uniformLength {
   max-width: 100%; /* Убедитесь, что инпуты занимают всю доступную ширину */
 }

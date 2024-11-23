@@ -1,17 +1,31 @@
 // src/components/Navbar/Navbar.tsx
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../../assets/styles/components/Navbar/Navbar.module.css';
 import LinkTitle from '../Misc/LinkTitle';
+import { FormContext } from '../../context/FormContext';
 
 interface NavbarProps {
   sectorId?: number;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
-  const saveData = (formState: any, sectorId: number) => {
-    console.log('Сохранение данных для сектора:', sectorId);
-    // Добавьте вашу логику сохранения здесь
+  const formContext = useContext(FormContext);
+
+  const saveData = () => {
+    if (formContext) {
+      formContext.saveData();
+    } else {
+      console.log('FormContext is not available');
+    }
+  };
+
+  const resetForm = () => {
+    if (formContext) {
+      formContext.resetForm();
+    } else {
+      console.log('FormContext is not available');
+    }
   };
 
   if (sectorId) {
@@ -19,17 +33,25 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
       <div className={styles.navbarContainer}>
         <div className={styles.navItems}>
           <Link to='/home' className={styles.navItem}>
-            <i className={`fas fa-home ${styles.icon}`} /> Вернуться на главный
-            экран
+            <i className={`fas fa-home ${styles.icon}`} /> Вернуться на главный экран
           </Link>
         </div>
-        <button
-          className={styles.saveButton}
-          type='button'
-          onClick={() => saveData({}, sectorId)}
-        >
-          <i className={`fas fa-save ${styles.saveIcon}`} /> Сохранить
-        </button>
+        <div className={styles.buttonGroup}>
+          <button
+            className={styles.saveButton}
+            type='button'
+            onClick={saveData}
+          >
+            <i className={`fas fa-save ${styles.saveIcon}`} /> Сохранить
+          </button>
+          <button
+            className={styles.resetButton}
+            type='button'
+            onClick={resetForm}
+          >
+            <i className={`fas fa-undo ${styles.resetIcon}`} /> Сбросить
+          </button>
+        </div>
       </div>
     );
   }

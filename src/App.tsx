@@ -5,7 +5,7 @@ import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { AuthProvider } from './modules/Auth/contexts/AuthContext';
 import Navbar from './components/Navbar/Navbar';
 import AppRoutes from './routes';
-
+import { FormProvider } from './context/FormContext';
 
 const AppWrapper: React.FC = () => {
   const location = useLocation();
@@ -33,11 +33,13 @@ const AppWrapper: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <AuthProvider>
-        <AppWrapper />
-      </AuthProvider>
-    </Router>
+    <FormProvider>
+      <Router>
+        <AuthProvider>
+          <AppWrapper />
+        </AuthProvider>
+      </Router>
+    </FormProvider>
   );
 };
 
