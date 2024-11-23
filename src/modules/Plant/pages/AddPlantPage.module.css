@@ -2,8 +2,11 @@
 
 .addPlantPage {
   padding: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 1200px;
+  margin: 4rem auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .form {
@@ -13,11 +16,13 @@
 }
 
 .form h2 {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  font-size: 1.5em;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
+  color: #2c3e50;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.6em;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.75rem;
 }
 
 .submitButton {
@@ -29,6 +34,7 @@
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .submitButton:hover {
@@ -40,6 +46,8 @@
   display: flex;
   gap: 1rem;
   margin-top: 20px;
+  justify-content: flex-end;
+  padding: 1.5rem 0;
 }
 
 .resetButton {

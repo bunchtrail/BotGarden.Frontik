@@ -1,0 +1,42 @@
+
+.section {
+  margin-bottom: 1rem;
+}
+
+.sectionHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.6em;
+  padding-bottom: 0.75rem;
+}
+
+.arrow {
+  transition: transform 0.3s ease;
+  color: #64748b;
+}
+
+.arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.content.expanded {
+  max-height: 1000px;
+}

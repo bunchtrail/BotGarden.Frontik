@@ -6,18 +6,23 @@
 
   max-width: 15rem;
   flex: 1; 
+  margin-bottom: 1rem;
 }
 
 .inputLabel {
+  color: #4a5568;
+  font-size: 0.9rem;
   margin-bottom: 0.5rem;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .inputField {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: var(--border-radius);
-  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background-color: #f8fafc;
   font-family: var(--font-family);
   width: 100%;
   
@@ -25,13 +30,14 @@
 }
 
 .inputField:focus {
-  border-color: var(--color-primary);
+  border-color: #3b82f6;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   outline: none;
-  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
 }
 
 .inputField::placeholder {
-  color: #aaa;
+  color: #94a3b8;
 }
 
 .uniformLength {

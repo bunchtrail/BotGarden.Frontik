@@ -1,13 +1,14 @@
-
 /* src/components/Form/FormRow.module.css */
 
 .formRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  /* Optional: Remove justify-content if it causes spacing issues */
-  /* justify-content: space-between; */
-  margin-bottom: 1rem;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  background-color: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .hide {
@@ -21,6 +22,7 @@
 @media (max-width: 768px) {
   .formRow {
     flex-direction: column;
+    padding: 1rem;
   }
 }
 
