@@ -1,23 +1,25 @@
 /* src/components/Button/Button.module.css */
 
 .button {
-  padding: var(--btn-padding);
+  padding: 1rem 2.5rem;
   border: none;
-  border-radius: var(--btn-border-radius);
+  border-radius: 25px;
   color: white;
-  font-size: var(--btn-font-size);
-  font-family: var(--font-family);
-  transition: var(--btn-transition);
-  box-shadow: var(--box-shadow);
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-primary);
+  min-width: 200px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
 }
 
 .button:hover {
-  transform: var(--transform-hover);
-  box-shadow: var(--box-shadow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   background-color: var(--color-primary-hover);
 }
 
@@ -44,10 +46,12 @@
 }
 
 .btnMain {
-  display: flex;
-  justify-content: center;
-  gap: 0.625rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 /* Адаптивные стили */
@@ -66,20 +70,20 @@
 
 @media (max-width: 768px) {
   .button {
-    padding: var(--btn-padding-md);
-    font-size: var(--btn-font-size-md);
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    min-width: 180px;
   }
 
   .btnMain {
-    flex-direction: column;
-    gap: 2.5625rem;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .button {
-    padding: var(--btn-padding-sm);
-    font-size: var(--btn-font-size-sm);
+    width: 100%;
+    padding: 0.75rem 1.5rem;
   }
 
   .btnMain {

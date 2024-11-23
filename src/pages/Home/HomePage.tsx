@@ -3,8 +3,8 @@ import HeaderTitle from '../../components/Misc/headerTitle';
 
 const HomePage = () => {
   return (
-    <div>
-      <div className='homeContainer'>
+    <div className='homeContainer'>
+      <div className='contentWrapper'>
         <HeaderTitle title='Выберите раздел для дальнейшей работы' />
         <ButtonGroup_Main />
       </div>
