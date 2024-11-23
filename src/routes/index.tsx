@@ -6,18 +6,19 @@ import { LoginPage } from '../modules/Auth';
 import HomePage from '../pages/Home/HomePage';
 import ProtectedRoute from '../modules/Auth/components/misc/ProtectedRoute';
 import NotFound from '../pages/Home/NotFound';
+import { AddPlantPage } from '../modules/Plant';
 
 interface AppRoutesProps {
   sectorId?: number;
 }
 
-const AppRoutes: React.FC<AppRoutesProps> = ({ sectorId }) => {
+const AppRoutes: React.FC<AppRoutesProps> = ({}) => {
   return (
     <Routes>
       {/* Маршрут для страницы авторизации */}
       <Route path='/login' element={<LoginPage />} />
 
-      {/* Защищённые маршруты с динамическим sectorId */}
+      {/* Защищённые маршруты */}
       <Route
         path='/home'
         element={
@@ -35,10 +36,18 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ sectorId }) => {
         }
       />
 
-      {/* Другие маршруты, если необходимо */}
-
-      {/* 404 Страница */}
-      <Route path='*' element={<NotFound />} />
+      <Route
+        path='/add-plant/:sectorId'
+        element={
+          <ProtectedRoute>
+            <AddPlantPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path='*' element={<Navigate to='/404' replace />} />
+      
+      {/* Маршрут 404 Страницы */}
+      <Route path='/404' element={<NotFound />} />
     </Routes>
   );
 };

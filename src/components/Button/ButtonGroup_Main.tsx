@@ -4,15 +4,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from './Button';
 import styles from '../../assets/styles/components/Button/Button.module.css';
-
+import { sectors } from '../../utils/data';
 const ButtonGroup_Main: React.FC = () => {
   const navigate = useNavigate();
-
-  const sectors = [
-    { name: 'Дендрология', id: 1 },
-    { name: 'Флора', id: 2 },
-    { name: 'Цветоводство', id: 3 },
-  ];
 
   return (
     <div className={styles.btnMain}>

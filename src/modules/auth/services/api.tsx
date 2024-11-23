@@ -1,6 +1,6 @@
 // src/services/api.ts
 import axios from 'axios';
-import API_URL from '../../../utils/data';
+import { API_URL } from '../../../utils/data';
 import {
   getAccessToken,
   getRefreshToken,

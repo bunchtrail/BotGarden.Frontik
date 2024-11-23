@@ -9,20 +9,14 @@ import AppRoutes from './routes';
 const AppWrapper: React.FC = () => {
   const location = useLocation();
 
-  const navbarExcludedRoutes = useMemo(() => ['/login', '*'], []);
+  const navbarExcludedRoutes = useMemo(() => ['/login', '/404'], []);
 
+  // Проверка, нужно ли исключить навбар для текущего маршрута
   const isExcluded = useMemo(() => {
-    return navbarExcludedRoutes.some((route) => {
-      if (route === '*') {
-        return (
-          location.pathname !== '/' &&
-          !['/home', '/map'].includes(location.pathname)
-        );
-      }
-      return location.pathname === route;
-    });
+    return navbarExcludedRoutes.includes(location.pathname);
   }, [location.pathname, navbarExcludedRoutes]);
 
+  // Извлечение ID сектора из URL, если он присутствует
   const sectorMatch = location.pathname.match(/\/add-plant\/(\d+)/);
   const sectorId = sectorMatch ? parseInt(sectorMatch[1], 10) : undefined;
 
