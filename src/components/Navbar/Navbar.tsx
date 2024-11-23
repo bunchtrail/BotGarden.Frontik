@@ -68,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
                 Флора
               </Link>
               <Link to={`/add-plant/3`} className={styles.dropdownItem}>
-                <i className={`fas fa-flower ${styles.icon}`} />
+                <i className={`fas fa-seedling ${styles.icon}`} />
                 Цветоводство
               </Link>
             </div>

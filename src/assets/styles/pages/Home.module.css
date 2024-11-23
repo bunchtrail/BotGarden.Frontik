@@ -1,0 +1,37 @@
+
+.homeContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+              url('/images/leaf-pattern.png');
+  background-size: 300px;
+  background-repeat: repeat;
+}
+
+.contentWrapper {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.welcomeText {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--color-text);
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    padding: 1rem;
+  }
+  
+  .welcomeText {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+}
