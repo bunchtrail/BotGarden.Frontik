@@ -1,108 +1,76 @@
 /* src/assets/styles/pages/AddPlantPage.module.css */
 
 .addPlantPage {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 4rem auto;
-  background: #f9fff9; /* Светлый зелёный оттенок для фона */
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  max-width: 1500px;
+  margin: 3rem auto;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
 }
 
 .form {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 24px;
 }
 
 .form h2 {
-  color: #2e7d32; /* Тёмный зелёный цвет для заголовков */
-  font-weight: 600;
-  margin-top: 2rem;
-  margin-bottom: 1.5rem;
-  font-size: 1.8em;
-  border-bottom: 2px solid #81c784; /* Светло-зелёная линия под заголовком */
-  padding-bottom: 0.75rem;
+  color: #1d1d1f;
+  font-weight: 500;
+  margin: 2rem 0 1.5rem;
+  font-size: 2em;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 1rem;
+}
+
+.submitButton, .resetButton {
+  padding: 0.875rem 2.5rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .submitButton {
-  padding: 0.75rem 2rem;
-  font-size: 1.1rem;
-  background-color: #66bb6a; /* Зелёный цвет кнопки */
+  background-color: #007AFF;
   color: #ffffff;
   border: none;
-  border-radius: 8px; /* Небольшое скругление углов */
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
 }
 
 .submitButton:hover {
-  background-color: #5aa65c; /* Более тёмный зелёный при наведении */
-  transform: translateY(-2px);
-}
-
-.buttonGroup {
-  display: flex;
-  gap: 1rem;
-  margin-top: 20px;
-  justify-content: flex-end;
-  padding: 1.5rem 0;
+  background-color: #0062CC;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
 }
 
 .resetButton {
-  padding: 0.75rem 2rem;
-  font-size: 1.1rem;
-  background-color: #ef5350; /* Красный цвет кнопки сброса */
+  background-color: #ff3b30;
   color: #ffffff;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 59, 48, 0.25);
 }
 
 .resetButton:hover {
-  background-color: #e53935; /* Более тёмный красный при наведении */
-  transform: translateY(-2px);
+  background-color: #dc3226;
+  transform: translateY(-1px);
 }
 
 .collapsible {
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: #2e7d32;
-  font-weight: 500;
-}
-
-.content {
-  max-height: 1000px;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-}
-
-.closed {
-  max-height: 0;
+  font-size: 1.1rem;
+  color: #1d1d1f;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .caret {
-  display: inline-block;
-  margin-left: 10px;
-  transition: transform 0.3s ease;
-  border: solid #2e7d32;
-  border-width: 0 2px 2px 0;
-  padding: 3px;
-  transform: rotate(45deg);
-}
-
-.rotate {
-  transform: rotate(225deg);
-}
-
-/* Стили для полей ввода и меток */
-
-.form label {
-  font-weight: 500;
-  color: #2e7d32;
-  margin-bottom: 0.5rem;
+  border-color: #1d1d1f;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .form input[type="text"],
@@ -111,83 +79,55 @@
 .form select,
 .form textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #ced4da;
-  border-radius: 6px;
-  background-color: #ffffff;
+  padding: 0.875rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.8);
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: all 0.2s ease;
+  -webkit-appearance: none;
 }
 
-.form input[type="text"]:focus,
-.form input[type="number"]:focus,
-.form input[type="email"]:focus,
+.form input:focus,
 .form select:focus,
 .form textarea:focus {
-  border-color: #66bb6a; /* Светло-зелёная граница при фокусе */
+  border-color: #007AFF;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
   outline: none;
 }
 
-.form textarea {
-  min-height: 120px;
+.form label {
+  font-weight: 500;
+  color: #1d1d1f;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
 }
-
-.form .inputGroup {
-  display: flex;
-  flex-direction: column;
-}
-
-.form .inputGroup-inline {
-  display: flex;
-  gap: 1rem;
-}
-
-.form .inputGroup-inline .inputGroup {
-  flex: 1;
-}
-
-.form .checkboxGroup {
-  display: flex;
-  align-items: center;
-}
-
-.form .checkboxGroup input[type="checkbox"] {
-  margin-right: 0.5rem;
-}
-
-.form .checkboxGroup label {
-  margin: 0;
-  color: #2e7d32;
-}
-
-/* Стили для сообщений об ошибках */
 
 .form .errorMessage {
-  color: #e53935;
-  font-size: 0.9rem;
-  margin-top: 0.25rem;
+  color: #ff3b30;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  font-weight: 400;
 }
-
-/* Адаптивность для мобильных устройств */
 
 @media (max-width: 768px) {
   .addPlantPage {
     padding: 1.5rem;
-    margin: 2rem 1rem;
-  }
-
-  .form h2 {
-    font-size: 1.5em;
+    margin: 1rem;
+    border-radius: 16px;
   }
 
   .buttonGroup {
     flex-direction: column;
-    align-items: stretch;
+    gap: 0.75rem;
   }
 
-  .submitButton,
-  .resetButton {
+  .submitButton, .resetButton {
     width: 100%;
-    margin-bottom: 1rem;
+    padding: 1rem;
   }
 }
+
+/* ...existing code for other elements... */
