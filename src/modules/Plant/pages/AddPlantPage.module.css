@@ -66,6 +66,35 @@
   transform: translateY(-2px);
 }
 
+.collapsible {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.content {
+  max-height: 1000px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.closed {
+  max-height: 0;
+}
+
+.caret {
+  display: inline-block;
+  margin-left: 10px;
+  transition: transform 0.3s ease;
+  border: solid #2c3e50;
+  border-width: 0 2px 2px 0;
+  padding: 3px;
+  transform: rotate(45deg);
+}
+
+.rotate {
+  transform: rotate(225deg);
+}
+
 /* ...existing styles... */
 
 /* ...Ensure existing button styles are retained... */
