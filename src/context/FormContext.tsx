@@ -1,7 +1,7 @@
-
 import React, { createContext, useState, ReactNode } from 'react';
 
-interface FormData {
+// Определяем интерфейс для данных формы и экспортируем его
+export interface FormData {
   inventorNumber: string;
   familyId: string;
   genusId: string;
@@ -24,21 +24,24 @@ interface FormData {
   filledOut: string;
   imagePath: string;
   note: string;
+  // ...другие поля...
 }
 
-interface FormContextProps {
+// Определяем тип для контекста формы
+interface FormContextType {
   formData: FormData;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
-  saveData: () => void;
-  resetForm: () => void;
 }
 
-export const FormContext = createContext<FormContextProps | undefined>(undefined);
+// Создаём и экспортируем контекст
+export const FormContext = createContext<FormContextType | undefined>(undefined);
 
+// Определяем тип для пропсов FormProvider
 interface FormProviderProps {
   children: ReactNode;
 }
 
+// Создаём и экспортируем провайдер контекста с правильной типизацией
 export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
   const [formData, setFormData] = useState<FormData>({
     inventorNumber: '',
@@ -63,42 +66,11 @@ export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
     filledOut: '',
     imagePath: '',
     note: '',
+    // ...инициализация других полей...
   });
 
-  const saveData = () => {
-    console.log('Сохранение данных:', formData);
-    // Добавьте вашу логику сохранения здесь
-  };
-
-  const resetForm = () => {
-    setFormData({
-      inventorNumber: '',
-      familyId: '',
-      genusId: '',
-      species: '',
-      synonyms: '',
-      variety: '',
-      plantOrigin: '',
-      naturalHabitat: '',
-      ecologyBiology: '',
-      economicUse: '',
-      protectionStatus: '',
-      latitude: '',
-      longitude: '',
-      country: '',
-      dateOfPlanting: '',
-      date: '',
-      originator: '',
-      herbariumPresence: '',
-      herbariumDuplicate: '',
-      filledOut: '',
-      imagePath: '',
-      note: '',
-    });
-  };
-
   return (
-    <FormContext.Provider value={{ formData, setFormData, saveData, resetForm }}>
+    <FormContext.Provider value={{ formData, setFormData }}>
       {children}
     </FormContext.Provider>
   );

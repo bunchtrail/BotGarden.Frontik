@@ -20,27 +20,28 @@
 }
 
 .navItem {
-  color: #a8d5ba; /* Светло-зелёный цвет для текста */
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   padding: 8px 12px;
   font-size: 16px;
   display: flex;
   align-items: center;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 4px;
   margin-right: 10px;
   font-weight: 500;
 }
 
 .navItem:hover {
-  background-color: rgba(168, 213, 186, 0.2); /* Светло-зелёный фон при наведении */
-  color: #ffffff; /* Белый цвет текста при наведении */
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .icon {
   margin-right: 8px;
   font-size: 18px;
-  color: #a8d5ba; /* Соответствие цвету текста */
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .buttonGroup {
@@ -50,23 +51,30 @@
 
 .saveButton,
 .resetButton {
-  background-color: #4caf50; /* Зелёный цвет кнопок */
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 16px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   font-weight: 600;
-  color: #ffffff; /* Белый текст на кнопках */
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  letter-spacing: 0.3px;
 }
 
 .saveButton:hover,
 .resetButton:hover {
-  background-color: #43a047; /* Тёмно-зелёный при наведении */
-  transform: scale(1.05); /* Лёгкое увеличение при наведении */
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.saveButton:active,
+.resetButton:active {
+  transform: translateY(1px);
 }
 
 .saveIcon,
@@ -81,12 +89,13 @@
 }
 
 .dropdownButton {
-  background: linear-gradient(45deg, #66bb6a, #43a047); /* Градиент зелёных оттенков */
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 16px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   color: #ffffff;
@@ -95,20 +104,24 @@
 }
 
 .dropdownButton:hover {
-  background: linear-gradient(45deg, #5aad62, #388e3c); /* Тёмнее зелёный градиент при наведении */
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
 }
 
 .dropdownContent {
   display: none;
   position: absolute;
-  background-color: #ffffff;
+  background-color: rgba(52, 58, 64, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   min-width: 200px;
   top: 100%;
   left: 0;
   z-index: 1000;
+  transform-origin: top;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dropdownContent.show {
@@ -116,17 +129,17 @@
 }
 
 .dropdownItem {
-  color: #333333;
+  color: rgba(255, 255, 255, 0.8);
   padding: 10px 15px;
   text-decoration: none;
   display: flex;
   align-items: center;
-  transition: background-color 0.3s ease, padding-left 0.3s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dropdownItem:hover {
-  background-color: #e8f5e9; /* Светло-зелёный фон при наведении */
-  padding-left: 20px; /* Увеличение отступа при наведении */
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 .dropdownIcon {
@@ -140,13 +153,17 @@
 
 @keyframes fadeIn {
   from {
-    transform: translateY(-10px);
+    transform: translateY(-8px) scale(0.98);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
+}
+
+.animate {
+  animation: fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (max-width: 768px) {
@@ -164,12 +181,14 @@
   .navItem {
     width: 100%;
     margin: 5px 0;
+    border-radius: 8px;
   }
 
   .buttonGroup {
     width: 100%;
     justify-content: flex-start;
     margin-top: 10px;
+    gap: 8px;
   }
 
   .saveButton,

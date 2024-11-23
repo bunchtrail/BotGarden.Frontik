@@ -1,9 +1,8 @@
 // src/components/Navbar/Navbar.tsx
-import React, { useContext, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../../assets/styles/components/Navbar/Navbar.module.css';
 import LinkTitle from '../Misc/LinkTitle';
-import { FormContext } from '../../context/FormContext';
 
 interface NavbarProps {
   sectorId?: number;
@@ -11,34 +10,38 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const formContext = useContext(FormContext);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const saveData = () => {
-    if (formContext) {
-      formContext.saveData();
-    } else {
-      console.log('FormContext is not available');
-    }
-  };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
 
-  const resetForm = () => {
-    if (formContext) {
-      formContext.resetForm();
-    } else {
-      console.log('FormContext is not available');
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsDropdownOpen(false);
     }
   };
 
   if (sectorId) {
     return (
-      <div className={styles.navbarContainer}>
+      <div className={styles.navbarContainer} onKeyDown={handleKeyDown}>
         <div className={styles.navItems}>
           <Link to='/home' className={styles.navItem}>
             <i className={`fas fa-home ${styles.icon}`} /> Вернуться на главный
             экран
           </Link>
 
-          <div className={styles.dropdownContainer}>
+          <div className={styles.dropdownContainer} ref={dropdownRef}>
             <button
               className={styles.dropdownButton}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -73,18 +76,10 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
         </div>
 
         <div className={styles.buttonGroup}>
-          <button
-            className={styles.saveButton}
-            type='button'
-            onClick={saveData}
-          >
+          <button className={styles.saveButton} type='button'>
             <i className={`fas fa-save ${styles.saveIcon}`} /> Сохранить
           </button>
-          <button
-            className={styles.resetButton}
-            type='button'
-            onClick={resetForm}
-          >
+          <button className={styles.resetButton} type='button'>
             <i className={`fas fa-undo ${styles.resetIcon}`} /> Сбросить
           </button>
         </div>
@@ -93,7 +88,7 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
   }
 
   return (
-    <div className={styles.navbarContainer}>
+    <div className={styles.navbarContainer} onKeyDown={handleKeyDown}>
       <div className={styles.navItems}>
         <Link to='/dendrology-all' className={styles.navItem}>
           <i className={`fas fa-tree ${styles.icon}`} />
