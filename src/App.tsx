@@ -6,6 +6,7 @@ import { AuthProvider } from './modules/Auth/contexts/AuthContext';
 import Navbar from './components/Navbar/Navbar';
 import AppRoutes from './routes';
 
+
 const AppWrapper: React.FC = () => {
   const location = useLocation();
 

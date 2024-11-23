@@ -1,0 +1,59 @@
+/* src/assets/styles/pages/AddPlantPage.module.css */
+
+.addPlantPage {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.form h2 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 1.5em;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+.submitButton {
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  margin-top: 20px;
+}
+
+.resetButton {
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  background-color: #f44336;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.resetButton:hover {
+  background-color: #d32f2f;
+  transform: translateY(-2px);
+}

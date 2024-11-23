@@ -18,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
     return (
       <div className={styles.navbarContainer}>
         <div className={styles.navItems}>
-          <Link to='/' className={styles.navItem}>
+          <Link to='/home' className={styles.navItem}>
             <i className={`fas fa-home ${styles.icon}`} /> Вернуться на главный
             экран
           </Link>

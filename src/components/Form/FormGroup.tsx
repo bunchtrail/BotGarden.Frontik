@@ -24,7 +24,7 @@ const FormGroup: React.FC<FormGroupProps> = ({
   const colClass = `col-md-${colSize}`;
 
   return (
-    <div className={`${formGroupClass} ${colClass}`}>
+    <div className={`${formGroupClass} ${colClass} ${styles.centerInputs}`}>
       <label htmlFor={htmlFor} className={styles.formLabel}>
         {label}
       </label>

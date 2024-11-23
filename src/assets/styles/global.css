@@ -23,12 +23,14 @@
 /* Светлая тема */
 :root {
   --color-text: #38404d;
-  --color-background: #ffffff;
+  --color-background: #f9f9f9;
   --color-primary: #66bb6a;
   --color-primary-hover: #5aa15a;
   --color-error: #e57373;
   --color-link: #82b1ff;
   --color-link-hover: #448aff;
+  --color-input-border: #ccc;
+  --color-input-focus: #66bb6a;
 }
 
 body {

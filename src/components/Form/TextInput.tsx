@@ -1,18 +1,24 @@
 // src/components/Form/Input/Input.tsx
 import React from 'react';
-import './Input.css';
+import styles from '../../assets/styles/components/Form/TextInput.module.css';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
 
-const Input: React.FC<InputProps> = ({ label, ...props }) => {
+const Input: React.FC<InputProps> = ({ label, value, onChange, placeholder, ...props }) => {
   return (
-    <div className='input-container'>
-      <label className='input-label' htmlFor={props.id}>
+    <div className={styles.inputContainer}>
+      <label className={styles.inputLabel} htmlFor={props.id}>
         {label}
       </label>
-      <input className='input-field' {...props} />
+      <input
+        className={`${styles.inputField} ${styles.uniformLength}`}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        {...props}
+      />
     </div>
   );
 };

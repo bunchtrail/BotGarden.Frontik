@@ -1,14 +1,33 @@
 /* src/components/Form/TextInput.module.css */
 
-.textInput {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    font-family: var(--font-family);
-  }
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+
+  max-width: 15rem;
+  flex: 1; 
+}
+
+.inputLabel {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.inputField {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-family: var(--font-family);
+  width: 100%;
   
-  .hiddenInput {
-    display: none;
-  }
-  
+  box-sizing: border-box;
+}
+
+.uniformLength {
+  max-width: 100%; /* Убедитесь, что инпуты занимают всю доступную ширину */
+}
+
+.hiddenInput {
+  display: none;
+}
