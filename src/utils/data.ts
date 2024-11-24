@@ -6,4 +6,8 @@ const sectors = [
     { name: 'Цветоводство', id: 3 },
 ];
 
-export { API_URL, sectors };
+function getSectorById(id: number) {
+    return sectors.find(sector => sector.id === id);
+}
+
+export { API_URL, sectors, getSectorById };

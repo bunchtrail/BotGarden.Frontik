@@ -1,7 +1,7 @@
 // src/routes/index.tsx
 
 import React from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, useParams } from 'react-router-dom';
 import { LoginPage } from '../modules/Auth';
 import HomePage from '../pages/Home/HomePage';
 import ProtectedRoute from '../modules/Auth/components/misc/ProtectedRoute';
@@ -11,6 +11,16 @@ import { AddPlantPage } from '../modules/Plant';
 interface AppRoutesProps {
   sectorId?: number;
 }
+
+const AddPlantRoute = () => {
+  const { sectorId } = useParams<{ sectorId: string }>();
+  const sectorIdNumber = Number(sectorId);
+  return sectorIdNumber > 3 ? (
+    <Navigate to='/404' replace />
+  ) : (
+    <AddPlantPage sectorId={sectorIdNumber} />
+  );
+};
 
 const AppRoutes: React.FC<AppRoutesProps> = ({}) => {
   return (
@@ -40,12 +50,12 @@ const AppRoutes: React.FC<AppRoutesProps> = ({}) => {
         path='/add-plant/:sectorId'
         element={
           <ProtectedRoute>
-            <AddPlantPage />
+            <AddPlantRoute />
           </ProtectedRoute>
         }
       />
       <Route path='*' element={<Navigate to='/404' replace />} />
-      
+
       {/* Маршрут 404 Страницы */}
       <Route path='/404' element={<NotFound />} />
     </Routes>

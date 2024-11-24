@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import styles from './AddPlantPage.module.css';
 import { FormContext } from '../../../context/FormContext';
 import CollapsibleSection from '../../../components/CollapsibleSection';
@@ -10,16 +9,23 @@ import UsageSection from '../components/UsageSection';
 import LocationSection from '../components/LocationSection';
 import AdditionalSection from '../components/AdditionalSection';
 
-const AddPlantPage: React.FC = () => {
-  const { sectorId } = useParams<{ sectorId: string }>();
+interface AddPlantPageProp {
+  sectorId: number;
+}
+
+const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
   const formContext = useContext(FormContext);
 
-  const [isIdentificationOpen, setIdentificationOpen] = useState(true);
-  const [isClassificationOpen, setClassificationOpen] = useState(true);
-  const [isOriginOpen, setOriginOpen] = useState(true);
-  const [isUsageOpen, setUsageOpen] = useState(true);
-  const [isLocationOpen, setLocationOpen] = useState(true);
-  const [isAdditionalOpen, setAdditionalOpen] = useState(true);
+  // Определяем, является ли устройство мобильным
+  const isMobile = window.innerWidth <= 768;
+
+  // Устанавливаем состояние секций
+  const [isIdentificationOpen, setIdentificationOpen] = useState(!isMobile);
+  const [isClassificationOpen, setClassificationOpen] = useState(!isMobile);
+  const [isOriginOpen, setOriginOpen] = useState(!isMobile);
+  const [isUsageOpen, setUsageOpen] = useState(!isMobile);
+  const [isLocationOpen, setLocationOpen] = useState(!isMobile);
+  const [isAdditionalOpen, setAdditionalOpen] = useState(!isMobile);
 
   if (!formContext) {
     return <div>Loading...</div>;
@@ -33,10 +39,6 @@ const AddPlantPage: React.FC = () => {
 
   return (
     <div className={styles.addPlantPage}>
-      <h1>
-        Добавление растения в сектор{' '}
-        {sectorId ? parseInt(sectorId, 10) : 'неизвестно'}
-      </h1>
       <form className={styles.form}>
         <CollapsibleSection
           title='Идентификация'

@@ -112,6 +112,13 @@
   font-weight: 400;
 }
 
+.buttonGroup button,
+.form input,
+.form select,
+.form textarea {
+  min-height: 44px;
+}
+
 @media (max-width: 768px) {
   .addPlantPage {
     padding: 1.5rem;
@@ -127,6 +134,22 @@
   .submitButton, .resetButton {
     width: 100%;
     padding: 1rem;
+  }
+
+  .form {
+    grid-template-columns: 1fr; /* Одна колонка на мобильных устройствах */
+  }
+
+  .addPlantPage {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .form input[type="text"],
+  .form select,
+  .form textarea {
+    font-size: 0.9rem;
+    padding: 0.75rem;
   }
 }
 
