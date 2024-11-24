@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import styles from './AddPlantPage.module.css';
 import { FormContext } from '../../../context/FormContext';
 import CollapsibleSection from '../../../components/CollapsibleSection';
@@ -15,17 +15,25 @@ interface AddPlantPageProp {
 
 const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
   const formContext = useContext(FormContext);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Определяем, является ли устройство мобильным
-  const isMobile = window.innerWidth <= 768;
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
 
-  // Устанавливаем состояние секций
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Initialize sections based on mobile state
   const [isIdentificationOpen, setIdentificationOpen] = useState(!isMobile);
-  const [isClassificationOpen, setClassificationOpen] = useState(!isMobile);
-  const [isOriginOpen, setOriginOpen] = useState(!isMobile);
-  const [isUsageOpen, setUsageOpen] = useState(!isMobile);
-  const [isLocationOpen, setLocationOpen] = useState(!isMobile);
-  const [isAdditionalOpen, setAdditionalOpen] = useState(!isMobile);
+  const [isClassificationOpen, setClassificationOpen] = useState(false);
+  const [isOriginOpen, setOriginOpen] = useState(false);
+  const [isUsageOpen, setUsageOpen] = useState(false);
+  const [isLocationOpen, setLocationOpen] = useState(false);
+  const [isAdditionalOpen, setAdditionalOpen] = useState(false);
 
   if (!formContext) {
     return <div>Loading...</div>;
@@ -37,9 +45,20 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Add your form submission logic here
+  };
+
+  const handleReset = () => {
+    if (formContext) {
+      setFormData({ ...formData });
+    }
+  };
+
   return (
     <div className={styles.addPlantPage}>
-      <form className={styles.form}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <CollapsibleSection
           title='Идентификация'
           isOpen={isIdentificationOpen}
