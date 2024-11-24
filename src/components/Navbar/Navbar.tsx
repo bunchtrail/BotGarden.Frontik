@@ -135,15 +135,15 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
         ) : (
           <>
             {/* Ссылки без сектора */}
-            <Link to='/dendrology-all' className={styles.navItem}>
+            <Link to='/all-plants/1' className={styles.navItem}>
               <i className={`fas fa-tree ${styles.icon}`} />
               <LinkTitle title='Дендрология - все записи' />
             </Link>
-            <Link to='/flora-all' className={styles.navItem}>
+            <Link to='/all-plants/2' className={styles.navItem}>
               <i className={`fas fa-leaf ${styles.icon}`} />
               <LinkTitle title='Флора - все записи' />
             </Link>
-            <Link to='/floriculture-all' className={styles.navItem}>
+            <Link to='/all-plants/3' className={styles.navItem}>
               <i className={`fas fa-seedling ${styles.icon}`} />
               <LinkTitle title='Цветоводство - все записи' />
             </Link>

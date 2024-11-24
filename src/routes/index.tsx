@@ -7,22 +7,26 @@ import HomePage from '../pages/Home/HomePage';
 import ProtectedRoute from '../modules/Auth/components/misc/ProtectedRoute';
 import NotFound from '../pages/Home/NotFound';
 import { AddPlantPage } from '../modules/Plant';
+import AllPlantsPage from '../modules/Plant/pages/AllPlantsPage/AllPlantsPage';
 
-interface AppRoutesProps {
-  sectorId?: number;
-}
-
-const AddPlantRoute = () => {
+const PlantsRoute: React.FC<{ isAddPage: boolean }> = ({ isAddPage }) => {
   const { sectorId } = useParams<{ sectorId: string }>();
+
   const sectorIdNumber = Number(sectorId);
-  return sectorIdNumber > 3 ? (
-    <Navigate to='/404' replace />
-  ) : (
+  const isValidSectorId = sectorIdNumber > 0 && sectorIdNumber <= 3;
+
+  if (!isValidSectorId) {
+    return <Navigate to='/404' replace />;
+  }
+
+  return isAddPage ? (
     <AddPlantPage sectorId={sectorIdNumber} />
+  ) : (
+    <AllPlantsPage sectorId={sectorIdNumber} />
   );
 };
 
-const AppRoutes: React.FC<AppRoutesProps> = ({}) => {
+const AppRoutes: React.FC = () => {
   return (
     <Routes>
       {/* Маршрут для страницы авторизации */}
@@ -46,18 +50,29 @@ const AppRoutes: React.FC<AppRoutesProps> = ({}) => {
         }
       />
 
+      {/* Маршруты для добавления и просмотра всех растений */}
       <Route
         path='/add-plant/:sectorId'
         element={
           <ProtectedRoute>
-            <AddPlantRoute />
+            <PlantsRoute isAddPage={true} />
           </ProtectedRoute>
         }
       />
-      <Route path='*' element={<Navigate to='/404' replace />} />
+      <Route
+        path='/all-plants/:sectorId'
+        element={
+          <ProtectedRoute>
+            <PlantsRoute isAddPage={false} />
+          </ProtectedRoute>
+        }
+      />
 
-      {/* Маршрут 404 Страницы */}
+      {/* Маршрут для страницы 404 */}
       <Route path='/404' element={<NotFound />} />
+
+      {/* Перенаправление всех неизвестных маршрутов на страницу 404 */}
+      <Route path='*' element={<Navigate to='/404' replace />} />
     </Routes>
   );
 };

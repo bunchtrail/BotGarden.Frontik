@@ -1,13 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import styles from './AddPlantPage.module.css';
-import { FormContext } from '../../../context/FormContext';
-import CollapsibleSection from '../../../components/CollapsibleSection';
-import IdentificationSection from '../components/IdentificationSection';
-import ClassificationSection from '../components/ClassificationSection';
-import OriginSection from '../components/OriginSection';
-import UsageSection from '../components/UsageSection';
-import LocationSection from '../components/LocationSection';
-import AdditionalSection from '../components/AdditionalSection';
+import { FormContext } from '../../../../context/FormContext';
+import CollapsibleSection from '../../../../components/CollapsibleSection';
+import IdentificationSection from '../../components/IdentificationSection';
+import ClassificationSection from '../../components/ClassificationSection';
+import OriginSection from '../../components/OriginSection';
+import UsageSection from '../../components/UsageSection';
+import LocationSection from '../../components/LocationSection';
+import AdditionalSection from '../../components/AdditionalSection';
 
 interface AddPlantPageProp {
   sectorId: number;
