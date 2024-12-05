@@ -44,12 +44,12 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
 
   // Состояние для секций
   const [isIdentificationOpen, setIdentificationOpen] = useState(!isMobile);
-  const [isClassificationOpen, setClassificationOpen] = useState(false);
-  const [isOriginOpen, setOriginOpen] = useState(false);
-  const [isUsageOpen, setUsageOpen] = useState(false);
-  const [isLocationOpen, setLocationOpen] = useState(false);
-  const [isAdditionalOpen, setAdditionalOpen] = useState(false);
-  const [isBiometricOpen, setBiometricOpen] = useState(false);
+  const [isClassificationOpen, setClassificationOpen] = useState(true);
+  const [isOriginOpen, setOriginOpen] = useState(true);
+  const [isUsageOpen, setUsageOpen] = useState(true);
+  const [isLocationOpen, setLocationOpen] = useState(true);
+  const [isAdditionalOpen, setAdditionalOpen] = useState(true);
+  const [isBiometricOpen, setBiometricOpen] = useState(true);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

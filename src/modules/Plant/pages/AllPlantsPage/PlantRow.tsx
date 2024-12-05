@@ -98,18 +98,7 @@ const PlantRow: React.FC<PlantRowProps> = ({
           </td>
         );
       })}
-      {isEditing && (
-        <td>
-          {isRowEditing ? (
-            <>
-              <button onClick={handleSaveClick}>Сохранить</button>
-              <button onClick={handleCancelClick}>Отмена</button>
-            </>
-          ) : (
-            <button onClick={handleEditClick}>Редактировать</button>
-          )}
-        </td>
-      )}
+      
     </tr>
   );
 };

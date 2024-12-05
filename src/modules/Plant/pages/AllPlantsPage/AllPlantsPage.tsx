@@ -43,8 +43,7 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
   };
 
   const handleSave = () => {
-    // Здесь вы можете добавить логику сохранения изменений на сервере, если необходимо
-    setIsEditing(false); // Устанавливаем isEditing в false, чтобы выйти из режима редактирования
+    setIsEditing(false);
   };
 
   const handleSearchChange = (query: string) => {

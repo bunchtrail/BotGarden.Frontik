@@ -1,6 +1,6 @@
 // src/components/Navbar/ButtonGroup.tsx
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaBackward, FaPencilAlt, FaSave, FaUndo } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import styles from './Navbar.module.css';
@@ -9,16 +9,27 @@ interface ButtonGroupProps {
   pageType?: 'home' | 'add-plant' | 'all-plants';
   isEditing?: boolean;
   toggleEditing?: () => void;
-  handleSave?: () => void; // Добавили handleSave
+  handleSave?: () => void;
 }
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({
   pageType,
   isEditing,
   toggleEditing,
-  handleSave, // Получаем handleSave
+  handleSave,
 }) => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const appContainer = document.querySelector('.app-container');
+    if (appContainer) {
+      if (isEditing) {
+        appContainer.classList.add('full-width');
+      } else {
+        appContainer.classList.remove('full-width');
+      }
+    }
+  }, [isEditing]);
 
   return (
     <div className={styles.buttonGroup}>

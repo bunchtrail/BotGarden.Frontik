@@ -7,9 +7,9 @@
 /* Общие контейнеры */
 .app-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 3rem;
 }
 
 .app-container.full-width {

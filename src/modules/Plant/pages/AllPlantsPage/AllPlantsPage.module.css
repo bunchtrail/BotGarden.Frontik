@@ -37,7 +37,6 @@
 
 .plantsTable {
   width: 100%;
-  min-width: 1000px;
   border-collapse: separate;
   border-spacing: 0;
   background: var(--color-surface);

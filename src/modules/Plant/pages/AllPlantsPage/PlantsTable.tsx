@@ -68,7 +68,6 @@ const PlantsTable: React.FC<PlantsTableProps> = ({
             {columns.map((col) => (
               <th key={col.field}>{col.label}</th>
             ))}
-            {isEditing && <th>Действия</th>}
           </tr>
         </thead>
         <tbody>
