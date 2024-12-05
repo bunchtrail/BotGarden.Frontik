@@ -1,63 +1,84 @@
 // src/components/AllPlantsPage/PlantsTable.tsx
 
 import React from 'react';
-import { Plant } from '../../../../types/types'; // Updated import path
+import { Plant } from '../../../../types/types';
 import styles from './AllPlantsPage.module.css';
 import PlantRow from './PlantRow.tsx';
 
 interface PlantsTableProps {
   plants: Plant[];
   onPlantUpdate: (updatedPlant: Plant) => void;
-  isEditing: boolean; // Новое свойство
+  isEditing: boolean;
+  sectorId: number; // Ensure sectorId is correctly typed
 }
 
-const PlantsTable: React.FC<PlantsTableProps> = ({ plants, onPlantUpdate, isEditing }) => {
+interface Column {
+  field: keyof Plant;
+  label: string;
+}
+
+const PlantsTable: React.FC<PlantsTableProps> = ({
+  plants,
+  onPlantUpdate,
+  isEditing,
+  sectorId,
+}) => {
+  const columns: Column[] = [
+    { field: 'plantId', label: 'ID Растения' },
+    { field: 'familyId', label: 'Семейство' },
+    ...(sectorId === 2
+      ? [{ field: 'biometricId', label: 'ID Биометрии' }]
+      : []),
+    { field: 'genusId', label: 'Род' },
+    { field: 'inventorNumber', label: 'Инвентарный Номер' },
+    { field: 'species', label: 'Вид' },
+    { field: 'variety', label: 'Разновидность' },
+    { field: 'form', label: 'Форма' },
+    { field: 'determined', label: 'Определено' },
+    { field: 'yearOfObs', label: 'Год Наблюдения' },
+    { field: 'phenophaseDate', label: 'Дата Фенофазы' },
+    { field: 'year', label: 'Год' },
+    { field: 'measurementType', label: 'Тип Измерения' },
+    { field: 'value', label: 'Значение' },
+    { field: 'dateOfPlanting', label: 'Дата Посадки' },
+    { field: 'protectionStatus', label: 'Статус Защиты' },
+    { field: 'filledOut', label: 'Заполнено' },
+    { field: 'herbariumDuplicate', label: 'Дубликат Гербария' },
+    { field: 'synonyms', label: 'Синонимы' },
+    { field: 'plantOrigin', label: 'Происхождение Растения' },
+    { field: 'naturalHabitat', label: 'Естественная Среда Обитания' },
+    { field: 'ecologyBiology', label: 'Экология и Биология' },
+    { field: 'economicUse', label: 'Экономическое Использование' },
+    { field: 'latitude', label: 'Широта' },
+    { field: 'longitude', label: 'Долгота' },
+    { field: 'originator', label: 'Инициатор' },
+    { field: 'date', label: 'Дата' },
+    { field: 'country', label: 'Страна' },
+    { field: 'imagePath', label: 'Путь к Изображению' },
+    { field: 'herbariumPresence', label: 'Наличие Гербария' },
+    { field: 'note', label: 'Заметка' },
+  ];
+
   return (
     <div className={styles.tableWrapper}>
       <table className={styles.plantsTable}>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Species</th>
-            <th>Description</th>
-            <th>Sector ID</th>
-            <th>Название</th>
-            <th>Вид</th>
-            <th>Описание</th>
-            <th>Экономическое Использование</th>
-            <th>Статус Защиты</th>
-            <th>Происхождение Растения</th>
-            <th>Естественная Среда Обитания</th>
-            <th>Экология и Биология</th>
-            <th>Определено</th>
-            <th>Широта</th>
-            <th>Долгота</th>
-            <th>Страна</th>
-            <th>Инвентарный Номер</th>
-            <th>Семейство</th>
-            <th>Род</th>
-            <th>Синонимы</th>
-            <th>Разновидность</th>
-            <th>Форма</th>
-            <th>ID Биометрии</th>
-            <th>Год Наблюдения</th>
-            <th>Дата Фенофазы</th>
-            <th>Год</th>
-            <th>Тип ��змерения</th>
-            <th>Значение</th>
-            <th>Дата Посадки</th>
-            <th>Дата</th>
-            <th>Инициатор</th>
-            <th>Наличие Гербария</th>
-            <th>Дубликат Гербария</th>
-            <th>Заполнено</th>
-            <th>Путь к Изображению</th>
-            <th>Заметка</th>
+            {columns.map((col) => (
+              <th key={col.field}>{col.label}</th>
+            ))}
+            {isEditing && <th>Действия</th>}
           </tr>
         </thead>
         <tbody>
           {plants.map((plant) => (
-            <PlantRow key={plant.id} plant={plant} onUpdate={onPlantUpdate} isEditing={isEditing} /> 
+            <PlantRow
+              key={plant.id ?? plant.plantId}
+              plant={plant}
+              onUpdate={onPlantUpdate}
+              isEditing={isEditing}
+              columns={columns}
+            />
           ))}
         </tbody>
       </table>

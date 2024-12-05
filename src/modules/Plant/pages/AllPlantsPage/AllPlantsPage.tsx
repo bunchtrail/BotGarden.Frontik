@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPlantsBySector } from '../../../../api/plantService'; // Updated import path if needed
+import { getPlantsBySector } from '../../../../api/plantService';
 import Button from '../../../../components/Button/Button';
 import Navbar from '../../../../components/Navbar/Navbar';
-import { Plant } from '../../../../types/types'; // Import Plant type
+import { Plant } from '../../../../types/types';
 import styles from './AllPlantsPage.module.css';
 import PlantsTable from './PlantsTable';
 interface AllPlantPageProp {
@@ -17,8 +17,8 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
   searchTerm,
 }) => {
   const navigate = useNavigate();
-  const [plants, setPlants] = useState<Plant[]>([]); // Updated type
-  const [isEditing, setIsEditing] = useState(false); // Новое состояние
+  const [plants, setPlants] = useState<Plant[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchPlants = async () => {
@@ -50,8 +50,8 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
         sectorId={sectorId}
         pageType='all-plants'
         onSearch={handleSearchChange}
-        isEditing={isEditing} // Передаём состояние
-        toggleEditing={toggleEditing} // Передаём функцию переключения
+        isEditing={isEditing}
+        toggleEditing={toggleEditing}
       />
       {plants.length === 0 ? (
         <>
@@ -59,14 +59,16 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
           <Button
             key={sectorId}
             onClick={() => navigate(`/add-plant/${sectorId}`)}
-            
-          >Добавить растение </Button>
+          >
+            Добавить растение{' '}
+          </Button>
         </>
       ) : (
         <PlantsTable
           plants={plants}
           onPlantUpdate={handlePlantUpdate}
           isEditing={isEditing}
+          sectorId={sectorId} // Убедитесь, что sectorId передается правильно
         />
       )}
     </div>
