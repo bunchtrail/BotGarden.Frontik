@@ -1,5 +1,6 @@
 import React from 'react';
-import { FaPencilAlt, FaSave, FaUndo } from 'react-icons/fa';
+import { FaBackward, FaPencilAlt, FaSave, FaUndo } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import { useFormActions } from '../../hooks/useFormActions';
 import styles from './Navbar.module.css';
 
@@ -14,6 +15,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
   isEditing,
   toggleEditing,
 }) => {
+  const navigate = useNavigate();
   const { handleSave, handleReset } = useFormActions();
 
   return (
@@ -36,6 +38,8 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
       >
         <FaSave />
       </button>
+
+
       <button
         className={styles.button}
         type='button'
@@ -43,6 +47,14 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
         title='Сбросить'
       >
         <FaUndo />
+      </button>
+      <button
+        className={styles.button}
+        type='button'
+        onClick={() => navigate(-1)}
+        title='Назад'
+      >
+        <FaBackward />
       </button>
     </div>
   );

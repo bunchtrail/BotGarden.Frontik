@@ -12,16 +12,16 @@ const AppWrapper: React.FC = () => {
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const debouncedSetSearchTerm = useCallback(
-    debounce((query: string) => {
+  const debouncedSetSearchTerm = useMemo(
+    () => debounce((query: string) => {
       setSearchTerm(query);
     }, 300),
     []
   );
 
-  const handleSearch = (query: string) => {
+  const handleSearch = useCallback((query: string) => {
     debouncedSetSearchTerm(query);
-  };
+  }, [debouncedSetSearchTerm]);
 
   const navbarExcludedRoutes = useMemo(() => ['/login', '/404'], []);
 

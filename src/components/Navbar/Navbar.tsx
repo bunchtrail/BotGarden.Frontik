@@ -11,6 +11,7 @@ import MobileToggle from './MobileToggle';
 import styles from './Navbar.module.css';
 import NavItems from './NavItems';
 import SearchInput from './SearchInput';
+import { useNavigate } from 'react-router-dom'; // Added import for useNavigate
 
 interface NavbarProps {
   sectorId?: number;
