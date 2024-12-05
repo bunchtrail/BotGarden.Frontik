@@ -19,6 +19,7 @@ interface NavbarProps {
   onSearch?: (query: string) => void;
   isEditing?: boolean;
   toggleEditing?: () => void;
+  handleSave?: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -27,6 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({
   onSearch,
   isEditing,
   toggleEditing,
+  handleSave,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -109,6 +111,7 @@ const Navbar: React.FC<NavbarProps> = ({
           pageType={pageType}
           isEditing={isEditing}
           toggleEditing={toggleEditing}
+          handleSave={handleSave}
         />
       )}
 

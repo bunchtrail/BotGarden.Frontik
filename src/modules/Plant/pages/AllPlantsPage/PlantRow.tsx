@@ -23,13 +23,20 @@ const PlantRow: React.FC<PlantRowProps> = ({
   columns,
 }) => {
   const [editedPlant, setEditedPlant] = useState<Plant>(plant);
+  const [isRowEditing, setIsRowEditing] = useState<boolean>(false);
+
+  const handleEditClick = () => {
+    setIsRowEditing(true);
+  };
 
   const handleSaveClick = () => {
     onUpdate(editedPlant);
+    setIsRowEditing(false);
   };
 
   const handleCancelClick = () => {
     setEditedPlant(plant);
+    setIsRowEditing(false);
   };
 
   const handleChange = (key: keyof Plant, value: any) => {
@@ -40,6 +47,7 @@ const PlantRow: React.FC<PlantRowProps> = ({
     plantId: 'number',
     familyId: 'number',
     biometricId: 'number',
+    sectorId: 'number',
     genusId: 'number',
     latitude: 'number',
     longitude: 'number',
@@ -49,7 +57,11 @@ const PlantRow: React.FC<PlantRowProps> = ({
   };
 
   return (
-    <tr className={styles.plantRow}>
+    <tr
+      className={`${styles.plantRow} ${
+        isRowEditing ? styles.editingRow : ''
+      }`}
+    >
       {columns.map((column) => {
         const field = column.field;
         const value = plant[field];
@@ -57,7 +69,7 @@ const PlantRow: React.FC<PlantRowProps> = ({
 
         return (
           <td key={field}>
-            {isEditing ? (
+            {isRowEditing ? (
               inputType === 'checkbox' ? (
                 <input
                   type='checkbox'
@@ -77,11 +89,7 @@ const PlantRow: React.FC<PlantRowProps> = ({
                 />
               )
             ) : inputType === 'checkbox' ? (
-              value ? (
-                'Да'
-              ) : (
-                'Нет'
-              )
+              value ? 'Да' : 'Нет'
             ) : value !== undefined ? (
               String(value)
             ) : (
@@ -92,8 +100,14 @@ const PlantRow: React.FC<PlantRowProps> = ({
       })}
       {isEditing && (
         <td>
-          <button onClick={handleSaveClick}>Сохранить</button>
-          <button onClick={handleCancelClick}>Отмена</button>
+          {isRowEditing ? (
+            <>
+              <button onClick={handleSaveClick}>Сохранить</button>
+              <button onClick={handleCancelClick}>Отмена</button>
+            </>
+          ) : (
+            <button onClick={handleEditClick}>Редактировать</button>
+          )}
         </td>
       )}
     </tr>
@@ -101,5 +115,3 @@ const PlantRow: React.FC<PlantRowProps> = ({
 };
 
 export default PlantRow;
-
-// Нет изменений необходимы, если PlantRow корректно обрабатывает динамические колонки

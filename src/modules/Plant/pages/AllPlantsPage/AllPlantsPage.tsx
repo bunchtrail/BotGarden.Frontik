@@ -8,10 +8,12 @@ import Navbar from '../../../../components/Navbar/Navbar';
 import { Plant } from '../../../../types/types';
 import styles from './AllPlantsPage.module.css';
 import PlantsTable from './PlantsTable';
+
 interface AllPlantPageProp {
   sectorId: number;
   searchTerm: string;
 }
+
 const AllPlantsPage: React.FC<AllPlantPageProp> = ({
   sectorId,
   searchTerm,
@@ -40,18 +42,28 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
     setIsEditing((prev) => !prev);
   };
 
-  function handleSearchChange(query: string): void {
-    throw new Error('Function not implemented.');
-  }
+  const handleSave = () => {
+    // Здесь вы можете добавить логику сохранения изменений на сервере, если необходимо
+    setIsEditing(false); // Устанавливаем isEditing в false, чтобы выйти из режима редактирования
+  };
+
+  const handleSearchChange = (query: string) => {
+    // Реализация функции поиска
+  };
 
   return (
-    <div className={styles.plantsAllContainer}>
+    <div
+      className={`app-container ${styles.plantsAllContainer} ${
+        isEditing ? 'full-width' : ''
+      }`}
+    >
       <Navbar
         sectorId={sectorId}
         pageType='all-plants'
         onSearch={handleSearchChange}
         isEditing={isEditing}
         toggleEditing={toggleEditing}
+        handleSave={handleSave} // Передаем handleSave в Navbar
       />
       {plants.length === 0 ? (
         <>
@@ -60,7 +72,7 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
             key={sectorId}
             onClick={() => navigate(`/add-plant/${sectorId}`)}
           >
-            Добавить растение{' '}
+            Добавить растение
           </Button>
         </>
       ) : (
@@ -68,7 +80,6 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
           plants={plants}
           onPlantUpdate={handlePlantUpdate}
           isEditing={isEditing}
-          sectorId={sectorId} // Убедитесь, что sectorId передается правильно
         />
       )}
     </div>
