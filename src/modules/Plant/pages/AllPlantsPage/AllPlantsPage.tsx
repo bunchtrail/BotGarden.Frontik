@@ -20,7 +20,6 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
   useEffect(() => {
     const fetchPlants = async () => {
       const fetchedPlants = await getPlantsBySector(sectorId);
-      console.log('Fetched Plants:', fetchedPlants); // Log the entire array
       setPlants(fetchedPlants);
     };
     fetchPlants();
@@ -51,12 +50,16 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
         isEditing={isEditing} // Передаём состояние
         toggleEditing={toggleEditing} // Передаём функцию переключения
       />
-      <PlantsTable
-        plants={plants}
-        onPlantUpdate={handlePlantUpdate}
-        isEditing={isEditing}
-      />{' '}
-      {/* Передаём состояние */}
+      {plants.length === 0 ? (
+        <h1>Растения в данном разделе отсутствуют</h1>
+        
+      ) : (
+        <PlantsTable
+          plants={plants}
+          onPlantUpdate={handlePlantUpdate}
+          isEditing={isEditing}
+        />
+      )}
     </div>
   );
 };

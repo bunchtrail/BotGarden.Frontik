@@ -1,6 +1,8 @@
 // src/components/Navbar/Navbar.tsx
 
-import React, { useEffect, useRef, useState, ChangeEvent } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+// Remove unused import if the edit icon is no longer used here
+// import { FaPencilAlt } from 'react-icons/fa';
 import useIsMobile from '../../hooks/useInMobile';
 import useNavbarVisibility from '../../hooks/useNavbarVisibility';
 import ButtonGroup from './ButtonGroup';
@@ -12,13 +14,19 @@ import SearchInput from './SearchInput';
 
 interface NavbarProps {
   sectorId?: number;
-  pageType?: 'add-plant' | 'all-plants';
+  pageType?: 'home' | 'add-plant' | 'all-plants';
   onSearch?: (query: string) => void;
-  isEditing: boolean; // Новое свойство
-  toggleEditing: () => void; // Функция переключения
+  isEditing?: boolean;
+  toggleEditing?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ sectorId, pageType, onSearch, isEditing, toggleEditing }) => {
+const Navbar: React.FC<NavbarProps> = ({
+  sectorId,
+  pageType,
+  onSearch,
+  isEditing,
+  toggleEditing,
+}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -63,7 +71,8 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId, pageType, onSearch, isEditing
 
   const navbarClass = `${styles.navbarContainer} ${
     !isVisible ? styles.hidden : ''
-  }`;
+  } 
+  `;
 
   return (
     <div className={navbarClass} onKeyDown={handleKeyDown}>
@@ -93,17 +102,14 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId, pageType, onSearch, isEditing
         />
       )}
 
-      {/* Переключатель режима редактирования */}
-      <div className={styles.editToggle}>
-        <label className={styles.switch}>
-          <input type="checkbox" checked={isEditing} onChange={toggleEditing} />
-          <span className={styles.slider}></span>
-        </label>
-        <span>Режим редактирования</span>
-      </div>
-
-      {/* Кнопки действия для десктопа */}
-      {sectorId && !isMobile && <ButtonGroup />}
+      {/* Pass props to ButtonGroup */}
+      {sectorId && !isMobile && (
+        <ButtonGroup
+          pageType={pageType}
+          isEditing={isEditing}
+          toggleEditing={toggleEditing}
+        />
+      )}
 
       {/* Кнопки действия для мобильных устройств */}
       {sectorId && isMobile && <MobileActions isOpen={isMobileMenuOpen} />}

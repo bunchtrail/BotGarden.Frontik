@@ -12,7 +12,6 @@ const AppWrapper: React.FC = () => {
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Реализуем debounce с помощью lodash.debounce
   const debouncedSetSearchTerm = useCallback(
     debounce((query: string) => {
       setSearchTerm(query);
@@ -31,21 +30,35 @@ const AppWrapper: React.FC = () => {
     return navbarExcludedRoutes.includes(location.pathname);
   }, [location.pathname, navbarExcludedRoutes]);
 
-  // Извлечение ID сектора и pageType из URL, если он присутствует
-  const addPlantMatch = location.pathname.match(/^\/add-plant\/(\d+)$/);
-  const allPlantsMatch = location.pathname.match(/^\/all-plants\/(\d+)$/);
+  // Извлекаем тип страницы и ID сектора из пути
+  const path = location.pathname;
+  let pageType: 'home' | 'add-plant' | 'all-plants' | undefined;
+  let sectorId: number | undefined;
 
-  const sectorId = addPlantMatch
-    ? parseInt(addPlantMatch[1], 10)
-    : allPlantsMatch
-    ? parseInt(allPlantsMatch[1], 10)
-    : undefined;
+  if (path === '/') {
+    pageType = 'home';
+  } else if (path.startsWith('/add-plant/')) {
+    const match = path.match(/^\/add-plant\/(\d+)$/);
+    if (match) {
+      sectorId = parseInt(match[1], 10);
+      pageType = 'add-plant';
+    }
+  } else if (path.startsWith('/all-plants/')) {
+    const match = path.match(/^\/all-plants\/(\d+)$/);
+    if (match) {
+      sectorId = parseInt(match[1], 10);
+      pageType = 'all-plants';
+    }
+  }
 
-  const pageType = addPlantMatch
-    ? 'add-plant'
-    : allPlantsMatch
-    ? 'all-plants'
-    : undefined;
+  // Check if the user is on '/all-plants/1'
+  const isAllPlantsOne = path === '/all-plants/1';
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  const toggleEditing = () => {
+    setIsEditing((prev) => !prev);
+  };
 
   return (
     <>
@@ -54,6 +67,8 @@ const AppWrapper: React.FC = () => {
           sectorId={sectorId}
           pageType={pageType}
           onSearch={handleSearch}
+          isEditing={isEditing}
+          toggleEditing={toggleEditing}
         />
       )}
       <div className='app-container'>

@@ -1,120 +1,164 @@
 /* src/components/Navbar/Navbar.module.css */
 
+/* Переменные */
+:root {
+  --navbar-bg-color: var(--color-navbar, #343a40);
+  --navbar-text-color: rgba(255, 255, 255, 0.8);
+  --navbar-text-hover-color: #ffffff;
+  --navbar-item-bg-hover: rgba(255, 255, 255, 0.1);
+  --navbar-item-bg-hover-strong: rgba(255, 255, 255, 0.2);
+  --navbar-border-color: rgba(255, 255, 255, 0.1);
+  --navbar-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --navbar-blur: var(--blur-background, blur(10px));
+  --navbar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --border-radius: 8px;
+}
+
+/* Контейнер навбара */
 .navbarContainer {
   display: flex;
-  justify-content: space-between; /* Распределение элементов по сторонам */
+  justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: var(--color-navbar);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  position: fixed; /* Фиксация навбара в верхней части */
+  background-color: var(--navbar-bg-color);
+  box-shadow: var(--navbar-shadow);
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
   transform: translateY(0);
-  transition: transform 0.3s ease, max-height 0.3s ease;
-  backdrop-filter: var(--blur-background);
+  transition: transform var(--navbar-transition), max-height var(--navbar-transition), background-color var(--navbar-transition);
+  backdrop-filter: var(--navbar-blur);
 }
 
-.hidden {
+.navbarContainer.hidden {
   transform: translateY(-100%);
 }
 
+/* Навигационные элементы */
 .navItems {
   display: flex;
   align-items: center;
-  flex-grow: 1; /* Занимает всё доступное пространство слева */
+  flex-grow: 1;
 }
 
 .navItem {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--navbar-text-color);
   text-decoration: none;
   padding: 8px 12px;
   font-size: 16px;
   display: flex;
   align-items: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 4px;
+  transition: all var(--navbar-transition);
+  border-radius: var(--border-radius);
   margin-right: 10px;
   font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.navItem::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  background-color: var(--color-primary);
+  bottom: 0;
+  left: 50%;
+  transition: width var(--navbar-transition), left var(--navbar-transition);
+}
+
+.navItem:hover::after {
+  width: 100%;
+  left: 0;
 }
 
 .navItem:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background-color: var(--navbar-item-bg-hover);
+  color: var(--navbar-text-hover-color);
   transform: translateY(-1px);
 }
 
+/* Иконки */
 .icon {
   margin-right: 8px;
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--navbar-text-color);
 }
 
+/* Группа кнопок */
 .buttonGroup {
   display: flex;
   gap: 10px;
 }
 
-.saveButton,
-.resetButton {
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Common button styles */
+.button {
+  background-color: var(--navbar-item-bg-hover);
+  backdrop-filter: var(--navbar-blur);
+  border: 1px solid var(--navbar-border-color);
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--navbar-transition);
   display: flex;
   align-items: center;
+  justify-content: center; /* Центрирование содержимого */
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
   font-size: 15px;
-  letter-spacing: 0.3px;
 }
 
-.saveButton:hover,
-.resetButton:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+.button i, .button svg {
+  margin-right: 5px;
+  font-size: 18px;
+  color: var(--navbar-text-hover-color);
+}
+
+/* Hover and active states */
+.button:hover {
+  background-color: var(--navbar-item-bg-hover-strong);
   transform: translateY(-1px);
 }
 
-.saveButton:active,
-.resetButton:active {
+.button:active {
   transform: translateY(1px);
 }
 
-.saveIcon,
-.resetIcon {
-  margin-right: 5px;
-  font-size: 18px;
-  color: #ffffff; /* Белые иконки на кнопках */
+/* Active state for buttons */
+.active {
+  border-color: var(--color-primary);
 }
 
+.active::before {
+  opacity: 0.15;
+}
+
+/* Выпадающее меню */
 .dropdownContainer {
   position: relative;
 }
 
 .dropdownButton {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--navbar-item-bg-hover);
+  backdrop-filter: var(--navbar-blur);
+  border: 1px solid var(--navbar-border-color);
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--navbar-transition);
   display: flex;
   align-items: center;
-  color: #ffffff;
+  color: var(--navbar-text-hover-color);
   font-weight: 500;
   font-size: 16px;
-  width: 200px; /* Фиксированная ширина */
+  width: 200px;
   justify-content: space-between;
 }
 
 .dropdownButton:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--navbar-item-bg-hover-strong);
   transform: translateY(-1px);
 }
 
@@ -126,17 +170,17 @@
 .dropdownContent {
   display: none;
   position: absolute;
-  background-color: rgba(45, 45, 48, 0.98); /* Более непрозрачный фон */
-  backdrop-filter: var(--blur-background);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); /* Усиленная тень */
+  background-color: rgba(45, 45, 48, 0.98);
+  backdrop-filter: var(--navbar-blur);
+  border: 1px solid var(--navbar-border-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   min-width: 200px;
   top: 100%;
   left: 0;
   z-index: 1000;
   transform-origin: top;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--navbar-transition);
   margin-top: 5px;
 }
 
@@ -145,7 +189,7 @@
 }
 
 .dropdownItem {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--navbar-text-color);
   padding: 10px 15px;
   text-decoration: none;
   display: flex;
@@ -154,19 +198,20 @@
 }
 
 .dropdownItem:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background-color: var(--navbar-item-bg-hover);
+  color: var(--navbar-text-hover-color);
 }
 
 .dropdownIcon {
-  margin-left: 0; /* Удалить левый отступ */
-  transition: transform 0.3s ease;
+  margin-left: 0;
+  transition: transform var(--navbar-transition);
 }
 
 .rotate {
   transform: rotate(180deg);
 }
 
+/* Анимации */
 @keyframes fadeIn {
   from {
     transform: translateY(-8px) scale(0.98);
@@ -182,11 +227,12 @@
   animation: fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Мобильное меню */
 .mobileToggle {
   display: none;
   background: none;
   border: none;
-  color: white;
+  color: var(--navbar-text-hover-color);
   font-size: 24px;
   cursor: pointer;
   position: absolute;
@@ -204,7 +250,7 @@
   opacity: 0;
   height: 0;
   overflow: hidden;
-  transition: opacity 0.3s ease, height 0.3s ease;
+  transition: opacity var(--navbar-transition), height var(--navbar-transition);
 }
 
 .mobileActions.showActions {
@@ -213,137 +259,40 @@
 }
 
 .mobileSaveButton,
-.mobileResetButton {
+.mobileResetButton,
+.mobileEditButton {
   width: 100%;
   justify-content: center;
   padding: 10px 0;
-  border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 15px;
+  border-radius: var(--border-radius);
+  background-color: var(--navbar-item-bg-hover);
 }
 
 .mobileSaveButton:hover,
-.mobileResetButton:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+.mobileResetButton:hover,
+.mobileEditButton:hover {
+  background-color: var(--navbar-item-bg-hover-strong);
 }
 
 .mobileSaveButton:active,
-.mobileResetButton:active {
+.mobileResetButton:active,
+.mobileEditButton:active {
   transform: translateY(1px);
 }
 
-.showActions {
-  display: flex;
-}
-
-@media (max-width: 813px) {
-  .navbarContainer {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px;
-    padding-top: 60px; /* Учитываем высоту мобильного меню */
-    height: auto;
-    max-height: 60px;
-    overflow: hidden;
-    transition: max-height 0.3s ease, background-color 0.3s ease;
-  }
-
-  .navbarContainer.hidden {
-    transform: translateY(-100%);
-  }
-
-  .navbarContainer:not(.hidden) {
-    max-height: 100vh; /* Разрешить полное раскрытие меню */
-    background-color: rgba(52, 58, 64, 0.98);
-    overflow-y: auto;
-  }
-
-  .navItems {
-    flex-direction: column;
-    width: 100%;
-    display: none;
-    padding: 10px 0;
-  }
-
-  .navItems.show {
-    display: flex;
-  }
-
-  .navItem {
-    width: 100%;
-    margin: 5px 0;
-    border-radius: 8px;
-  }
-
-  .buttonGroup {
-    display: none !important; /* Принудительно скрываем десктопные кнопки */
-  }
-
-  .dropdownContainer {
-    width: 100%;
-    margin: 5px 0;
-  }
-
-  .dropdownButton {
-    width: 100%;
-    padding: 12px 16px;
-  }
-
-  .dropdownContent {
-    position: relative;
-    width: 100%;
-    margin-top: 5px;
-    box-shadow: none;
-    border: none;
-    background-color: rgba(45, 45, 48, 0.98); /* Тот же цвет для мобильной версии */
-  }
-
-  .dropdownItem {
-    padding: 12px 16px;
-  }
-
-  .mobileToggle {
-    display: block;
-  }
-
-  .mobileActions {
-    display: flex;
-  }
-
-  .mobileMenuContainer {
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
-    visibility: hidden;
-  }
-
-  .mobileMenuContainer.show {
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-  }
-}
-
+/* Поисковая строка */
 .navbarSearch {
   padding: 12px 20px;
   border-radius: 12px;
   border: none;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background-color: var(--navbar-item-bg-hover);
+  color: var(--navbar-text-hover-color);
   font-size: 15px;
   width: 300px;
   margin: 0 30px;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: var(--navbar-blur);
+  transition: all var(--navbar-transition);
+  box-shadow: inset 0 0 0 1px var(--navbar-border-color);
 }
 
 .navbarSearch:focus {
@@ -358,16 +307,11 @@
   font-weight: 400;
 }
 
-@media (min-width: 769px) {
-  .mobileActions {
-    display: none !important; /* Принудительно скрываем мобильные кнопки */
-  }
-}
-
+/* Переключатель режима редактирования */
 .editToggle {
   display: flex;
   align-items: center;
-  margin-left: auto;
+  margin-left: 20px;
 }
 
 .switch {
@@ -391,7 +335,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: rgba(0, 0, 0, 0.4);
   transition: 0.4s;
   border-radius: 24px;
 }
@@ -403,15 +347,137 @@
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: var(--navbar-text-hover-color);
   transition: 0.4s;
   border-radius: 50%;
 }
 
 input:checked + .slider {
-  background-color: #4caf50;
+  background-color: var(--color-primary);
 }
 
 input:checked + .slider:before {
   transform: translateX(26px);
+}
+
+/* Анимация мобильного меню */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobileMenuContainer {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all var(--navbar-transition);
+  visibility: hidden;
+}
+
+.mobileMenuContainer.show {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  animation: slideDown var(--navbar-transition) forwards;
+}
+
+@media (max-width: 813px) {
+  .navbarContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+    padding-top: 60px;
+    height: auto;
+    max-height: 60px;
+    overflow: hidden;
+    transition: max-height var(--navbar-transition), background-color var(--navbar-transition);
+  }
+
+  .navbarContainer.hidden {
+    transform: translateY(-100%);
+  }
+
+  .navbarContainer:not(.hidden) {
+    max-height: 100vh;
+    background-color: rgba(52, 58, 64, 0.98);
+    overflow-y: auto;
+  }
+
+  .navItems {
+    flex-direction: column;
+    width: 100%;
+    display: none;
+    padding: 10px 0;
+    transition: max-height var(--navbar-transition), opacity var(--navbar-transition);
+  }
+
+  .navItems.show {
+    display: flex;
+    max-height: 500px;
+    opacity: 1;
+  }
+
+  .navItems:not(.show) {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  .navItem {
+    width: 100%;
+    margin: 5px 0;
+    border-radius: var(--border-radius);
+  }
+
+  .buttonGroup {
+    display: none !important;
+  }
+
+  .dropdownContainer {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  .dropdownButton {
+    width: 100%;
+    padding: 12px 16px;
+  }
+
+  .dropdownContent {
+    position: relative;
+    width: 100%;
+    margin-top: 5px;
+    box-shadow: none;
+    border: none;
+    background-color: rgba(45, 45, 48, 0.98);
+  }
+
+  .dropdownItem {
+    padding: 12px 16px;
+  }
+
+  .mobileToggle {
+    display: block;
+  }
+
+  .mobileActions {
+    display: flex;
+  }
+
+  .mobileMenuContainer.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    animation: slideDown var(--navbar-transition) forwards;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobileActions {
+    display: none !important;
+  }
 }

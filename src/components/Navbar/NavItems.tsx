@@ -8,7 +8,7 @@ import Dropdown from './Dropdown';
 
 interface NavItemsProps {
   sectorId?: number;
-  pageType?: 'add-plant' | 'all-plants';
+  pageType?: 'home' | 'add-plant' | 'all-plants'; // Добавляем 'home' сюда
   isMobileMenuOpen: boolean;
   isDropdownOpen: boolean;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -36,7 +36,7 @@ const NavItems: React.FC<NavItemsProps> = ({
 
           <Dropdown
             sectorId={sectorId}
-            pageType={pageType}
+            pageType={pageType !== 'home' ? pageType : undefined}
             isOpen={isDropdownOpen}
             toggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
             dropdownRef={dropdownRef}
