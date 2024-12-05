@@ -7,23 +7,17 @@ import styles from './AllPlantsPage.module.css';
 interface PlantRowProps {
   plant: Plant;
   onUpdate: (updatedPlant: Plant) => void;
+  isEditing: boolean; // Новое свойство
 }
 
-const PlantRow: React.FC<PlantRowProps> = ({ plant, onUpdate }) => {
-  const [isEditing, setIsEditing] = useState(false);
+const PlantRow: React.FC<PlantRowProps> = ({ plant, onUpdate, isEditing }) => {
   const [editedPlant, setEditedPlant] = useState<Plant>(plant);
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
   const handleSaveClick = () => {
-    setIsEditing(false);
     onUpdate(editedPlant);
   };
 
   const handleCancelClick = () => {
-    setIsEditing(false);
     setEditedPlant(plant);
   };
 
@@ -115,16 +109,18 @@ const PlantRow: React.FC<PlantRowProps> = ({ plant, onUpdate }) => {
           )}
         </td>
       ))}
-      <td>
-        {isEditing ? (
-          <>
-            <button onClick={handleSaveClick}>Сохранить</button>
-            <button onClick={handleCancelClick}>Отмена</button>
-          </>
-        ) : (
-          <button onClick={handleEditClick}>Редактировать</button>
-        )}
-      </td>
+      {isEditing && (
+        <td>
+          {isEditing ? (
+            <>
+              <button onClick={handleSaveClick}>Сохранить</button>
+              <button onClick={handleCancelClick}>Отмена</button>
+            </>
+          ) : (
+            <button onClick={handleSaveClick}>Редактировать</button>
+          )}
+        </td>
+      )}
     </tr>
   );
 };

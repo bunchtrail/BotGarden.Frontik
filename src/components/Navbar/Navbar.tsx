@@ -1,6 +1,6 @@
 // src/components/Navbar/Navbar.tsx
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, ChangeEvent } from 'react';
 import useIsMobile from '../../hooks/useInMobile';
 import useNavbarVisibility from '../../hooks/useNavbarVisibility';
 import ButtonGroup from './ButtonGroup';
@@ -14,9 +14,11 @@ interface NavbarProps {
   sectorId?: number;
   pageType?: 'add-plant' | 'all-plants';
   onSearch?: (query: string) => void;
+  isEditing: boolean; // Новое свойство
+  toggleEditing: () => void; // Функция переключения
 }
 
-const Navbar: React.FC<NavbarProps> = ({ sectorId, pageType, onSearch }) => {
+const Navbar: React.FC<NavbarProps> = ({ sectorId, pageType, onSearch, isEditing, toggleEditing }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -90,6 +92,15 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId, pageType, onSearch }) => {
           onSearchChange={handleSearchChange}
         />
       )}
+
+      {/* Переключатель режима редактирования */}
+      <div className={styles.editToggle}>
+        <label className={styles.switch}>
+          <input type="checkbox" checked={isEditing} onChange={toggleEditing} />
+          <span className={styles.slider}></span>
+        </label>
+        <span>Режим редактирования</span>
+      </div>
 
       {/* Кнопки действия для десктопа */}
       {sectorId && !isMobile && <ButtonGroup />}

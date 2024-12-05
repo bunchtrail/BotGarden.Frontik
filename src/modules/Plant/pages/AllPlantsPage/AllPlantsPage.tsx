@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getPlantsBySector } from '../../../../api/plantService'; // Updated import path if needed
+import Navbar from '../../../../components/Navbar/Navbar';
 import { Plant } from '../../../../types/types'; // Import Plant type
 import styles from './AllPlantsPage.module.css';
 import PlantsTable from './PlantsTable';
@@ -14,6 +15,7 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
   searchTerm,
 }) => {
   const [plants, setPlants] = useState<Plant[]>([]); // Updated type
+  const [isEditing, setIsEditing] = useState(false); // Новое состояние
 
   useEffect(() => {
     const fetchPlants = async () => {
@@ -32,9 +34,29 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
     );
   };
 
+  const toggleEditing = () => {
+    setIsEditing((prev) => !prev);
+  };
+
+  function handleSearchChange(query: string): void {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <div className={styles.plantsAllContainer}>
-      <PlantsTable plants={plants} onPlantUpdate={handlePlantUpdate} />
+      <Navbar
+        sectorId={sectorId}
+        pageType='all-plants'
+        onSearch={handleSearchChange}
+        isEditing={isEditing} // Передаём состояние
+        toggleEditing={toggleEditing} // Передаём функцию переключения
+      />
+      <PlantsTable
+        plants={plants}
+        onPlantUpdate={handlePlantUpdate}
+        isEditing={isEditing}
+      />{' '}
+      {/* Передаём состояние */}
     </div>
   );
 };

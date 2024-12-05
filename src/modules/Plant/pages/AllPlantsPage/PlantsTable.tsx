@@ -8,9 +8,10 @@ import PlantRow from './PlantRow.tsx';
 interface PlantsTableProps {
   plants: Plant[];
   onPlantUpdate: (updatedPlant: Plant) => void;
+  isEditing: boolean; // Новое свойство
 }
 
-const PlantsTable: React.FC<PlantsTableProps> = ({ plants, onPlantUpdate }) => {
+const PlantsTable: React.FC<PlantsTableProps> = ({ plants, onPlantUpdate, isEditing }) => {
   return (
     <div className={styles.tableWrapper}>
       <table className={styles.plantsTable}>
@@ -42,7 +43,7 @@ const PlantsTable: React.FC<PlantsTableProps> = ({ plants, onPlantUpdate }) => {
             <th>Год Наблюдения</th>
             <th>Дата Фенофазы</th>
             <th>Год</th>
-            <th>Тип Измерения</th>
+            <th>Тип ��змерения</th>
             <th>Значение</th>
             <th>Дата Посадки</th>
             <th>Дата</th>
@@ -56,7 +57,7 @@ const PlantsTable: React.FC<PlantsTableProps> = ({ plants, onPlantUpdate }) => {
         </thead>
         <tbody>
           {plants.map((plant) => (
-            <PlantRow key={plant.id} plant={plant} onUpdate={onPlantUpdate} />
+            <PlantRow key={plant.id} plant={plant} onUpdate={onPlantUpdate} isEditing={isEditing} /> 
           ))}
         </tbody>
       </table>
