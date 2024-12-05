@@ -1,19 +1,24 @@
 // src/routes/index.tsx
 
 import React from 'react';
-import { Route, Routes, Navigate, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { LoginPage } from '../modules/Auth';
-import HomePage from '../pages/Home/HomePage';
 import ProtectedRoute from '../modules/Auth/components/misc/ProtectedRoute';
-import NotFound from '../pages/Home/NotFound';
 import { AddPlantPage } from '../modules/Plant';
 import AllPlantsPage from '../modules/Plant/pages/AllPlantsPage/AllPlantsPage';
+import HomePage from '../pages/Home/HomePage';
+import NotFound from '../pages/Home/NotFound';
 
-const PlantsRoute: React.FC<{ isAddPage: boolean }> = ({ isAddPage }) => {
+interface PlantsRouteProps {
+  isAddPage: boolean;
+  searchTerm: string;
+}
+
+const PlantsRoute: React.FC<PlantsRouteProps> = ({ isAddPage, searchTerm }) => {
   const { sectorId } = useParams<{ sectorId: string }>();
 
   const sectorIdNumber = Number(sectorId);
-  const isValidSectorId = sectorIdNumber > 0 && sectorIdNumber <= 3;
+  const isValidSectorId = sectorIdNumber > 0 && sectorIdNumber <= 3; // Предполагается, что у вас 3 сектора
 
   if (!isValidSectorId) {
     return <Navigate to='/404' replace />;
@@ -22,11 +27,15 @@ const PlantsRoute: React.FC<{ isAddPage: boolean }> = ({ isAddPage }) => {
   return isAddPage ? (
     <AddPlantPage sectorId={sectorIdNumber} />
   ) : (
-    <AllPlantsPage sectorId={sectorIdNumber} />
+    <AllPlantsPage sectorId={sectorIdNumber} searchTerm={searchTerm} />
   );
 };
 
-const AppRoutes: React.FC = () => {
+interface AppRoutesProps {
+  searchTerm: string;
+}
+
+const AppRoutes: React.FC<AppRoutesProps> = ({ searchTerm }) => {
   return (
     <Routes>
       {/* Маршрут для страницы авторизации */}
@@ -41,21 +50,13 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      <Route
-        path='/map'
-        element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        }
-      />
 
       {/* Маршруты для добавления и просмотра всех растений */}
       <Route
         path='/add-plant/:sectorId'
         element={
           <ProtectedRoute>
-            <PlantsRoute isAddPage={true} />
+            <PlantsRoute isAddPage={true} searchTerm={searchTerm} />
           </ProtectedRoute>
         }
       />
@@ -63,7 +64,7 @@ const AppRoutes: React.FC = () => {
         path='/all-plants/:sectorId'
         element={
           <ProtectedRoute>
-            <PlantsRoute isAddPage={false} />
+            <PlantsRoute isAddPage={false} searchTerm={searchTerm} />
           </ProtectedRoute>
         }
       />

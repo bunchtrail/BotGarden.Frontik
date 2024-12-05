@@ -13,7 +13,7 @@ const Input: React.FC<InputProps> = ({ label, value, onChange, placeholder, ...p
         {label}
       </label>
       <input
-        className={`${styles.inputField} ${styles.uniformLength}`}
+        className={`${styles.inputField}`}
         value={value}
         onChange={onChange}
         placeholder={placeholder}

@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from './Button';
-import styles from '../../assets/styles/components/Button/Button.module.css';
 import { sectors } from '../../utils/data';
+import Button from './Button';
+import styles from './Button.module.css';
 const ButtonGroup_Main: React.FC = () => {
   const navigate = useNavigate();
 

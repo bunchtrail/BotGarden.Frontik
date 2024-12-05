@@ -1,6 +1,6 @@
 // src/components/Navbar/MobileToggle.tsx
 import React from 'react';
-import styles from '../../assets/styles/components/Navbar/Navbar.module.css';
+import styles from './Navbar.module.css';
 
 
 interface MobileToggleProps {

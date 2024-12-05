@@ -1,7 +1,7 @@
 /* src/assets/styles/login.css */
 
 /* Импорт переменных CSS */
-@import '../../../../assets/styles/base/_variables.css';
+@import '../../../assets/styles/base/_variables.css';
 
 /* Общие настройки */
 * {

@@ -1,22 +1,23 @@
-// src/contexts/AuthContext.tsx
+// src/context/AuthContext.tsx
+import { jwtDecode } from 'jwt-decode';
 import React, {
   createContext,
+  ReactNode,
   useContext,
-  useState,
   useEffect,
   useRef,
+  useState,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { login as loginService } from '../api/authService';
 import {
+  clearTokens,
   getAccessToken,
   getRefreshToken,
   setTokens,
-  clearTokens,
-} from '../services/tokenService';
-import { login as loginService } from '../services/authService';
-import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
-import refreshApi from '../services/refreshApi';
-import { AuthenticationError } from '../../../utils/errors';
+} from '../services/tokenService'
+import { LoginResponse } from '../types/authTypes';
+import { AuthenticationError } from '../utils/errors';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -31,7 +32,7 @@ interface DecodedToken {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -43,8 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const decodedToken: DecodedToken = jwtDecode(token);
       const currentTime = Date.now() / 1000;
-      const expired = decodedToken.exp < currentTime;
-      return expired;
+      return decodedToken.exp < currentTime;
     } catch (error) {
       return true;
     }
@@ -53,17 +53,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Функция для логина
   const login = async (email: string, password: string) => {
     try {
-      const data = await loginService(email, password);
+      const data: LoginResponse = await loginService(email, password);
       setTokens(data.accessToken, data.refreshToken);
       setIsAuthenticated(true);
       navigate('/home');
     } catch (error) {
-      // Prevent error from being logged to console
+      // Предотвращение вывода ошибки в консоль
       const authError = new AuthenticationError(
         'Неверные учетные данные',
         'unauthorized'
       );
-      authError.stack = ''; // Clear stack trace
+      authError.stack = ''; // Очистка стека вызовов
       throw authError;
     }
   };
@@ -91,12 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setLoading(false);
       } else if (refreshTokenValue) {
         try {
-          const { data } = await refreshApi.post('/api/Account/refresh', {
-            token: token,
-            refreshToken: refreshTokenValue,
-          });
-          setTokens(data.accessToken, data.refreshToken);
-          setIsAuthenticated(true);
+          setIsAuthenticated(false);
         } catch (error) {
           clearTokens();
           setIsAuthenticated(false);
@@ -106,7 +101,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       } else {
         clearTokens();
         setIsAuthenticated(false);
-
         setLoading(false);
       }
     };

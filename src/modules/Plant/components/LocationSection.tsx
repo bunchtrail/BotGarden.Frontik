@@ -1,8 +1,8 @@
-
 import React from 'react';
-import Input from '../../../components/Form/TextInput';
 import FormRow from '../../../components/Form/FormRow';
-import { FormData } from '../../../context/FormContext';
+import Input from '../../../components/Form/TextInput';
+import { FormData } from '../../../types/types';
+
 
 interface LocationSectionProps {
   formData: FormData;
@@ -15,21 +15,23 @@ const LocationSection: React.FC<LocationSectionProps> = ({
 }) => (
   <FormRow>
     <Input
-      label='Latitude'
+      label='Широта'
       id='latitude'
       value={formData.latitude}
       onChange={handleChange}
       placeholder='Введите широту'
+      required
     />
     <Input
-      label='Longitude'
+      label='Долгота'
       id='longitude'
       value={formData.longitude}
       onChange={handleChange}
       placeholder='Введите долготу'
+      required
     />
     <Input
-      label='Country'
+      label='Страна'
       id='country'
       value={formData.country}
       onChange={handleChange}

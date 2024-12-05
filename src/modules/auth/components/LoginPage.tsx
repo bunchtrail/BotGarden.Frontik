@@ -1,11 +1,11 @@
-// src/pages/Login/LoginPage.tsx
+// src/modules/Auth/pages/LoginPage.tsx
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LoginContainer from './LoginContainer';
-import LoginForm from './LoginForm';
-import { useAuth } from '../contexts/AuthContext';
-import './styles/login.css';
+import { useAuth } from '../../../context/AuthContext';
 import { AuthenticationError } from '../../../utils/errors';
+import LoginContainer from '../components/LoginContainer';
+import LoginForm from '../components/LoginForm';
+import './login.css'; // Обновленный путь
 
 function Login() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ function Login() {
   const handleLoginSuccess = async (email: string, password: string) => {
     try {
       await login(email, password);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof AuthenticationError) {
         throw error; // Передаем структурированную ошибку в LoginForm
       }

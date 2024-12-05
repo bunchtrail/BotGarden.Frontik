@@ -1,25 +1,27 @@
 // src/components/Navbar/NavItems.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from '../../assets/styles/components/Navbar/Navbar.module.css';
+import styles from './Navbar.module.css';
 
 import LinkTitle from '../Misc/LinkTitle';
 import Dropdown from './Dropdown';
 
 interface NavItemsProps {
   sectorId?: number;
+  pageType?: 'add-plant' | 'all-plants';
   isMobileMenuOpen: boolean;
-  dropdownRef: React.RefObject<HTMLDivElement>;
   isDropdownOpen: boolean;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  dropdownRef: React.RefObject<HTMLDivElement>;
 }
 
 const NavItems: React.FC<NavItemsProps> = ({
   sectorId,
+  pageType,
   isMobileMenuOpen,
-  dropdownRef,
   isDropdownOpen,
   setIsDropdownOpen,
+  dropdownRef,
 }) => {
   return (
     <div
@@ -34,8 +36,10 @@ const NavItems: React.FC<NavItemsProps> = ({
 
           <Dropdown
             sectorId={sectorId}
+            pageType={pageType}
             isOpen={isDropdownOpen}
             toggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
+            dropdownRef={dropdownRef}
           />
         </>
       ) : (

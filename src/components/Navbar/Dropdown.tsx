@@ -1,23 +1,31 @@
 // src/components/Navbar/Dropdown.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from '../../assets/styles/components/Navbar/Navbar.module.css';
+import styles from './Navbar.module.css';
 
 import { getSectorById } from '../../utils/data';
 
 interface DropdownProps {
   sectorId: number;
+  pageType?: 'add-plant' | 'all-plants';
   isOpen: boolean;
   toggleDropdown: () => void;
+  dropdownRef: React.RefObject<HTMLDivElement>;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
   sectorId,
+  pageType,
   isOpen,
   toggleDropdown,
+  dropdownRef,
 }) => {
+  const sectorName = getSectorById(sectorId)?.name || 'Сектор';
+
+  const basePath = pageType === 'add-plant' ? '/add-plant' : '/all-plants';
+
   return (
-    <div className={styles.dropdownContainer}>
+    <div className={styles.dropdownContainer} ref={dropdownRef}>
       <button
         className={styles.dropdownButton}
         onClick={toggleDropdown}
@@ -26,7 +34,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       >
         <div className={styles.dropdownLabel}>
           <i className={`fas fa-plus ${styles.icon}`} />
-          {getSectorById(sectorId)?.name}
+          {sectorName}
         </div>
         <i
           className={`fas fa-chevron-down ${styles.dropdownIcon} ${
@@ -39,15 +47,15 @@ const Dropdown: React.FC<DropdownProps> = ({
           isOpen ? styles.animate : ''
         }`}
       >
-        <Link to={`/add-plant/1`} className={styles.dropdownItem}>
+        <Link to={`${basePath}/1`} className={styles.dropdownItem}>
           <i className={`fas fa-tree ${styles.icon}`} />
           Дендрология
         </Link>
-        <Link to={`/add-plant/2`} className={styles.dropdownItem}>
+        <Link to={`${basePath}/2`} className={styles.dropdownItem}>
           <i className={`fas fa-leaf ${styles.icon}`} />
           Флора
         </Link>
-        <Link to={`/add-plant/3`} className={styles.dropdownItem}>
+        <Link to={`${basePath}/3`} className={styles.dropdownItem}>
           <i className={`fas fa-seedling ${styles.icon}`} />
           Цветоводство
         </Link>

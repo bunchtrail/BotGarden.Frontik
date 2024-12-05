@@ -1,28 +1,43 @@
 // src/components/Navbar/Navbar.tsx
-import React, { useState, useEffect, useRef } from 'react';
-import styles from '../../assets/styles/components/Navbar/Navbar.module.css';
+
+import React, { useEffect, useRef, useState } from 'react';
 import useIsMobile from '../../hooks/useInMobile';
-import MobileToggle from './MobileToggle';
-import NavItems from './NavItems';
+import useNavbarVisibility from '../../hooks/useNavbarVisibility';
 import ButtonGroup from './ButtonGroup';
 import MobileActions from './MobileActions';
+import MobileToggle from './MobileToggle';
+import styles from './Navbar.module.css';
+import NavItems from './NavItems';
+import SearchInput from './SearchInput';
 
 interface NavbarProps {
   sectorId?: number;
+  pageType?: 'add-plant' | 'all-plants';
+  onSearch?: (query: string) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
+const Navbar: React.FC<NavbarProps> = ({ sectorId, pageType, onSearch }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const lastScrollY = useRef(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const isVisible = useNavbarVisibility();
 
   const handleMobileMenuToggle = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsMobileMenuOpen((prev) => !prev);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (onSearch) {
+      onSearch(query);
+    }
+  };
+
+  // Обработка кликов вне выпадающего меню для его закрытия
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -37,27 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!isMobile) {
-        // Только для десктопа
-        const currentScrollY = window.scrollY;
-        const scrollingUp = currentScrollY < lastScrollY.current;
-
-        if (currentScrollY < 100) {
-          setIsVisible(true);
-        } else {
-          setIsVisible(scrollingUp);
-        }
-
-        lastScrollY.current = currentScrollY;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobile]);
-
+  // Обработка нажатия клавиши Escape для закрытия выпадающего меню
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
       setIsDropdownOpen(false);
@@ -81,11 +76,20 @@ const Navbar: React.FC<NavbarProps> = ({ sectorId }) => {
       {/* Навигационные ссылки */}
       <NavItems
         sectorId={sectorId}
+        pageType={pageType}
         isMobileMenuOpen={isMobileMenuOpen}
-        dropdownRef={dropdownRef}
         isDropdownOpen={isDropdownOpen}
         setIsDropdownOpen={setIsDropdownOpen}
+        dropdownRef={dropdownRef}
       />
+
+      {/* Search Input */}
+      {pageType === 'all-plants' && (
+        <SearchInput
+          searchQuery={searchQuery}
+          onSearchChange={handleSearchChange}
+        />
+      )}
 
       {/* Кнопки действия для десктопа */}
       {sectorId && !isMobile && <ButtonGroup />}

@@ -1,10 +1,9 @@
-// src/components/LoginPage/LoginForm.tsx
+// src/modules/Auth/components/LoginForm.tsx
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../../components/Misc/ErrorMessage';
 import Button from '../../../components/Button/Button';
-import './styles/login.css';
+import './login.css'; 
 
 interface LoginFormProps {
   onSuccess: (email: string, password: string) => void;
@@ -22,10 +21,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     password?: string;
   }>({});
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    // Hide general error when fields change
+    // Скрыть общую ошибку при изменении полей
     if (error) {
       setError(null);
     }

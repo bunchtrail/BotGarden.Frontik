@@ -1,14 +1,28 @@
 // src/App.tsx
 
-import React, { useMemo } from 'react';
+import debounce from 'lodash.debounce'; // Импортируем debounce
+import React, { useCallback, useMemo, useState } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
-import { AuthProvider } from './modules/Auth/contexts/AuthContext';
 import Navbar from './components/Navbar/Navbar';
-import AppRoutes from './routes';
+import { AuthProvider } from './context/AuthContext';
 import { FormProvider } from './context/FormContext';
+import AppRoutes from './routes';
 
 const AppWrapper: React.FC = () => {
   const location = useLocation();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Реализуем debounce с помощью lodash.debounce
+  const debouncedSetSearchTerm = useCallback(
+    debounce((query: string) => {
+      setSearchTerm(query);
+    }, 300),
+    []
+  );
+
+  const handleSearch = (query: string) => {
+    debouncedSetSearchTerm(query);
+  };
 
   const navbarExcludedRoutes = useMemo(() => ['/login', '/404'], []);
 
@@ -17,15 +31,33 @@ const AppWrapper: React.FC = () => {
     return navbarExcludedRoutes.includes(location.pathname);
   }, [location.pathname, navbarExcludedRoutes]);
 
-  // Извлечение ID сектора из URL, если он присутствует
-  const sectorMatch = location.pathname.match(/\/add-plant\/(\d+)/);
-  const sectorId = sectorMatch ? parseInt(sectorMatch[1], 10) : undefined;
+  // Извлечение ID сектора и pageType из URL, если он присутствует
+  const addPlantMatch = location.pathname.match(/^\/add-plant\/(\d+)$/);
+  const allPlantsMatch = location.pathname.match(/^\/all-plants\/(\d+)$/);
+
+  const sectorId = addPlantMatch
+    ? parseInt(addPlantMatch[1], 10)
+    : allPlantsMatch
+    ? parseInt(allPlantsMatch[1], 10)
+    : undefined;
+
+  const pageType = addPlantMatch
+    ? 'add-plant'
+    : allPlantsMatch
+    ? 'all-plants'
+    : undefined;
 
   return (
     <>
-      {!isExcluded && <Navbar sectorId={sectorId} />}
+      {!isExcluded && (
+        <Navbar
+          sectorId={sectorId}
+          pageType={pageType}
+          onSearch={handleSearch}
+        />
+      )}
       <div className='app-container'>
-        <AppRoutes sectorId={sectorId} />
+        <AppRoutes searchTerm={searchTerm} />
       </div>
     </>
   );

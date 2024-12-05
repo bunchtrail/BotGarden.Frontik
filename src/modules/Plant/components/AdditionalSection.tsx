@@ -1,8 +1,7 @@
-
 import React from 'react';
-import Input from '../../../components/Form/TextInput';
 import FormRow from '../../../components/Form/FormRow';
-import { FormData } from '../../../context/FormContext';
+import Input from '../../../components/Form/TextInput';
+import { FormData } from '../../../types/types';
 
 interface AdditionalSectionProps {
   formData: FormData;
@@ -16,21 +15,21 @@ const AdditionalSection: React.FC<AdditionalSectionProps> = ({
   <>
     <FormRow>
       <Input
-        label='Date Of Planting'
+        label='Дата Посадки'
         id='dateOfPlanting'
         type='date'
         value={formData.dateOfPlanting}
         onChange={handleChange}
       />
       <Input
-        label='Date'
+        label='Дата'
         id='date'
         type='date'
         value={formData.date}
         onChange={handleChange}
       />
       <Input
-        label='Originator'
+        label='Инициатор'
         id='originator'
         value={formData.originator}
         onChange={handleChange}
@@ -39,21 +38,21 @@ const AdditionalSection: React.FC<AdditionalSectionProps> = ({
     </FormRow>
     <FormRow>
       <Input
-        label='Herbarium Presence'
+        label='Наличие Гербария'
         id='herbariumPresence'
-        value={formData.herbariumPresence}
+        value={formData.herbariumPresence.toString()}
         onChange={handleChange}
         placeholder='Введите наличие гербария'
       />
       <Input
-        label='Herbarium Duplicate'
+        label='Дубликат Гербария'
         id='herbariumDuplicate'
         value={formData.herbariumDuplicate}
         onChange={handleChange}
         placeholder='Введите дубликат гербария'
       />
       <Input
-        label='Filled Out'
+        label='Заполнено'
         id='filledOut'
         value={formData.filledOut}
         onChange={handleChange}
@@ -62,14 +61,14 @@ const AdditionalSection: React.FC<AdditionalSectionProps> = ({
     </FormRow>
     <FormRow>
       <Input
-        label='Image Path'
+        label='Путь к Изображению'
         id='imagePath'
         value={formData.imagePath}
         onChange={handleChange}
         placeholder='Введите путь к изображению'
       />
       <Input
-        label='Note'
+        label='Заметка'
         id='note'
         value={formData.note}
         onChange={handleChange}

@@ -5,7 +5,7 @@
   justify-content: space-between; /* Распределение элементов по сторонам */
   align-items: center;
   padding: 10px 20px;
-  background-color: rgba(52, 58, 64, 0.95); /* Сохранённый цвет фона */
+  background-color: var(--color-navbar);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   position: fixed; /* Фиксация навбара в верхней части */
   top: 0;
@@ -14,6 +14,7 @@
   z-index: 1000;
   transform: translateY(0);
   transition: transform 0.3s ease, max-height 0.3s ease;
+  backdrop-filter: var(--blur-background);
 }
 
 .hidden {
@@ -125,17 +126,18 @@
 .dropdownContent {
   display: none;
   position: absolute;
-  background-color: rgba(52, 58, 64, 0.95);
-  backdrop-filter: blur(10px);
+  background-color: rgba(45, 45, 48, 0.98); /* Более непрозрачный фон */
+  backdrop-filter: var(--blur-background);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); /* Усиленная тень */
   min-width: 200px;
   top: 100%;
   left: 0;
   z-index: 1000;
   transform-origin: top;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 5px;
 }
 
 .dropdownContent.show {
@@ -301,7 +303,7 @@
     margin-top: 5px;
     box-shadow: none;
     border: none;
-    background-color: rgba(52, 58, 64, 0.5);
+    background-color: rgba(45, 45, 48, 0.98); /* Тот же цвет для мобильной версии */
   }
 
   .dropdownItem {
@@ -330,6 +332,31 @@
   }
 }
 
+.navbarSearch {
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 15px;
+  width: 300px;
+  margin: 0 30px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.navbarSearch:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.15);
+  width: 400px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.navbarSearch::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+}
 
 @media (min-width: 769px) {
   .mobileActions {
