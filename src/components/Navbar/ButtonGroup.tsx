@@ -46,18 +46,13 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
         <button
           className={styles.button}
           type='button'
-          onClick={handleSave} // Используем handleSave при нажатии
+          onClick={handleSave}
           title='Сохранить'
         >
           <FaSave />
         </button>
       )}
-      <button
-        className={styles.button}
-        type='button'
-        // Добавьте обработчик сброса, если необходимо
-        title='Сбросить'
-      >
+      <button className={styles.button} type='button' title='Сбросить'>
         <FaUndo />
       </button>
       <button

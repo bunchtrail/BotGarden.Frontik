@@ -1,51 +1,108 @@
-import { FamilyType, FormData, GenusType, Plant } from "../types/types";
-import { API_URL } from "../utils/data";
+// plantService.ts
+import { ApiResponse, FamilyType, FormData, GenusType, Plant, PlantUpdateDto } from "../types/types";
 import client from "./client";
 
-export const savePlant = async (plantData: FormData): Promise<Response> => {
-  return fetch(`${API_URL}/api/plant/add`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(plantData),
-  });
+/**
+ * Функция для сохранения нового растения.
+ * @param plantData Данные растения.
+ * @returns Ответ API с сохраненным растением.
+ */
+export const savePlant = async (plantData: FormData): Promise<ApiResponse<Plant>> => {
+  try {
+    const response = await client.post<ApiResponse<Plant>>('/api/plant/add', plantData);
+    return response.data;
+  } catch (error: any) {
+    console.error('Ошибка при сохранении растения:', error);
+    return {
+      success: false,
+      message: 'Произошла ошибка при сохранении растения.',
+      errors: error.response?.data || error.message,
+    };
+  }
 };
 
+/**
+ * Функция для получения всех семейств растений.
+ * @returns Массив объектов с id и name семейств.
+ */
 export const fetchFamilies = async (): Promise<{ id: number; name: string }[]> => {
-  const response = await client.get<{ families: FamilyType[] }>('/api/plant/all_families');
-
-  return Array.isArray(response.data.families)
-    ? response.data.families.map((family: FamilyType) => ({
+  try {
+    const response = await client.get<ApiResponse<FamilyType[]>>('/api/plant/all_families');
+    if (response.data.success && response.data.data) {
+      return response.data.data.map((family: FamilyType) => ({
         id: family.familyId,
         name: family.familyName,
-      }))
-    : [];
+      }));
+    } else {
+      console.error('Ошибка при получении семейств:', response.data.message);
+      return [];
+    }
+  } catch (error: any) {
+    console.error('Ошибка при получении семейств:', error);
+    return [];
+  }
 };
 
+/**
+ * Функция для получения всех родов растений.
+ * @returns Массив объектов с id и name родов.
+ */
 export const fetchGenera = async (): Promise<{ id: number; name: string }[]> => {
-  const response = await client.get<{ genuses: GenusType[] }>('/api/plant/all_genuses');
-
-  return Array.isArray(response.data.genuses)
-    ? response.data.genuses.map((genus: GenusType) => ({
+  try {
+    const response = await client.get<ApiResponse<GenusType[]>>('/api/plant/all_genuses');
+    if (response.data.success && response.data.data) {
+      return response.data.data.map((genus: GenusType) => ({
         id: genus.genusId,
         name: genus.genusName,
-      }))
-    : [];
+      }));
+    } else {
+      console.error('Ошибка при получении родов:', response.data.message);
+      return [];
+    }
+  } catch (error: any) {
+    console.error('Ошибка при получении родов:', error);
+    return [];
+  }
 };
 
+/**
+ * Функция для получения растений по идентификатору сектора.
+ * @param sectorId Идентификатор сектора.
+ * @returns Массив растений.
+ */
 export const getPlantsBySector = async (sectorId: number): Promise<Plant[]> => {
   try {
-    const response = await client.get<Plant[]>(`/api/plant/sector_plant/${sectorId}`);
-
-    return Array.isArray(response.data)
-      ? response.data.map((plant) => ({
-          ...plant,
-          id: plant.plantId, 
-        }))
-      : [];
-  } catch (error) {
-    console.error('Error fetching plants:', error);
+    const response = await client.get<ApiResponse<Plant[]>>(`/api/plant/sector_plant/${sectorId}`);
+    if (response.data.success && response.data.data) {
+      return response.data.data.map((plant: Plant) => ({
+        ...plant,
+        id: plant.plantId, // Если необходимо переименовать поле
+      }));
+    } else {
+      console.error('Ошибка при получении растений:', response.data.message);
+      return [];
+    }
+  } catch (error: any) {
+    console.error('Ошибка при получении растений:', error);
     return [];
+  }
+};
+
+/**
+ * Функция для обновления растений.
+ * @param plantUpdates Массив данных для обновления растений.
+ * @returns Ответ API.
+ */
+export const updatePlants = async (plantUpdates: PlantUpdateDto[]): Promise<ApiResponse<any>> => {
+  try {
+    const response = await client.post<ApiResponse<any>>('/api/plant/update', plantUpdates);
+    return response.data;
+  } catch (error: any) {
+    console.error('Ошибка при обновлении растений:', error);
+    return {
+      success: false,
+      message: 'Произошла ошибка при обновлении растений.',
+      errors: error.response?.data || error.message,
+    };
   }
 };

@@ -1,6 +1,6 @@
 // src/context/FormContext.tsx
 import React, { createContext, ReactNode, useState } from 'react';
-import { FormData, initialFormData } from '../types/types';
+import { initialFormData, FormData } from '../types/types';
 
 interface FormContextType {
   formData: FormData;

@@ -17,10 +17,9 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { field: 'plantId', label: 'ID Растения' },
+  // { field: 'plantId', label: 'ID Растения' }, // Опционально скрыть ID
   { field: 'familyId', label: 'Семейство' },
   { field: 'biometricId', label: 'ID Биометрии' },
-  { field: 'sectorId', label: 'ID Сектора' },
   { field: 'genusId', label: 'Род' },
   { field: 'inventorNumber', label: 'Инвентарный Номер' },
   { field: 'species', label: 'Вид' },
@@ -87,3 +86,4 @@ const PlantsTable: React.FC<PlantsTableProps> = ({
 };
 
 export default PlantsTable;
+export { PlantsTable };

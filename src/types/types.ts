@@ -3,7 +3,12 @@ export interface Sector {
     id: number;
     name: string;
   }
-  
+  export interface ApiResponse<T> {
+    success: boolean;
+    message: string;
+    data?: T;
+    errors?: any;
+  }
 // src/types/types.ts
 
 export interface Plant {
@@ -132,3 +137,38 @@ export interface FamilyType {
     sectorId: number;
     sectorName: string;  
   }
+
+export interface PlantUpdateDto {
+  plantId: number;
+  familyId?: number;
+  biometricId?: number;
+  sectorId?: number;
+  genusId?: number;
+  inventorNumber?: string;
+  species?: string;
+  variety?: string;
+  form?: string;
+  determined?: string;
+  dateOfPlanting?: Date;
+  protectionStatus?: string;
+  filledOut?: string;
+  herbariumDuplicate?: string;
+  synonyms?: string;
+  plantOrigin?: string;
+  naturalHabitat?: string;
+  ecologyBiology?: string;
+  economicUse?: string;
+  originator?: string;
+  date?: Date;
+  country?: string;
+  imagePath?: string;
+  note?: string;
+  yearOfObs?: number;
+  phenophaseDate?: Date;
+  year?: number;
+  measurementType?: string;
+  value?: string;
+  latitude?: number;
+  longitude?: number;
+  herbariumPresence?: boolean;
+}

@@ -1,8 +1,6 @@
 // src/components/Navbar/Navbar.tsx
 
-import React, { useEffect, useRef, useState } from 'react';
-// Remove unused import if the edit icon is no longer used here
-// import { FaPencilAlt } from 'react-icons/fa';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useIsMobile from '../../hooks/useInMobile';
 import useNavbarVisibility from '../../hooks/useNavbarVisibility';
 import ButtonGroup from './ButtonGroup';
@@ -11,15 +9,15 @@ import MobileToggle from './MobileToggle';
 import styles from './Navbar.module.css';
 import NavItems from './NavItems';
 import SearchInput from './SearchInput';
-import { useNavigate } from 'react-router-dom'; // Added import for useNavigate
 
 interface NavbarProps {
   sectorId?: number;
   pageType?: 'home' | 'add-plant' | 'all-plants';
-  onSearch?: (query: string) => void;
+  onSearch?: (query: string, selectedColumns: string[]) => void; // Обновлён тип функции onSearch
   isEditing?: boolean;
   toggleEditing?: () => void;
   handleSave?: () => void;
+  searchableColumns?: string[]; // Добавлено свойство для передачи доступных столбцов
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -29,13 +27,17 @@ const Navbar: React.FC<NavbarProps> = ({
   isEditing,
   toggleEditing,
   handleSave,
+  searchableColumns = [], // Значение по умолчанию
 }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsColumnsDropdownOpen] = useState(false); // Renamed for columns
+  const [isNavItemsDropdownOpen, setIsNavItemsDropdownOpen] = useState(false); // New state for NavItems
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navItemsDropdownRef = useRef<HTMLDivElement>(null); // New ref for NavItems
   const isVisible = useNavbarVisibility();
 
   const handleMobileMenuToggle = () => {
@@ -46,8 +48,26 @@ const Navbar: React.FC<NavbarProps> = ({
     const query = e.target.value;
     setSearchQuery(query);
     if (onSearch) {
-      onSearch(query);
+      onSearch(query, selectedColumns);
     }
+  };
+
+  const handleColumnSelection = (column: string) => {
+    setSelectedColumns((prevSelected) => {
+      if (prevSelected.includes(column)) {
+        const updated = prevSelected.filter((col) => col !== column);
+        if (onSearch) {
+          onSearch(searchQuery, updated);
+        }
+        return updated;
+      } else {
+        const updated = [...prevSelected, column];
+        if (onSearch) {
+          onSearch(searchQuery, updated);
+        }
+        return updated;
+      }
+    });
   };
 
   // Обработка кликов вне выпадающего меню для его закрытия
@@ -57,7 +77,13 @@ const Navbar: React.FC<NavbarProps> = ({
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setIsDropdownOpen(false);
+        setIsColumnsDropdownOpen(false);
+      }
+      if (
+        navItemsDropdownRef.current &&
+        !navItemsDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsNavItemsDropdownOpen(false);
       }
     };
 
@@ -68,7 +94,7 @@ const Navbar: React.FC<NavbarProps> = ({
   // Обработка нажатия клавиши Escape для закрытия выпадающего меню
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
-      setIsDropdownOpen(false);
+      setIsColumnsDropdownOpen(false); // Updated setter
     }
   };
 
@@ -76,6 +102,11 @@ const Navbar: React.FC<NavbarProps> = ({
     !isVisible ? styles.hidden : ''
   } 
   `;
+
+  // Меморизация доступных столбцов для отображения
+  const availableColumns = useMemo(() => {
+    return searchableColumns;
+  }, [searchableColumns]);
 
   return (
     <div className={navbarClass} onKeyDown={handleKeyDown}>
@@ -92,17 +123,42 @@ const Navbar: React.FC<NavbarProps> = ({
         sectorId={sectorId}
         pageType={pageType}
         isMobileMenuOpen={isMobileMenuOpen}
-        isDropdownOpen={isDropdownOpen}
-        setIsDropdownOpen={setIsDropdownOpen}
-        dropdownRef={dropdownRef}
+        isDropdownOpen={isNavItemsDropdownOpen} // Updated prop
+        setIsDropdownOpen={setIsNavItemsDropdownOpen} // Updated setter
+        dropdownRef={navItemsDropdownRef} // Updated ref
       />
 
-      {/* Search Input */}
+      {/* Search Input и выбор столбцов для поиска */}
       {pageType === 'all-plants' && (
-        <SearchInput
-          searchQuery={searchQuery}
-          onSearchChange={handleSearchChange}
-        />
+        <div className={styles.searchColumnsContainer}>
+          <SearchInput
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+          />
+          <div className={styles.columnsSelector}>
+            <button
+              className={styles.columnsButton}
+              onClick={() => setIsColumnsDropdownOpen((prev) => !prev)}
+              title='Выбрать столбцы для поиска'
+            >
+              Выбрать столбцы
+            </button>
+            {isDropdownOpen && (
+              <div className={styles.dropdown} ref={dropdownRef}>
+                {availableColumns.map((column) => (
+                  <label key={column} className={styles.dropdownItem}>
+                    <input
+                      type='checkbox'
+                      checked={selectedColumns.includes(column)}
+                      onChange={() => handleColumnSelection(column)}
+                    />
+                    {column}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       {/* Pass props to ButtonGroup */}

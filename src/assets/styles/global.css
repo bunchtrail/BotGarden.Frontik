@@ -1,10 +1,8 @@
-/* src/assets/styles/global.css */
-
 @import './base/_variables.css';
 @import './base/_reset.css';
 @import './base/_typography.css';
 
-/* Общие контейнеры */
+/* Контейнеры приложения */
 .app-container {
   width: 100%;
   max-width: 1500px;
@@ -24,6 +22,7 @@
   min-height: 40vh;
 }
 
+/* Переменные темы */
 :root {
   --color-background: #f5f5f7;
   --color-text: #1d1d1f;
@@ -42,6 +41,7 @@
   --blur-background: blur(20px);
 }
 
+/* Общие стили */
 body {
   background-color: var(--color-background);
   color: var(--color-text);
@@ -54,7 +54,8 @@ a:hover {
   color: var(--color-primary-hover);
 }
 
-/* Добавляем глобальное правило для box-sizing */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }

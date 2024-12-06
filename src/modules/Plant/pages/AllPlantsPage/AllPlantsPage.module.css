@@ -1,11 +1,11 @@
-/* src/components/AllPlantsPage/AllPlantsPage.module.css */
-
+/* Общий контейнер */
 .plantsAllContainer {
   padding: 20px;
   text-align: center;
   overflow: hidden;
 }
 
+/* Обертка для таблицы */
 .tableWrapper {
   width: 100%;
   overflow-x: auto;
@@ -15,6 +15,7 @@
   margin-bottom: 20px;
 }
 
+/* Стили скроллбара в таблице */
 .tableWrapper::-webkit-scrollbar {
   height: 12px;
   background-color: var(--color-surface);
@@ -35,6 +36,7 @@
   border-radius: 6px;
 }
 
+/* Основная таблица */
 .plantsTable {
   width: 100%;
   border-collapse: separate;
@@ -43,13 +45,15 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--shadow-md);
-  backdrop-filter: blur(20px);
+  transition: background-color 0.3s ease;
 }
 
+/* Таблица в режиме редактирования */
 .editingTable {
-  min-width: 2500px; 
+  background-color: var(--color-surface-hover);
 }
 
+/* Ячейки и заголовки таблицы */
 .plantsTable th,
 .plantsTable td {
   border: none;
@@ -64,6 +68,7 @@
   font-size: 16px;
 }
 
+/* Заголовки таблицы */
 .plantsTable th {
   background-color: var(--color-surface-hover);
   font-weight: 600;
@@ -73,6 +78,7 @@
   letter-spacing: 0.5px;
 }
 
+/* Ховер на строках таблицы */
 .plantsTable tr:hover {
   background-color: rgba(0, 0, 0, 0.02);
 }
@@ -81,6 +87,7 @@
   border-bottom: none;
 }
 
+/* Отдельные строки растений */
 .plantRow {
   transition: background-color 0.3s ease;
 }
@@ -96,6 +103,12 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+/* Строка в режиме редактирования */
+.editingRow {
+  background-color: rgba(0, 113, 227, 0.05);
+}
+
+/* Поля ввода для редактирования */
 .editInput {
   width: 100%;
   padding: 8px 12px;
@@ -115,13 +128,10 @@
 .editInput:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3); /* Изменен цвет на соответствующий var(--color-primary) */
+  box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
 }
 
-.editingRow {
-  background-color: rgba(0, 113, 227, 0.05); /* Соответствует цвету var(--color-primary) */
-}
-
+/* Ошибки */
 .error {
   color: var(--color-error);
   padding: 16px;
@@ -130,6 +140,7 @@
   margin: 20px 0;
 }
 
+/* Переключатели режима редактирования */
 .editToggle {
   display: flex;
   align-items: center;
@@ -151,9 +162,9 @@
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; 
+  left: 0; 
+  right: 0; 
   bottom: 0;
   background-color: #ccc;
   transition: 0.4s;
@@ -165,7 +176,7 @@
   content: "";
   height: 18px;
   width: 18px;
-  left: 3px;
+  left: 3px; 
   bottom: 3px;
   background-color: white;
   transition: 0.4s;
@@ -180,6 +191,7 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
+/* Кнопки действий в строке растений */
 .plantRow button {
   padding: 8px 12px;
   margin-right: 8px;
@@ -200,6 +212,7 @@ input:checked + .slider:before {
   transform: translateY(1px);
 }
 
+/* Адаптивная стилизация */
 @media (max-width: 768px) {
   .plantsTable th,
   .plantsTable td {

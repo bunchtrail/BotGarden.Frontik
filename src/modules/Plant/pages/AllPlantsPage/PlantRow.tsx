@@ -1,4 +1,4 @@
-// src/components/AllPlantsPage/PlantRow.tsx
+// PlantRow.tsx
 
 import React, { useState } from 'react';
 import { Plant } from '../../../../types/types';
@@ -23,24 +23,26 @@ const PlantRow: React.FC<PlantRowProps> = ({
   columns,
 }) => {
   const [editedPlant, setEditedPlant] = useState<Plant>(plant);
-  const [isRowEditing, setIsRowEditing] = useState<boolean>(false);
 
-  const handleEditClick = () => {
-    setIsRowEditing(true);
-  };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
+    let value: any = e.target.value;
 
-  const handleSaveClick = () => {
-    onUpdate(editedPlant);
-    setIsRowEditing(false);
-  };
+    if (field === 'latitude' || field === 'longitude') {
+      value = Number(value);
+    } else if (field === 'herbariumPresence') {
+      // Для чекбокса используем e.target.checked
+      value = e.target.checked;
+    } else if (field === 'yearOfObs' || field === 'year') {
+      value = value ? Number(value) : undefined;
+    }
+    // Даты обрабатываем при сохранении, поэтому пока оставляем как есть (string)
 
-  const handleCancelClick = () => {
-    setEditedPlant(plant);
-    setIsRowEditing(false);
-  };
-
-  const handleChange = (key: keyof Plant, value: any) => {
-    setEditedPlant((prev) => ({ ...prev, [key]: value }));
+    const updatedPlant = { ...editedPlant, [field]: value };
+    setEditedPlant(updatedPlant);
+    onUpdate(updatedPlant);
   };
 
   const fieldInputTypes: { [key in keyof Plant]?: string } = {
@@ -53,52 +55,43 @@ const PlantRow: React.FC<PlantRowProps> = ({
     longitude: 'number',
     dateOfPlanting: 'date',
     date: 'date',
-    herbariumPresence: 'checkbox',
+    herbariumPresence: 'checkbox', 
   };
 
   return (
     <tr
-      className={`${styles.plantRow} ${
-        isRowEditing ? styles.editingRow : ''
-      }`}
+      className={`${styles.plantRow} ${isEditing ? styles.editingRow : ''}`}
     >
       {columns.map((column) => {
         const field = column.field;
-        const value = plant[field];
         const inputType = fieldInputTypes[field] || 'text';
+        const cellValue = editedPlant[field];
 
         return (
-          <td key={field}>
-            {isRowEditing ? (
+          <td key={String(field)}>
+            {isEditing ? (
               inputType === 'checkbox' ? (
                 <input
+                  className={styles.editInput}
                   type='checkbox'
-                  checked={editedPlant[field] as boolean}
-                  onChange={(e) => handleChange(field, e.target.checked)}
+                  checked={!!cellValue}
+                  onChange={(e) => handleChange(e, field)}
                 />
               ) : (
                 <input
                   className={styles.editInput}
                   type={inputType}
-                  value={
-                    editedPlant[field] !== undefined
-                      ? String(editedPlant[field])
-                      : ''
-                  }
-                  onChange={(e) => handleChange(field, e.target.value)}
+                  value={cellValue !== undefined && cellValue !== null ? String(cellValue) : ''}
+                  onChange={(e) => handleChange(e, field)}
+                  onBlur={() => onUpdate(editedPlant)}
                 />
               )
-            ) : inputType === 'checkbox' ? (
-              value ? 'Да' : 'Нет'
-            ) : value !== undefined ? (
-              String(value)
             ) : (
-              ''
+              cellValue !== undefined && cellValue !== null ? String(cellValue) : ''
             )}
           </td>
         );
       })}
-      
     </tr>
   );
 };
