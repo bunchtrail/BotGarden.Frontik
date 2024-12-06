@@ -51,8 +51,6 @@ const AppWrapper: React.FC = () => {
     }
   }
 
-  // Check if the user is on '/all-plants/1'
-  const isAllPlantsOne = path === '/all-plants/1';
 
   const [isEditing, setIsEditing] = useState(false);
 

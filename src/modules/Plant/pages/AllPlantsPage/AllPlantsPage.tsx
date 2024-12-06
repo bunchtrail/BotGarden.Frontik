@@ -1,29 +1,32 @@
 // src/components/AllPlantsPage/AllPlantsPage.tsx
 
-import React, { useEffect, useState, useMemo } from 'react';
+import equal from 'fast-deep-equal'; // Добавляем библиотеку для глубокой оптимизированной проверки
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getPlantsBySector, updatePlants } from '../../../../api/plantService';
 import Button from '../../../../components/Button/Button';
 import Navbar from '../../../../components/Navbar/Navbar';
+import useDebounce from '../../../../hooks/useDebounce';
 import { Plant, PlantUpdateDto } from '../../../../types/types';
 import styles from './AllPlantsPage.module.css';
 import PlantsTable from './PlantsTable';
-import equal from 'fast-deep-equal'; // Добавляем библиотеку для глубокой оптимизированной проверки
-import useDebounce from '../../../../hooks/useDebounce';
+
 interface AllPlantPageProp {
   sectorId: number;
-  searchTerm: string;
+  // Удалили 'searchTerm', так как он не используется
 }
 
-const AllPlantsPage: React.FC<AllPlantPageProp> = ({
-  sectorId,
-  searchTerm,
-}) => {
+interface SearchableColumn {
+  field: string;
+  label: string;
+}
+
+const AllPlantsPage: React.FC<AllPlantPageProp> = ({ sectorId }) => {
   const navigate = useNavigate();
   const [plants, setPlants] = useState<Plant[]>([]);
   const [originalPlants, setOriginalPlants] = useState<Plant[]>([]);
   const [isEditing, setIsEditing] = useState(false);
-  
+
   // Состояния для поиска
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -131,60 +134,58 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
     setSelectedColumns(columns);
   };
 
-  // Определение столбцов, доступных для поиска
-  const searchableColumns = useMemo(() => {
-    // Список полей, по которым можно осуществлять поиск
-    // Исключаем скрытые поля, например, sectorId
+  // Определение столбцов, доступных для поиска с русскими метками
+  const searchableColumns: SearchableColumn[] = useMemo(() => {
     return [
-      'familyId',
-      'biometricId',
-      'genusId',
-      'inventorNumber',
-      'species',
-      'variety',
-      'form',
-      'determined',
-      'yearOfObs',
-      'phenophaseDate',
-      'year',
-      'measurementType',
-      'value',
-      'dateOfPlanting',
-      'protectionStatus',
-      'filledOut',
-      'herbariumDuplicate',
-      'synonyms',
-      'plantOrigin',
-      'naturalHabitat',
-      'ecologyBiology',
-      'economicUse',
-      'latitude',
-      'longitude',
-      'originator',
-      'date',
-      'country',
-      'imagePath',
-      'herbariumPresence',
-      'note',
+      { field: 'familyId', label: 'Семейство' },
+      { field: 'biometricId', label: 'ID Биометрии' },
+      { field: 'genusId', label: 'Род' },
+      { field: 'inventorNumber', label: 'Инвентарный Номер' },
+      { field: 'species', label: 'Вид' },
+      { field: 'variety', label: 'Разновидность' },
+      { field: 'form', label: 'Форма' },
+      { field: 'determined', label: 'Определено' },
+      { field: 'yearOfObs', label: 'Год Наблюдения' },
+      { field: 'phenophaseDate', label: 'Дата Фенофазы' },
+      { field: 'year', label: 'Год' },
+      { field: 'measurementType', label: 'Тип Измерения' },
+      { field: 'value', label: 'Значение' },
+      { field: 'dateOfPlanting', label: 'Дата Посадки' },
+      { field: 'protectionStatus', label: 'Статус Защиты' },
+      { field: 'filledOut', label: 'Заполнено' },
+      { field: 'herbariumDuplicate', label: 'Дубликат Гербария' },
+      { field: 'synonyms', label: 'Синонимы' },
+      { field: 'plantOrigin', label: 'Происхождение Растения' },
+      { field: 'naturalHabitat', label: 'Естественная Среда Обитания' },
+      { field: 'ecologyBiology', label: 'Экология и Биология' },
+      { field: 'economicUse', label: 'Экономическое Использование' },
+      { field: 'latitude', label: 'Широта' },
+      { field: 'longitude', label: 'Долгота' },
+      { field: 'originator', label: 'Инициатор' },
+      { field: 'date', label: 'Дата' },
+      { field: 'country', label: 'Страна' },
+      { field: 'imagePath', label: 'Путь к Изображению' },
+      { field: 'herbariumPresence', label: 'Наличие Гербария' },
+      { field: 'note', label: 'Заметка' },
     ];
   }, []);
 
   // Фильтрация растений на основе поискового запроса и выбранных столбцов
   const filteredPlants = useMemo(() => {
-  if (!debouncedSearchQuery.trim() || selectedColumns.length === 0) {
-    return plants;
-  }
+    if (!debouncedSearchQuery.trim() || selectedColumns.length === 0) {
+      return plants;
+    }
 
-  const lowerCaseQuery = debouncedSearchQuery.toLowerCase();
+    const lowerCaseQuery = debouncedSearchQuery.toLowerCase();
 
-  return plants.filter((plant) =>
-    selectedColumns.some((col) => {
-      const value = plant[col as keyof Plant];
-      if (value === null || value === undefined) return false;
-      return String(value).toLowerCase().includes(lowerCaseQuery);
-    })
-  );
-}, [plants, debouncedSearchQuery, selectedColumns]);
+    return plants.filter((plant) =>
+      selectedColumns.some((col) => {
+        const value = plant[col as keyof Plant];
+        if (value === null || value === undefined) return false;
+        return String(value).toLowerCase().includes(lowerCaseQuery);
+      })
+    );
+  }, [plants, debouncedSearchQuery, selectedColumns]);
 
   return (
     <div
@@ -199,7 +200,7 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({
         isEditing={isEditing}
         toggleEditing={toggleEditing}
         handleSave={handleSave}
-        searchableColumns={searchableColumns} // Передаём список доступных для поиска столбцов
+        searchableColumns={searchableColumns} // Передаём список доступных для поиска столбцов с метками
       />
       {filteredPlants.length === 0 ? (
         <>
