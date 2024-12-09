@@ -761,3 +761,19 @@ input:checked + .slider:before {
     width: 100%;
   }
 }
+
+.addPlantContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.leftButtons {
+  display: flex;
+  align-items: center;
+}
+
+.rightButtons {
+  display: flex;
+  align-items: center;
+}

@@ -1,7 +1,8 @@
 // src/components/Navbar/Navbar.tsx
-
-import React, { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
+import { NavbarElement } from '../../configs/navbarConfig';
 import useIsMobile from '../../hooks/useInMobile';
+import { useNavbarConfig } from '../../hooks/useNavbarConfig';
 import useNavbarVisibility from '../../hooks/useNavbarVisibility';
 import ButtonGroup from './ButtonGroup';
 import MobileActions from './MobileActions';
@@ -10,46 +11,41 @@ import styles from './Navbar.module.css';
 import NavItems from './NavItems';
 import SearchInput from './SearchInput';
 
-interface SearchableColumn {
-  field: string;
-  label: string;
-}
-
 interface NavbarProps {
-  sectorId?: number;
-  pageType?: 'home' | 'add-plant' | 'all-plants';
   onSearch?: (query: string, selectedColumns: string[]) => void;
   isEditing?: boolean;
   toggleEditing?: () => void;
   handleSave?: () => void;
-  searchableColumns?: SearchableColumn[]; // Обновлено для передачи объектов с полями и метками
+  searchableColumns?: { field: string; label: string }[];
 }
 
-const Navbar: React.FC<NavbarProps> = ({
-  sectorId,
-  pageType,
+const Navbar: FC<NavbarProps> = ({
   onSearch,
   isEditing,
   toggleEditing,
   handleSave,
-  searchableColumns = [], // Значение по умолчанию
+  searchableColumns = [],
 }) => {
-  const [isNavItemsDropdownOpen, setIsNavItemsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const isVisible = useNavbarVisibility();
+  const { config, pageType, sectorId } = useNavbarConfig();
+
+  // Если страница исключена
+  if (config.exclude) {
+    return null;
+  }
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNavItemsDropdownOpen, setIsNavItemsDropdownOpen] = useState(false);
+  const navItemsDropdownRef = useRef<HTMLDivElement>(null);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
-
-  const navItemsDropdownRef = useRef<HTMLDivElement>(null);
-  const isVisible = useNavbarVisibility();
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
-  // Удалена неиспользуемая функция handleSearchChange
-
-  // Обработка кликов вне выпадающего меню для его закрытия
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -59,25 +55,74 @@ const Navbar: React.FC<NavbarProps> = ({
         setIsNavItemsDropdownOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  // Обработка нажатия клавиши Escape для закрытия выпадающего меню
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      setIsNavItemsDropdownOpen(false);
-    }
-  };
 
   const navbarClass = `${styles.navbarContainer} ${
     !isVisible ? styles.hidden : ''
   }`;
 
+  // Маппинг типов элементов на компоненты
+  const renderElement = (el: NavbarElement, idx: number) => {
+    switch (el.type) {
+      case 'links':
+        return (
+          <NavItems
+            key={idx}
+            sectorId={sectorId}
+            pageType={pageType}
+            isMobileMenuOpen={isMobileMenuOpen}
+            isDropdownOpen={isNavItemsDropdownOpen}
+            setIsDropdownOpen={setIsNavItemsDropdownOpen}
+            dropdownRef={navItemsDropdownRef}
+            customLinks={el.links}
+          />
+        );
+      case 'search':
+        if (pageType === 'all-plants') {
+          return (
+            <div className={styles.searchContainer} key={idx}>
+              <SearchInput
+                searchQuery={searchQuery}
+                onSearchChange={(e) => {
+                  const query = e.target.value;
+                  setSearchQuery(query);
+                  onSearch?.(query, selectedColumns);
+                }}
+              />
+            </div>
+          );
+        }
+        return null;
+      case 'buttonGroup':
+        return (
+          <ButtonGroup
+            key={idx}
+            pageType={pageType}
+            isEditing={isEditing}
+            toggleEditing={toggleEditing}
+            handleSave={handleSave}
+            isMobile={isMobile}
+            availableColumns={searchableColumns}
+            selectedColumns={selectedColumns}
+            setSelectedColumns={setSelectedColumns}
+            onSearch={onSearch}
+            searchQuery={searchQuery}
+          />
+        );
+      case 'mobileActions':
+        if (sectorId && isMobile) {
+          return <MobileActions key={idx} isOpen={isMobileMenuOpen} />;
+        }
+        return null;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className={navbarClass} onKeyDown={handleKeyDown}>
-      {/* Кнопка открытия мобильного меню */}
+    <div className={navbarClass}>
       {isMobile && (
         <MobileToggle
           isOpen={isMobileMenuOpen}
@@ -85,50 +130,7 @@ const Navbar: React.FC<NavbarProps> = ({
         />
       )}
 
-      {/* Навигационные ссылки */}
-      <NavItems
-        sectorId={sectorId}
-        pageType={pageType}
-        isMobileMenuOpen={isMobileMenuOpen}
-        isDropdownOpen={isNavItemsDropdownOpen}
-        setIsDropdownOpen={setIsNavItemsDropdownOpen}
-        dropdownRef={navItemsDropdownRef}
-      />
-
-      {/* Search Input и выбор столбцов для поиска */}
-      {pageType === 'all-plants' && (
-        <div className={styles.searchContainer}>
-          <SearchInput
-            searchQuery={searchQuery}
-            onSearchChange={(e) => {
-              const query = e.target.value;
-              setSearchQuery(query);
-              if (onSearch) {
-                onSearch(query, selectedColumns);
-              }
-            }}
-          />
-        </div>
-      )}
-
-      {/* Pass additional props to ButtonGroup */}
-      {sectorId && (
-        <ButtonGroup
-          pageType={pageType}
-          isEditing={isEditing}
-          toggleEditing={toggleEditing}
-          handleSave={handleSave}
-          isMobile={isMobile}
-          availableColumns={searchableColumns} // Передаём массив объектов с полями и метками
-          selectedColumns={selectedColumns}
-          setSelectedColumns={setSelectedColumns}
-          onSearch={onSearch}
-          searchQuery={searchQuery}
-        />
-      )}
-
-      {/* Кнопки действия для мобильных устройств */}
-      {sectorId && isMobile && <MobileActions isOpen={isMobileMenuOpen} />}
+      {config.elements?.map((el, idx) => renderElement(el, idx))}
     </div>
   );
 };
