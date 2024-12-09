@@ -1,16 +1,19 @@
+// src/pages/AddPlantPage/AddPlantPage.tsx
 import React, { useContext, useEffect, useState } from 'react';
 import CollapsibleSection from '../../../../components/CollapsibleSection';
 import ErrorMessage from '../../../../components/Misc/ErrorMessage';
+import SuccessMessage from '../../../../components/Misc/SuccessMessage';
 import { FormContext } from '../../../../context/FormContext';
+import { useFormActions } from '../../../../hooks/useFormActions';
 import AdditionalSection from '../../components/AdditionalSection';
-import BiometricSection from '../../components/BiometricSection.tsx';
+import BiometricSection from '../../components/BiometricSection';
 import ClassificationSection from '../../components/ClassificationSection';
 import IdentificationSection from '../../components/IdentificationSection';
 import LocationSection from '../../components/LocationSection';
 import OriginSection from '../../components/OriginSection';
 import UsageSection from '../../components/UsageSection';
+import Navbar from '../../../../components/Navbar/Navbar';
 import styles from './AddPlantPage.module.css';
-import { useFormActions } from '../../../../hooks/useFormActions.ts';
 
 interface AddPlantPageProp {
   sectorId: number;
@@ -19,14 +22,12 @@ interface AddPlantPageProp {
 const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
   const formContext = useContext(FormContext);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [error, setError] = useState<string>('');
-  const { handleSave, handleReset } = useFormActions(); 
+  const { handleSave, loading, saveError, saveSuccess } = useFormActions();
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -42,7 +43,6 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectorId]);
 
-  // Состояние для секций
   const [isIdentificationOpen, setIdentificationOpen] = useState(!isMobile);
   const [isClassificationOpen, setClassificationOpen] = useState(true);
   const [isOriginOpen, setOriginOpen] = useState(true);
@@ -64,41 +64,32 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (
-      !formData.latitude ||
-      !formData.longitude ||
-      !formData.genusId ||
-      !formData.familyId
-    ) {
-      setError('Пожалуйста, заполните поля широта, долгота, род и семейство.');
-      return;
-    }
-
-    // Вызов handleSave из useFormActions
-    handleSave();
-  };
+  // Нет формы и onSubmit — вызов handleSave() из Navbar.
+  // Если нужно, можно сделать валидацию здесь перед сохранением.
 
   return (
-    <div className={styles.addPlantPage}>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        {error && (
+    <><Navbar
+      sectorId={sectorId}
+      pageType='add-plant'
+      handleSave={handleSave} /><div className={`app-container ${styles.addPlantPage}`}>
+
+
+        {saveError && (
           <ErrorMessage
-            message={error}
-            type='general'
-            onDismiss={() => setError('')}
-          />
+            message={saveError}
+            type='general' />
         )}
+        {saveSuccess && (
+          <SuccessMessage
+            message={saveSuccess} />
+        )}
+
         <CollapsibleSection
           title='Идентификация'
           isOpen={isIdentificationOpen}
           onToggle={() => setIdentificationOpen(!isIdentificationOpen)}
         >
-          <IdentificationSection
-            formData={formData}
-            handleChange={handleChange}
-          />
+          <IdentificationSection formData={formData} handleChange={handleChange} />
         </CollapsibleSection>
 
         <CollapsibleSection
@@ -106,10 +97,7 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
           isOpen={isClassificationOpen}
           onToggle={() => setClassificationOpen(!isClassificationOpen)}
         >
-          <ClassificationSection
-            formData={formData}
-            handleChange={handleChange}
-          />
+          <ClassificationSection formData={formData} handleChange={handleChange} />
         </CollapsibleSection>
 
         <CollapsibleSection
@@ -154,9 +142,8 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
           <AdditionalSection formData={formData} handleChange={handleChange} />
         </CollapsibleSection>
 
-
-      </form>
-    </div>
+        {loading && <div className={styles.loading}>Сохранение...</div>}
+      </div></>
   );
 };
 

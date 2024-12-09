@@ -1,5 +1,4 @@
 // src/components/Navbar/Navbar.tsx
-
 import React, { useEffect, useRef, useState } from 'react';
 import useIsMobile from '../../hooks/useInMobile';
 import useNavbarVisibility from '../../hooks/useNavbarVisibility';
@@ -22,7 +21,7 @@ interface NavbarProps {
   isEditing?: boolean;
   toggleEditing?: () => void;
   handleSave?: () => void;
-  searchableColumns?: SearchableColumn[]; // Обновлено для передачи объектов с полями и метками
+  searchableColumns?: SearchableColumn[];
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -32,7 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({
   isEditing,
   toggleEditing,
   handleSave,
-  searchableColumns = [], // Значение по умолчанию
+  searchableColumns = [],
 }) => {
   const [isNavItemsDropdownOpen, setIsNavItemsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -47,9 +46,6 @@ const Navbar: React.FC<NavbarProps> = ({
     setIsMobileMenuOpen((prev) => !prev);
   };
 
-  // Удалена неиспользуемая функция handleSearchChange
-
-  // Обработка кликов вне выпадающего меню для его закрытия
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -64,7 +60,6 @@ const Navbar: React.FC<NavbarProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Обработка нажатия клавиши Escape для закрытия выпадающего меню
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
       setIsNavItemsDropdownOpen(false);
@@ -77,7 +72,6 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <div className={navbarClass} onKeyDown={handleKeyDown}>
-      {/* Кнопка открытия мобильного меню */}
       {isMobile && (
         <MobileToggle
           isOpen={isMobileMenuOpen}
@@ -85,7 +79,6 @@ const Navbar: React.FC<NavbarProps> = ({
         />
       )}
 
-      {/* Навигационные ссылки */}
       <NavItems
         sectorId={sectorId}
         pageType={pageType}
@@ -95,7 +88,6 @@ const Navbar: React.FC<NavbarProps> = ({
         dropdownRef={navItemsDropdownRef}
       />
 
-      {/* Search Input и выбор столбцов для поиска */}
       {pageType === 'all-plants' && (
         <div className={styles.searchContainer}>
           <SearchInput
@@ -111,7 +103,6 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
       )}
 
-      {/* Pass additional props to ButtonGroup */}
       {sectorId && (
         <ButtonGroup
           pageType={pageType}
@@ -119,7 +110,7 @@ const Navbar: React.FC<NavbarProps> = ({
           toggleEditing={toggleEditing}
           handleSave={handleSave}
           isMobile={isMobile}
-          availableColumns={searchableColumns} // Передаём массив объектов с полями и метками
+          availableColumns={searchableColumns}
           selectedColumns={selectedColumns}
           setSelectedColumns={setSelectedColumns}
           onSearch={onSearch}
@@ -127,7 +118,6 @@ const Navbar: React.FC<NavbarProps> = ({
         />
       )}
 
-      {/* Кнопки действия для мобильных устройств */}
       {sectorId && isMobile && <MobileActions isOpen={isMobileMenuOpen} />}
     </div>
   );

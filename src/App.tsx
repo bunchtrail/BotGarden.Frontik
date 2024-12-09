@@ -13,22 +13,24 @@ const AppWrapper: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const debouncedSetSearchTerm = useMemo(
-    () => debounce((query: string) => {
-      setSearchTerm(query);
-    }, 300),
+    () =>
+      debounce((query: string) => {
+        setSearchTerm(query);
+      }, 300),
     []
   );
 
-  const handleSearch = useCallback((query: string) => {
-    debouncedSetSearchTerm(query);
-  }, [debouncedSetSearchTerm]);
-
-  const navbarExcludedRoutes = useMemo(() => ['/login', '/404'], []);
+  const handleSearch = useCallback(
+    (query: string) => {
+      debouncedSetSearchTerm(query);
+    },
+    [debouncedSetSearchTerm]
+  );
 
   // Проверка, нужно ли исключить навбар для текущего маршрута
   const isExcluded = useMemo(() => {
-    return navbarExcludedRoutes.includes(location.pathname);
-  }, [location.pathname, navbarExcludedRoutes]);
+    return location.pathname !== '/home';
+  }, [location.pathname]);
 
   // Извлекаем тип страницы и ID сектора из пути
   const path = location.pathname;
@@ -50,7 +52,6 @@ const AppWrapper: React.FC = () => {
       pageType = 'all-plants';
     }
   }
-
 
   const [isEditing, setIsEditing] = useState(false);
 

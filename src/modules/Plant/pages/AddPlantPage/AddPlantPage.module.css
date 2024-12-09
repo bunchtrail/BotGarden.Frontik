@@ -1,8 +1,8 @@
 /* src/assets/styles/pages/AddPlantPage.module.css */
 
 .addPlantPage {
-  padding: 1rem;
-  margin: 1rem;
+  padding: 3rem;
+  margin: 3rem 1rem 1rem 1rem;  /* Changed: added larger top margin */
   background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
@@ -128,7 +128,7 @@
 @media (min-width: 769px) {
   .addPlantPage {
     padding: 2.5rem;
-    margin: 3rem auto;
+    margin: 4rem auto;  /* Changed: increased top margin for desktop */
     max-width: 1500px;
     border-radius: 20px;
   }
@@ -184,7 +184,7 @@
 
   .addPlantPage {
     padding: 1rem;
-    margin: 1rem;
+    margin: 2rem 1rem 1rem 1rem;  /* Changed: adjusted margin for mobile */
   }
 
   .form {
