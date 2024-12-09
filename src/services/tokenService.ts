@@ -1,19 +1,13 @@
-// src/services/tokenService.ts
-export const setTokens = (accessToken: string, refreshToken: string): void => {
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
-  };
-  
-  export const getAccessToken = (): string | null => {
-    return localStorage.getItem('accessToken');
-  };
-  
-  export const getRefreshToken = (): string | null => {
-    return localStorage.getItem('refreshToken');
-  };
-  
-  export const clearTokens = (): void => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-  };
-  
+// Теперь сохраняем только accessToken
+export const setAccessToken = (accessToken: string): void => {
+  localStorage.setItem('accessToken', accessToken);
+};
+
+export const getAccessToken = (): string | null => {
+  return localStorage.getItem('accessToken');
+};
+
+export const clearTokens = (): void => {
+  localStorage.removeItem('accessToken');
+  // refreshToken не храним на клиенте
+};

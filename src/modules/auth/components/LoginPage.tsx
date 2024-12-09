@@ -1,11 +1,10 @@
-// src/modules/Auth/pages/LoginPage.tsx
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { AuthenticationError } from '../../../utils/errors';
 import LoginContainer from '../components/LoginContainer';
 import LoginForm from '../components/LoginForm';
-import './login.css'; // Обновленный путь
+import './login.css';
 
 function Login() {
   const navigate = useNavigate();
@@ -22,7 +21,7 @@ function Login() {
       await login(email, password);
     } catch (error: any) {
       if (error instanceof AuthenticationError) {
-        throw error; // Передаем структурированную ошибку в LoginForm
+        throw error;
       }
       throw new AuthenticationError('Ошибка авторизации', 'general');
     }
