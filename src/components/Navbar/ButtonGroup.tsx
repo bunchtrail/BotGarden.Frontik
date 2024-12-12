@@ -23,7 +23,7 @@ interface ButtonGroupProps {
   searchQuery?: string;
 }
 
-const ButtonGroup: FC<ButtonGroupProps> = ({
+const ButtonGroup: React.FC<ButtonGroupProps> = ({
   pageType,
   isEditing,
   toggleEditing,
@@ -209,7 +209,6 @@ const ButtonGroup: FC<ButtonGroupProps> = ({
           </button>
         </>
       )}
-      {!pageType && <HomeButton />}
     </div>
   );
 };

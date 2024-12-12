@@ -1,18 +1,16 @@
 // src/api/client.ts
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { clearTokens, getAccessToken, setAccessToken } from '../services/tokenService';
+import { clearTokens, getAccessToken, getRefreshToken, setTokens } from '../services/tokenService';
 import { API_URL } from '../utils/data';
-import { refreshToken as refreshService } from './authService';
 
 const client = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true // Включаем передачу cookie при запросах
 });
 
-// Добавляем access-токен в заголовок Authorization, если он есть
+// Перехватчик запросов для добавления токена авторизации
 client.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getAccessToken();
@@ -27,28 +25,80 @@ client.interceptors.request.use(
   }
 );
 
-// Перехватчик ответов: если 401 — пытаемся рефрешнуть токен
+// Механизм очереди для запросов, ожидающих обновления токена
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: AxiosResponse<any>) => void;
+  reject: (error: any) => void;
+}> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else if (token) {
+      prom.resolve({ data: { token } } as AxiosResponse);
+    }
+  });
+  failedQueue = [];
+};
+
+// Перехватчик ответов для обновления токенов при ошибке 401
 client.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as any;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+      if (isRefreshing) {
+        try {
+          const token = await new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          });
+          originalRequest.headers['Authorization'] = `Bearer ${token}`;
+          return await client(originalRequest);
+        } catch (err) {
+          return await Promise.reject(err);
+        }
+      }
 
-      try {
-        // Пытаемся получить новый access-токен
-        const { accessToken } = await refreshService();
-        setAccessToken(accessToken);
-        client.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-        originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-        return client(originalRequest);
-      } catch (refreshError) {
-        // Если рефреш не удался — выходим из аккаунта
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      const currentRefreshToken = getRefreshToken();
+      const currentAccessToken = getAccessToken();
+
+      if (!currentRefreshToken || !currentAccessToken) {
+        isRefreshing = false;
         clearTokens();
         window.location.href = '/login';
-        return Promise.reject(refreshError);
+        return Promise.reject(error);
       }
+
+      return new Promise((resolve, reject) => {
+        client
+          .post('/api/Account/refresh', {
+            token: currentAccessToken,
+            refreshToken: currentRefreshToken,
+          })
+          .then(({ data }) => {
+            console.log('Получены новые токены:', data);
+            setTokens(data.accessToken, data.refreshToken);
+            client.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
+            originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
+            processQueue(null, data.accessToken);
+            resolve(client(originalRequest));
+          })
+          .catch((err) => {
+            processQueue(err, null);
+            clearTokens();
+            window.location.href = '/login';
+            reject(err);
+          })
+          .finally(() => {
+            isRefreshing = false;
+          });
+      });
     }
 
     return Promise.reject(error);

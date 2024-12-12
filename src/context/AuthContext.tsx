@@ -1,3 +1,4 @@
+// src/context/AuthContext.tsx
 import { jwtDecode } from 'jwt-decode';
 import React, {
   createContext,
@@ -8,15 +9,14 @@ import React, {
   useState,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  login as loginService,
-  refreshToken as refreshService,
-} from '../api/authService';
+import { login as loginService } from '../api/authService';
 import {
   clearTokens,
   getAccessToken,
-  setAccessToken,
-} from '../services/tokenService';
+  getRefreshToken,
+  setTokens,
+} from '../services/tokenService'
+import { LoginResponse } from '../types/authTypes';
 import { AuthenticationError } from '../utils/errors';
 
 interface AuthContextType {
@@ -38,8 +38,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-  const hasCheckedAuth = useRef(false);
 
+  // Функция для проверки срока действия токена
   const isTokenExpired = (token: string): boolean => {
     try {
       const decodedToken: DecodedToken = jwtDecode(token);
@@ -50,67 +50,57 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  // Функция для логина
   const login = async (email: string, password: string) => {
     try {
-      const data = await loginService(email, password);
-      // Сервер возвращает accessToken, а refresh-токен устанавливается в httpOnly cookie.
-      setAccessToken(data.accessToken);
+      const data: LoginResponse = await loginService(email, password);
+      setTokens(data.accessToken, data.refreshToken);
       setIsAuthenticated(true);
       navigate('/home');
     } catch (error) {
+      // Предотвращение вывода ошибки в консоль
       const authError = new AuthenticationError(
         'Неверные учетные данные',
         'unauthorized'
       );
-      authError.stack = '';
+      authError.stack = ''; // Очистка стека вызовов
       throw authError;
     }
   };
 
+  // Функция для выхода из системы
   const logout = () => {
     clearTokens();
     setIsAuthenticated(false);
     navigate('/login');
   };
 
-  const attemptRefresh = async () => {
-    try {
-      const data = await refreshService();
-      // Сервер вернет новый access-токен.
-      setAccessToken(data.accessToken);
-      setIsAuthenticated(true);
-      return true;
-    } catch (error) {
-      // Если refresh не удался, выходим из системы.
-      logout();
-      return false;
-    }
-  };
+  const hasCheckedAuth = useRef(false);
 
+  // Проверка токена при загрузке
   useEffect(() => {
     if (hasCheckedAuth.current) return;
     hasCheckedAuth.current = true;
 
     const checkAuth = async () => {
       const token = getAccessToken();
-      if (!token) {
-        // Нет access-токена — не авторизованы
-        setIsAuthenticated(false);
-        setLoading(false);
-        return;
-      }
+      const refreshTokenValue = getRefreshToken();
 
-      if (isTokenExpired(token)) {
-        // Токен истек — пробуем рефреш
-        const refreshed = await attemptRefresh();
+      if (token && !isTokenExpired(token)) {
+        setIsAuthenticated(true);
         setLoading(false);
-        if (!refreshed) {
-          // Не удалось рефрешнуть, остаемся неавторизованными
+      } else if (refreshTokenValue) {
+        try {
           setIsAuthenticated(false);
+        } catch (error) {
+          clearTokens();
+          setIsAuthenticated(false);
+        } finally {
+          setLoading(false);
         }
       } else {
-        // Токен валиден
-        setIsAuthenticated(true);
+        clearTokens();
+        setIsAuthenticated(false);
         setLoading(false);
       }
     };

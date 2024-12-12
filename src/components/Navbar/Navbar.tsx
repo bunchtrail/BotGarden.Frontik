@@ -1,7 +1,6 @@
 // src/components/Navbar/Navbar.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import useIsMobile from '../../hooks/useInMobile';
-import { useNavbarConfig } from '../../hooks/useNavbarConfig';
 import useNavbarVisibility from '../../hooks/useNavbarVisibility';
 import ButtonGroup from './ButtonGroup';
 import MobileActions from './MobileActions';
@@ -10,7 +9,14 @@ import styles from './Navbar.module.css';
 import NavItems from './NavItems';
 import SearchInput from './SearchInput';
 
+interface SearchableColumn {
+  field: string;
+  label: string;
+}
+
 interface NavbarProps {
+  sectorId?: number;
+  pageType?: 'home' | 'add-plant' | 'all-plants';
   onSearch?: (query: string, selectedColumns: string[]) => void;
   isEditing?: boolean;
   toggleEditing?: () => void;
@@ -18,28 +24,23 @@ interface NavbarProps {
   searchableColumns?: SearchableColumn[];
 }
 
-const Navbar: FC<NavbarProps> = ({
+const Navbar: React.FC<NavbarProps> = ({
+  sectorId,
+  pageType,
   onSearch,
   isEditing,
   toggleEditing,
   handleSave,
   searchableColumns = [],
 }) => {
-  const isMobile = useIsMobile();
-  const isVisible = useNavbarVisibility();
-  const { config, pageType, sectorId } = useNavbarConfig();
-
-  // Если страница исключена
-  if (config.exclude) {
-    return null;
-  }
-
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNavItemsDropdownOpen, setIsNavItemsDropdownOpen] = useState(false);
-  const navItemsDropdownRef = useRef<HTMLDivElement>(null);
-
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
+
+  const navItemsDropdownRef = useRef<HTMLDivElement>(null);
+  const isVisible = useNavbarVisibility();
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -54,6 +55,7 @@ const Navbar: FC<NavbarProps> = ({
         setIsNavItemsDropdownOpen(false);
       }
     };
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
