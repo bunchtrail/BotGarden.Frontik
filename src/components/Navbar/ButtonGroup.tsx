@@ -1,9 +1,8 @@
 // src/components/Navbar/ButtonGroup.tsx
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   FaBackward,
   FaColumns,
-  FaHome,
   FaPencilAlt,
   FaSave,
   FaUndo,
@@ -17,11 +16,11 @@ interface ButtonGroupProps {
   toggleEditing?: () => void;
   handleSave?: () => void;
   isMobile: boolean;
-  availableColumns: { field: string; label: string }[];
-  selectedColumns: string[];
-  setSelectedColumns: React.Dispatch<React.SetStateAction<string[]>>;
+  availableColumns?: { field: string; label: string }[];
+  selectedColumns?: string[];
+  setSelectedColumns?: React.Dispatch<React.SetStateAction<string[]>>;
   onSearch?: (query: string, selectedColumns: string[]) => void;
-  searchQuery: string;
+  searchQuery?: string;
 }
 
 const ButtonGroup: FC<ButtonGroupProps> = ({
@@ -41,6 +40,7 @@ const ButtonGroup: FC<ButtonGroupProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleColumnSelection = (column: string) => {
+    if (!setSelectedColumns) return;
     setSelectedColumns((prevSelected) => {
       let updated: string[];
       if (prevSelected.includes(column)) {
@@ -48,7 +48,7 @@ const ButtonGroup: FC<ButtonGroupProps> = ({
       } else {
         updated = [...prevSelected, column];
       }
-      if (onSearch) {
+      if (onSearch && searchQuery !== undefined) {
         onSearch(searchQuery, updated);
       }
       return updated;
@@ -79,129 +79,134 @@ const ButtonGroup: FC<ButtonGroupProps> = ({
     }
   }, [isEditing]);
 
-  // Отдельные кнопки для лучшей читаемости и переиспользования
-  const ColumnsButton = () => (
-    <div className={styles.dropdownContainer} ref={dropdownRef}>
-      <button
-        className={styles.columnsButton}
-        onClick={() => setIsColumnsDropdownOpen((prev) => !prev)}
-        title='Выбрать столбцы для поиска'
-        aria-haspopup='true'
-        aria-expanded={isColumnsDropdownOpen}
-      >
-        <FaColumns />
-        {!isMobile && <span style={{ marginLeft: '8px' }}>Столбцы</span>}
-      </button>
-      {isColumnsDropdownOpen && (
-        <div
-          className={`${styles.columnsDropdown} ${
-            isColumnsDropdownOpen ? 'show' : ''
-          }`}
-          role='menu'
-        >
-          {availableColumns.map((column) => (
-            <div
-              key={column.field}
-              className={`${styles.columnItem} ${
-                selectedColumns.includes(column.field) ? styles.selected : ''
-              }`}
-              onClick={() => handleColumnSelection(column.field)}
-              role='menuitem'
-              aria-checked={selectedColumns.includes(column.field)}
-              tabIndex={0}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleColumnSelection(column.field);
-                }
-              }}
-            >
-              {column.label}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-
-  const EditButton = () => (
-    <button
-      className={styles.button}
-      onClick={toggleEditing}
-      title='Режим редактирования'
-      aria-pressed={isEditing}
-    >
-      <FaPencilAlt />
-      {!isMobile && <span style={{ marginLeft: '5px' }}>Редактировать</span>}
-    </button>
-  );
-
-  const SaveButton = () => (
-    <button
-      className={styles.button}
-      type='button'
-      onClick={handleSave}
-      title='Сохранить'
-    >
-      <FaSave />
-      {!isMobile && <span style={{ marginLeft: '5px' }}>Сохранить</span>}
-    </button>
-  );
-
-  const ResetButton = () => (
-    <button
-      className={styles.button}
-      type='button'
-      title='Сбросить'
-      onClick={() => {
-        // Логика сброса
-      }}
-    >
-      <FaUndo />
-      {!isMobile && <span style={{ marginLeft: '5px' }}>Сбросить</span>}
-    </button>
-  );
-
-  const BackButton = () => (
-    <button
-      className={styles.button}
-      type='button'
-      onClick={() => navigate(-1)}
-      title='Назад'
-    >
-      <FaBackward />
-      {!isMobile && <span style={{ marginLeft: '5px' }}>Назад</span>}
-    </button>
-  );
-
-  const HomeButton = () => (
-    <button
-      className={styles.button}
-      type='button'
-      onClick={() => navigate('/home')}
-      title='Домой'
-    >
-      <FaHome />
-      {!isMobile && <span style={{ marginLeft: '5px' }}>Домой</span>}
-    </button>
-  );
-
   return (
     <div className={styles.buttonGroup}>
-      {pageType === 'all-plants' && (
-        <>
-          <ColumnsButton />
-          <EditButton />
-          {isEditing && <SaveButton />}
-          <ResetButton />
-          <BackButton />
-          <HomeButton />
-        </>
-      )}
+      {pageType === 'all-plants' &&
+        availableColumns &&
+        selectedColumns &&
+        setSelectedColumns && (
+          <>
+            <div className={styles.dropdownContainer} ref={dropdownRef}>
+              <button
+                className={styles.columnsButton}
+                onClick={() => setIsColumnsDropdownOpen((prev) => !prev)}
+                title='Выбрать столбцы для поиска'
+                aria-haspopup='true'
+                aria-expanded={isColumnsDropdownOpen}
+              >
+                <FaColumns />
+                {!isMobile && (
+                  <span style={{ marginLeft: '8px' }}>Столбцы</span>
+                )}
+              </button>
+              {isColumnsDropdownOpen && (
+                <div
+                  className={`${styles.columnsDropdown} ${
+                    isColumnsDropdownOpen ? 'show' : ''
+                  }`}
+                  role='menu'
+                >
+                  {availableColumns.map((column) => (
+                    <div
+                      key={column.field}
+                      className={`${styles.columnItem} ${
+                        selectedColumns.includes(column.field)
+                          ? styles.selected
+                          : ''
+                      }`}
+                      onClick={() => handleColumnSelection(column.field)}
+                      role='menuitem'
+                      aria-checked={selectedColumns.includes(column.field)}
+                      tabIndex={0}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          handleColumnSelection(column.field);
+                        }
+                      }}
+                    >
+                      {column.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button
+              className={styles.button}
+              onClick={toggleEditing}
+              title='Режим редактирования'
+              aria-pressed={isEditing}
+            >
+              <FaPencilAlt />
+              {!isMobile && (
+                <span style={{ marginLeft: '5px' }}>Редактировать</span>
+              )}
+            </button>
+
+            {isEditing && handleSave && (
+              <button
+                className={styles.button}
+                type='button'
+                onClick={handleSave}
+                title='Сохранить'
+              >
+                <FaSave />
+                {!isMobile && (
+                  <span style={{ marginLeft: '5px' }}>Сохранить</span>
+                )}
+              </button>
+            )}
+
+            <button
+              className={styles.button}
+              type='button'
+              title='Сбросить'
+              onClick={() => {
+                if (handleSave) handleSave();
+              }}
+            >
+              <FaUndo />
+              {!isMobile && <span style={{ marginLeft: '5px' }}>Сбросить</span>}
+            </button>
+
+            <button
+              className={styles.button}
+              type='button'
+              onClick={() => navigate(-1)}
+              title='Назад'
+            >
+              <FaBackward />
+              {!isMobile && <span style={{ marginLeft: '5px' }}>Назад</span>}
+            </button>
+          </>
+        )}
+
       {pageType === 'add-plant' && (
         <>
-          <BackButton />
-          <HomeButton />
-          <SaveButton />
+          {/* Здесь просто type='button', вызываем handleSave напрямую */}
+          {handleSave && (
+            <button
+              className={styles.button}
+              type='button'
+              onClick={handleSave}
+              title='Сохранить'
+            >
+              <FaSave />
+              {!isMobile && (
+                <span style={{ marginLeft: '5px' }}>Сохранить</span>
+              )}
+            </button>
+          )}
+
+          <button
+            className={styles.button}
+            type='button'
+            onClick={() => navigate(-1)}
+            title='Назад'
+          >
+            <FaBackward />
+            {!isMobile && <span style={{ marginLeft: '5px' }}>Назад</span>}
+          </button>
         </>
       )}
       {!pageType && <HomeButton />}

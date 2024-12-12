@@ -27,22 +27,60 @@ const App: React.FC = () => {
     [debouncedSetSearchTerm]
   );
 
+  // Проверка, нужно ли исключить навбар для текущего маршрута
+  const isExcluded = useMemo(() => {
+    return location.pathname !== '/home';
+  }, [location.pathname]);
+
+  // Извлекаем тип страницы и ID сектора из пути
+  const path = location.pathname;
+  let pageType: 'home' | 'add-plant' | 'all-plants' | undefined;
+  let sectorId: number | undefined;
+
+  if (path === '/') {
+    pageType = 'home';
+  } else if (path.startsWith('/add-plant/')) {
+    const match = path.match(/^\/add-plant\/(\d+)$/);
+    if (match) {
+      sectorId = parseInt(match[1], 10);
+      pageType = 'add-plant';
+    }
+  } else if (path.startsWith('/all-plants/')) {
+    const match = path.match(/^\/all-plants\/(\d+)$/);
+    if (match) {
+      sectorId = parseInt(match[1], 10);
+      pageType = 'all-plants';
+    }
+  }
+
+  const [isEditing, setIsEditing] = useState(false);
+
   const toggleEditing = () => {
     setIsEditing((prev) => !prev);
   };
 
   return (
+    <>
+      {!isExcluded && (
+        <Navbar
+          sectorId={sectorId}
+          pageType={pageType}
+          onSearch={handleSearch}
+          isEditing={isEditing}
+          toggleEditing={toggleEditing}
+        />
+      )}
+      <AppRoutes searchTerm={searchTerm} />
+    </>
+  );
+};
+
+const App: React.FC = () => {
+  return (
     <FormProvider>
       <Router>
         <AuthProvider>
-          <Navbar
-            onSearch={handleSearch}
-            isEditing={isEditing}
-            toggleEditing={toggleEditing}
-          />
-          <div className='app-container'>
-            <AppRoutes searchTerm={searchTerm} />
-          </div>
+          <AppWrapper />
         </AuthProvider>
       </Router>
     </FormProvider>

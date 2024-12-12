@@ -1,6 +1,5 @@
 // src/components/Navbar/Navbar.tsx
-import { FC, useEffect, useRef, useState } from 'react';
-import { NavbarElement } from '../../configs/navbarConfig';
+import React, { useEffect, useRef, useState } from 'react';
 import useIsMobile from '../../hooks/useInMobile';
 import { useNavbarConfig } from '../../hooks/useNavbarConfig';
 import useNavbarVisibility from '../../hooks/useNavbarVisibility';
@@ -16,7 +15,7 @@ interface NavbarProps {
   isEditing?: boolean;
   toggleEditing?: () => void;
   handleSave?: () => void;
-  searchableColumns?: { field: string; label: string }[];
+  searchableColumns?: SearchableColumn[];
 }
 
 const Navbar: FC<NavbarProps> = ({
@@ -59,70 +58,18 @@ const Navbar: FC<NavbarProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsNavItemsDropdownOpen(false);
+    }
+  };
+
   const navbarClass = `${styles.navbarContainer} ${
     !isVisible ? styles.hidden : ''
   }`;
 
-  // Маппинг типов элементов на компоненты
-  const renderElement = (el: NavbarElement, idx: number) => {
-    switch (el.type) {
-      case 'links':
-        return (
-          <NavItems
-            key={idx}
-            sectorId={sectorId}
-            pageType={pageType}
-            isMobileMenuOpen={isMobileMenuOpen}
-            isDropdownOpen={isNavItemsDropdownOpen}
-            setIsDropdownOpen={setIsNavItemsDropdownOpen}
-            dropdownRef={navItemsDropdownRef}
-            customLinks={el.links}
-          />
-        );
-      case 'search':
-        if (pageType === 'all-plants') {
-          return (
-            <div className={styles.searchContainer} key={idx}>
-              <SearchInput
-                searchQuery={searchQuery}
-                onSearchChange={(e) => {
-                  const query = e.target.value;
-                  setSearchQuery(query);
-                  onSearch?.(query, selectedColumns);
-                }}
-              />
-            </div>
-          );
-        }
-        return null;
-      case 'buttonGroup':
-        return (
-          <ButtonGroup
-            key={idx}
-            pageType={pageType}
-            isEditing={isEditing}
-            toggleEditing={toggleEditing}
-            handleSave={handleSave}
-            isMobile={isMobile}
-            availableColumns={searchableColumns}
-            selectedColumns={selectedColumns}
-            setSelectedColumns={setSelectedColumns}
-            onSearch={onSearch}
-            searchQuery={searchQuery}
-          />
-        );
-      case 'mobileActions':
-        if (sectorId && isMobile) {
-          return <MobileActions key={idx} isOpen={isMobileMenuOpen} />;
-        }
-        return null;
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className={navbarClass}>
+    <div className={navbarClass} onKeyDown={handleKeyDown}>
       {isMobile && (
         <MobileToggle
           isOpen={isMobileMenuOpen}
@@ -130,7 +77,46 @@ const Navbar: FC<NavbarProps> = ({
         />
       )}
 
-      {config.elements?.map((el, idx) => renderElement(el, idx))}
+      <NavItems
+        sectorId={sectorId}
+        pageType={pageType}
+        isMobileMenuOpen={isMobileMenuOpen}
+        isDropdownOpen={isNavItemsDropdownOpen}
+        setIsDropdownOpen={setIsNavItemsDropdownOpen}
+        dropdownRef={navItemsDropdownRef}
+      />
+
+      {pageType === 'all-plants' && (
+        <div className={styles.searchContainer}>
+          <SearchInput
+            searchQuery={searchQuery}
+            onSearchChange={(e) => {
+              const query = e.target.value;
+              setSearchQuery(query);
+              if (onSearch) {
+                onSearch(query, selectedColumns);
+              }
+            }}
+          />
+        </div>
+      )}
+
+      {sectorId && (
+        <ButtonGroup
+          pageType={pageType}
+          isEditing={isEditing}
+          toggleEditing={toggleEditing}
+          handleSave={handleSave}
+          isMobile={isMobile}
+          availableColumns={searchableColumns}
+          selectedColumns={selectedColumns}
+          setSelectedColumns={setSelectedColumns}
+          onSearch={onSearch}
+          searchQuery={searchQuery}
+        />
+      )}
+
+      {sectorId && isMobile && <MobileActions isOpen={isMobileMenuOpen} />}
     </div>
   );
 };

@@ -7,7 +7,7 @@ export interface Sector {
     success: boolean;
     message: string;
     data?: T;
-    errors?: any;
+    errors?: any; 
   }
 // src/types/types.ts
 
