@@ -40,6 +40,12 @@
   transform: translateY(0);
   transition: transform var(--navbar-transition), max-height var(--navbar-transition), background-color var(--navbar-transition);
   backdrop-filter: var(--navbar-blur);
+  height: 62px; /* Фиксирован��ая высота навбара */
+}
+
+/* Добавляем новый класс для создания отступа под навбаром */
+:global(body) {
+  padding-top: 62px; /* Соответствует высоте навбара */
 }
 
 /* Скрытие навбара при прокрутке */
@@ -601,6 +607,11 @@ input:checked + .slider:before {
     max-height: 60px;
     overflow: hidden;
     transition: max-height var(--navbar-transition), background-color var(--navbar-transition);
+    min-height: 62px;
+  }
+
+  :global(body) {
+    padding-top: 62px; /* Минимальный отступ на мобильных устройствах */
   }
 
   .navbarContainer.hidden {

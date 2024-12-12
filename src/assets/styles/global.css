@@ -5,9 +5,12 @@
 /* Контейнеры приложения */
 .app-container {
   width: 100%;
-  max-width: 1500px;
   margin: 0 auto;
-  padding: 3rem;
+  padding: 2rem;
+  margin-top: 3rem; /* Высота навбара */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
 }
 
 .app-container.full-width {
@@ -39,6 +42,10 @@
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.08);
   --blur-background: blur(20px);
+  --section-spacing: 2rem;
+  --section-inner-spacing: 1.25rem;
+  --border-radius-lg: 12px;
+  --border-radius-md: 8px;
 }
 
 /* Общие стили */
