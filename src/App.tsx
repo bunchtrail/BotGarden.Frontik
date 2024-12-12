@@ -70,9 +70,7 @@ const AppWrapper: React.FC = () => {
           toggleEditing={toggleEditing}
         />
       )}
-      <div className='app-container'>
-        <AppRoutes searchTerm={searchTerm} />
-      </div>
+      <AppRoutes searchTerm={searchTerm} />
     </>
   );
 };

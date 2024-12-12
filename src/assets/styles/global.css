@@ -5,10 +5,9 @@
 /* Контейнеры приложения */
 .app-container {
   width: 100%;
-  max-width: 1500px;
   margin: 0 auto;
   padding: 2rem;
-  padding-top: 20px;
+  margin-top: 3rem; /* Высота навбара */
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
