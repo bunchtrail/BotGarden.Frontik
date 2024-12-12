@@ -1,5 +1,6 @@
 // src/components/Navbar/Navbar.tsx
 import React, { useEffect, useRef, useState } from 'react';
+import PageType, { pageConfig } from '../../configs/pageConfig';
 import useIsMobile from '../../hooks/useInMobile';
 import useNavbarVisibility from '../../hooks/useNavbarVisibility';
 import ButtonGroup from './ButtonGroup';
@@ -16,7 +17,7 @@ interface SearchableColumn {
 
 interface NavbarProps {
   sectorId?: number;
-  pageType?: 'home' | 'add-plant' | 'all-plants';
+  pageType?: PageType;
   onSearch?: (query: string, selectedColumns: string[]) => void;
   isEditing?: boolean;
   toggleEditing?: () => void;
@@ -26,13 +27,14 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({
   sectorId,
-  pageType,
+  pageType = 'home',
   onSearch,
   isEditing,
   toggleEditing,
   handleSave,
   searchableColumns = [],
 }) => {
+  const config = pageConfig[pageType]; // Берем конфигурацию для текущего pageType
   const [isNavItemsDropdownOpen, setIsNavItemsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -88,7 +90,7 @@ const Navbar: React.FC<NavbarProps> = ({
         dropdownRef={navItemsDropdownRef}
       />
 
-      {pageType === 'all-plants' && (
+      {config.showSearch && (
         <div className={styles.searchContainer}>
           <SearchInput
             searchQuery={searchQuery}
@@ -103,7 +105,7 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
       )}
 
-      {sectorId && (
+      {sectorId && config.showButtonGroup && (
         <ButtonGroup
           pageType={pageType}
           isEditing={isEditing}

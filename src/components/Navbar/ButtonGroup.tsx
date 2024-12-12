@@ -8,10 +8,11 @@ import {
   FaUndo,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import PageType, { pageConfig } from '../../configs/pageConfig';
 import styles from './Navbar.module.css';
 
 interface ButtonGroupProps {
-  pageType?: 'home' | 'add-plant' | 'all-plants';
+  pageType?: PageType;
   isEditing?: boolean;
   toggleEditing?: () => void;
   handleSave?: () => void;
@@ -24,7 +25,7 @@ interface ButtonGroupProps {
 }
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({
-  pageType,
+  pageType = 'home',
   isEditing,
   toggleEditing,
   handleSave,
@@ -35,6 +36,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
   onSearch,
   searchQuery,
 }) => {
+  const config = pageConfig[pageType];
   const navigate = useNavigate();
   const [isColumnsDropdownOpen, setIsColumnsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 
   return (
     <div className={styles.buttonGroup}>
-      {pageType === 'all-plants' &&
+      {config.showColumnsDropdown &&
         availableColumns &&
         selectedColumns &&
         setSelectedColumns && (
@@ -181,9 +183,8 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
           </>
         )}
 
-      {pageType === 'add-plant' && (
+      {pageType === 'add-plant' && !config.showColumnsDropdown && (
         <>
-          {/* Здесь просто type='button', вызываем handleSave напрямую */}
           {handleSave && (
             <button
               className={styles.button}

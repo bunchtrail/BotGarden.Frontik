@@ -1,14 +1,14 @@
 // src/components/Navbar/NavItems.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from './Navbar.module.css';
-
+import PageType, { pageConfig } from '../../configs/pageConfig';
 import LinkTitle from '../Misc/LinkTitle';
 import Dropdown from './Dropdown';
+import styles from './Navbar.module.css';
 
 interface NavItemsProps {
   sectorId?: number;
-  pageType?: 'home' | 'add-plant' | 'all-plants'; // Добавляем 'home' сюда
+  pageType?: PageType;
   isMobileMenuOpen: boolean;
   isDropdownOpen: boolean;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,50 +17,46 @@ interface NavItemsProps {
 
 const NavItems: React.FC<NavItemsProps> = ({
   sectorId,
-  pageType,
+  pageType = 'home',
   isMobileMenuOpen,
   isDropdownOpen,
   setIsDropdownOpen,
   dropdownRef,
 }) => {
+  const config = pageConfig[pageType];
+
   return (
     <div
       className={`${styles.navItems} ${isMobileMenuOpen ? styles.show : ''}`}
     >
       {sectorId ? (
         <>
-          <Link to='/home' className={styles.navItem}>
-            <i className={`fas fa-home ${styles.icon}`} /> Вернуться на главный
-            экран
-          </Link>
+          {config.navLinks.map((link) => (
+            <Link to={link.to} className={styles.navItem} key={link.to}>
+              <i className={`${link.iconClass} ${styles.icon}`} />
+              <LinkTitle title={link.label} />
+            </Link>
+          ))}
 
-          <Dropdown
-            sectorId={sectorId}
-            pageType={pageType !== 'home' ? pageType : undefined}
-            isOpen={isDropdownOpen}
-            toggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
-            dropdownRef={dropdownRef}
-          />
+          {/* Показываем Dropdown, если это не home, но в данном примере логика может остаться прежней */}
+          {pageType !== 'home' && (
+            <Dropdown
+              sectorId={sectorId}
+              pageType={pageType}
+              isOpen={isDropdownOpen}
+              toggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
+              dropdownRef={dropdownRef}
+            />
+          )}
         </>
       ) : (
         <>
-          {/* Ссылки без сектора */}
-          <Link to='/all-plants/1' className={styles.navItem}>
-            <i className={`fas fa-tree ${styles.icon}`} />
-            <LinkTitle title='Дендрология - все записи' />
-          </Link>
-          <Link to='/all-plants/2' className={styles.navItem}>
-            <i className={`fas fa-leaf ${styles.icon}`} />
-            <LinkTitle title='Флора - все записи' />
-          </Link>
-          <Link to='/all-plants/3' className={styles.navItem}>
-            <i className={`fas fa-seedling ${styles.icon}`} />
-            <LinkTitle title='Цветоводство - все записи' />
-          </Link>
-          <Link to='/map' className={styles.navItem}>
-            <i className={`fas fa-map ${styles.icon}`} />
-            <LinkTitle title='Карта' />
-          </Link>
+          {config.navLinks.map((link) => (
+            <Link to={link.to} className={styles.navItem} key={link.to}>
+              <i className={`${link.iconClass} ${styles.icon}`} />
+              <LinkTitle title={link.label} />
+            </Link>
+          ))}
         </>
       )}
     </div>

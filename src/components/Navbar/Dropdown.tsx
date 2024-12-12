@@ -3,11 +3,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Navbar.module.css';
 
+import PageType from '../../configs/pageConfig';
 import { getSectorById } from '../../utils/data';
 
 interface DropdownProps {
   sectorId: number;
-  pageType?: 'add-plant' | 'all-plants';
+  pageType?: PageType;
   isOpen: boolean;
   toggleDropdown: () => void;
   dropdownRef: React.RefObject<HTMLDivElement>;
