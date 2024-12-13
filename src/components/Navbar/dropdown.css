@@ -1,0 +1,85 @@
+.dropdownContainer {
+    position: relative;
+  }
+  
+  /* Кнопка (Toggle) для открытия Dropdown */
+  .dropdownToggle {
+    background: var(--button-bg-color);
+    backdrop-filter: var(--navbar-blur);
+    border: 1px solid var(--navbar-border-color);
+    padding: 0 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--navbar-transition), transform var(--navbar-transition);
+    display: flex;
+    align-items: center;
+    color: var(--navbar-text-hover-color);
+    font-weight: 500;
+    font-size: 16px;
+    justify-content: space-between;
+    height: 42px;
+    min-height: 42px;
+  }
+  
+  .dropdownToggle:hover {
+    background: var(--button-hover-bg-color);
+    transform: translateY(-2px);
+  }
+  
+  /* Меню Dropdown */
+  .dropdownMenu {
+    display: none;
+    position: absolute;
+    background-color: var(--dropdown-bg-color);
+    backdrop-filter: var(--navbar-blur);
+    border: 1px solid var(--navbar-border-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    min-width: 200px;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    transform-origin: top;
+    transition: opacity var(--navbar-transition), transform var(--navbar-transition);
+    margin-top: 5px;
+  }
+  
+  .dropdownMenu.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Пункты меню Dropdown */
+  .dropdownItem {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    color: var(--navbar-text-color);
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--navbar-transition), color var(--navbar-transition), transform var(--navbar-transition);
+    height: 42px;
+    min-height: 42px;
+  }
+  
+  .dropdownItem:hover {
+    background-color: var(--navbar-item-bg-hover);
+    color: var(--navbar-text-hover-color);
+    transform: translateX(2px);
+  }
+  
+  /* Иконка внутри Dropdown */
+  .icon {
+    margin-right: 8px;
+    font-size: 16px;
+    color: var(--navbar-text-color);
+    transition: color var(--navbar-transition);
+  }
+  
+  .dropdownItem:hover .icon {
+    color: var(--navbar-text-hover-color);
+  }
+  

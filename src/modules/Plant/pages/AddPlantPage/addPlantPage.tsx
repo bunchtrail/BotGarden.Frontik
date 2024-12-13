@@ -64,9 +64,6 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
     });
   };
 
-  // Нет формы и onSubmit — вызов handleSave() из Navbar.
-  // Если нужно, можно сделать валидацию здесь перед сохранением.
-
   return (
     <>
       <Navbar

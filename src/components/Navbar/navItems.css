@@ -1,0 +1,63 @@
+.navItems {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+  }
+  
+  /* Класс для отображения элементов при раскрытии на мобильных */
+  .show {
+    display: flex;
+    max-height: 500px;
+    opacity: 1;
+  }
+  
+  .navItem {
+    color: var(--navbar-text-color);
+    text-decoration: none;
+    padding: 0 16px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    transition: background-color var(--navbar-transition), color var(--navbar-transition), transform var(--navbar-transition);
+    border-radius: var(--border-radius);
+    margin-right: 10px;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    height: 42px;
+    min-height: 42px;
+  }
+  
+  .navItem::after {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background-color: var(--primary-color);
+    bottom: 0;
+    left: 50%;
+    transition: width var(--navbar-transition), left var(--navbar-transition);
+  }
+  
+  .navItem:hover {
+    background-color: var(--navbar-item-bg-hover);
+    color: var(--navbar-text-hover-color);
+    transform: translateY(-2px);
+  }
+  
+  .navItem:hover::after {
+    width: 100%;
+    left: 0;
+  }
+  
+  .icon {
+    margin-right: 8px;
+    font-size: 18px;
+    color: var(--navbar-text-color);
+    transition: color var(--navbar-transition);
+  }
+  
+  .navItem:hover .icon {
+    color: var(--navbar-text-hover-color);
+  }
+  

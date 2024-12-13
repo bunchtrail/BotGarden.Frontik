@@ -4,6 +4,7 @@ import React from 'react';
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { LoginPage } from '../modules/Auth';
 import ProtectedRoute from '../modules/Auth/components/misc/ProtectedRoute';
+import { MapPage } from '../modules/Map';
 import { AddPlantPage } from '../modules/Plant';
 import AllPlantsPage from '../modules/Plant/pages/AllPlantsPage/AllPlantsPage';
 import HomePage from '../pages/Home/HomePage';
@@ -14,7 +15,7 @@ interface PlantsRouteProps {
   searchTerm: string;
 }
 
-const PlantsRoute: React.FC<PlantsRouteProps> = ({ isAddPage, searchTerm }) => {
+const PlantsRoute: React.FC<PlantsRouteProps> = ({ isAddPage }) => {
   const { sectorId } = useParams<{ sectorId: string }>();
 
   const sectorIdNumber = Number(sectorId);
@@ -27,7 +28,7 @@ const PlantsRoute: React.FC<PlantsRouteProps> = ({ isAddPage, searchTerm }) => {
   return isAddPage ? (
     <AddPlantPage sectorId={sectorIdNumber} />
   ) : (
-    <AllPlantsPage sectorId={sectorIdNumber} searchTerm={searchTerm} />
+    <AllPlantsPage sectorId={sectorIdNumber} />
   );
 };
 
@@ -65,6 +66,14 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ searchTerm }) => {
         element={
           <ProtectedRoute>
             <PlantsRoute isAddPage={false} searchTerm={searchTerm} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/map'
+        element={
+          <ProtectedRoute>
+            <MapPage />
           </ProtectedRoute>
         }
       />
