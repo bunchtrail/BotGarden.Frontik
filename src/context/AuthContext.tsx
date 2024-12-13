@@ -1,4 +1,5 @@
-import { jwtDecode } from 'jwt-decode';
+// src/context/AuthContext.tsx
+import { jwtDecode } from 'jwt-decode'; // Исправленный импорт
 import React, {
   createContext,
   ReactNode,
@@ -63,7 +64,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     try {
       const data = await refreshTokenService(token || '', refreshTokenValue);
-      setTokens(data.AccessToken, data.RefreshToken);
+      setTokens(data.accessToken, data.refreshToken);
       return true;
     } catch {
       return false;

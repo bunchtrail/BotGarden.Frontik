@@ -2,7 +2,7 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from '../services/tokenService';
 import { API_URL } from '../utils/data';
-import { refreshToken } from './authService'; // Убедитесь, что этот импорт существует
+import { refreshToken as refreshTokenFunc } from './authService'; // Переименованный импорт
 
 const client = axios.create({
   baseURL: API_URL,
@@ -77,11 +77,11 @@ client.interceptors.response.use(
           throw new Error('No refresh token available');
         }
 
-        const data = await refreshToken(currentAccessToken, currentRefreshToken); // Pass both tokens
-        setTokens(data.AccessToken, data.RefreshToken);
+        const data = await refreshTokenFunc(currentAccessToken, currentRefreshToken); // Используем переименованный импорт
+        setTokens(data.accessToken, data.refreshToken);
 
-        originalRequest.headers['Authorization'] = `Bearer ${data.AccessToken}`;
-        processQueue(null, data.AccessToken);
+        originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
+        processQueue(null, data.accessToken);
 
         return client(originalRequest);
       } catch (err) {

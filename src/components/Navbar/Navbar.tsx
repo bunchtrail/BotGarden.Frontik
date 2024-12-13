@@ -91,6 +91,7 @@ const Navbar: React.FC<NavbarProps> = ({
         isDropdownOpen={isNavItemsDropdownOpen}
         setIsDropdownOpen={setIsNavItemsDropdownOpen}
         dropdownRef={navItemsDropdownRef}
+        onAction={onAction}
       />
 
       {config.showSearch && (

@@ -14,6 +14,7 @@ interface NavItemsProps {
   isDropdownOpen: boolean;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
   dropdownRef: React.RefObject<HTMLDivElement>;
+  onAction?: (action: string, file?: File) => void;
 }
 
 const NavItems: React.FC<NavItemsProps> = ({
@@ -23,6 +24,7 @@ const NavItems: React.FC<NavItemsProps> = ({
   isDropdownOpen,
   setIsDropdownOpen,
   dropdownRef,
+  onAction,
 }) => {
   const config = pageConfig[pageType];
 
@@ -45,6 +47,7 @@ const NavItems: React.FC<NavItemsProps> = ({
           isOpen={isDropdownOpen}
           toggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
           dropdownRef={dropdownRef}
+          onAction={onAction}
         />
       )}
     </div>

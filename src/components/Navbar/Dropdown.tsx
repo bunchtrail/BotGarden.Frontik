@@ -1,9 +1,8 @@
 // src/components/Navbar/Dropdown.tsx
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Navbar.module.css';
-
-import PageType from '../../configs/pageConfig';
+import PageType, { pageConfig } from '../../configs/pageConfig';
 import { getSectorById } from '../../utils/data';
 
 interface DropdownProps {
@@ -12,22 +11,38 @@ interface DropdownProps {
   isOpen: boolean;
   toggleDropdown: () => void;
   dropdownRef: React.RefObject<HTMLDivElement>;
+  onAction?: (action: string, file?: File) => void; // Добавляем onAction
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
   sectorId,
-  pageType,
+  pageType = 'home',
   isOpen,
   toggleDropdown,
   dropdownRef,
+  onAction,
 }) => {
-  const sectorName =
-    sectorId !== undefined ? getSectorById(sectorId)?.name : 'Сектор';
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const basePath = pageType === 'add-plant' ? '/add-plant' : '/all-plants';
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && onAction) {
+      onAction('upload-image', file);
+    }
+  };
+
+  const config = pageConfig[pageType];
+  const sectorName = sectorId !== undefined ? getSectorById(sectorId)?.name : 'Настройки';
 
   return (
     <div className={styles.dropdownContainer} ref={dropdownRef}>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        accept="image/*"
+        onChange={handleFileUpload}
+      />
       <button
         className={styles.dropdownButton}
         onClick={toggleDropdown}
@@ -35,7 +50,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         aria-expanded={isOpen}
       >
         <div className={styles.dropdownLabel}>
-          <i className={`fas fa-plus ${styles.icon}`} />
+          <i className={`fas fa-cog ${styles.icon}`} />
           {sectorName}
         </div>
         <i
@@ -49,18 +64,20 @@ const Dropdown: React.FC<DropdownProps> = ({
           isOpen ? styles.animate : ''
         }`}
       >
-        <Link to={`${basePath}/1`} className={styles.dropdownItem}>
-          <i className={`fas fa-tree ${styles.icon}`} />
-          Дендрология
-        </Link>
-        <Link to={`${basePath}/2`} className={styles.dropdownItem}>
-          <i className={`fas fa-leaf ${styles.icon}`} />
-          Флора
-        </Link>
-        <Link to={`${basePath}/3`} className={styles.dropdownItem}>
-          <i className={`fas fa-seedling ${styles.icon}`} />
-          Цветоводство
-        </Link>
+        {config.dropdownItems?.map((item) => (
+          <div
+            key={item.pathSuffix}
+            className={styles.dropdownItem}
+            onClick={() => {
+              if (item.pathSuffix === '/upload-image') {
+                fileInputRef.current?.click();
+              }
+            }}
+          >
+            <i className={`${item.iconClass} ${styles.icon}`} />
+            {item.label}
+          </div>
+        ))}
       </div>
     </div>
   );

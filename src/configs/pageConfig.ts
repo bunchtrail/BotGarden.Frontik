@@ -91,6 +91,10 @@ export const pageConfig: Record<string, PageConfig> = {
     showSearch: false,
     showButtonGroup: true,
     showColumnsDropdown: false,
+    dropdownBasePath: '/map',
+    dropdownItems: [
+      { pathSuffix: '/upload-image', iconClass: 'fas fa-image', label: 'Загрузить изображение' },
+    ],
     navLinks: [
       { to: '/home', iconClass: 'fas fa-home', label: 'Вернуться на главный экран' },
     ],
@@ -100,7 +104,6 @@ export const pageConfig: Record<string, PageConfig> = {
       { action: 'edit-area', icon: 'edit', label: 'Редактировать область' },
       { action: 'edit-plant', icon: 'pencil-alt', label: 'Редактировать растение' },
       { action: 'remove-plant', icon: 'trash', label: 'Удалить растение' },
-      { action: 'upload-image', icon: 'image', label: 'Загрузить изображение' },
     ],
     dynamicButtons: [], // Для карты, возможно, нет динамических кнопок
   },
