@@ -1,7 +1,7 @@
 // src/components/Navbar/ButtonGroup.tsx
 
 import React, { useEffect, useRef, useState } from 'react';
-import { FaColumns } from 'react-icons/fa';
+import { FaBackward, FaColumns, FaPencilAlt, FaSave, FaUndo } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import PageType, { pageConfig } from '../../configs/pageConfig';
 import styles from './Navbar.module.css';
@@ -90,6 +90,8 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
               navigate(-1);
             } else if (btn.action === 'toggleEditing') {
               toggleEditing?.();
+            } else if (btn.action === 'save') {
+              handleSave?.();
             } else {
               onAction?.(btn.action);
             }
@@ -103,7 +105,8 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 
       {/* Рендерим динамические кнопки */}
       {config.dynamicButtons?.map((btn) => {
-        const shouldRender = btn.condition === 'isEditing' ? isEditing : true;
+        const shouldRender =
+          btn.condition === 'isEditing' ? isEditing : true;
 
         if (!shouldRender) return null;
 
@@ -116,8 +119,6 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
                 handleSave?.();
               } else if (btn.action === 'reset') {
                 // Реализуйте функцию сброса при необходимости
-                // Например:
-                // resetPlants();
                 console.log('Сбросить изменения');
               } else {
                 onAction?.(btn.action);
@@ -126,9 +127,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
             title={btn.label}
           >
             <i className={`fas fa-${btn.icon} ${styles.icon}`} />
-            {!isMobile && (
-              <span style={{ marginLeft: '5px' }}>{btn.label}</span>
-            )}
+            {!isMobile && <span style={{ marginLeft: '5px' }}>{btn.label}</span>}
           </button>
         );
       })}
@@ -147,7 +146,9 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
               aria-expanded={isColumnsDropdownOpen}
             >
               <FaColumns />
-              {!isMobile && <span style={{ marginLeft: '8px' }}>Столбцы</span>}
+              {!isMobile && (
+                <span style={{ marginLeft: '8px' }}>Столбцы</span>
+              )}
             </button>
             {isColumnsDropdownOpen && (
               <div
