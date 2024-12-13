@@ -7,7 +7,7 @@ import PageType from '../../configs/pageConfig';
 import { getSectorById } from '../../utils/data';
 
 interface DropdownProps {
-  sectorId: number;
+  sectorId?: number;
   pageType?: PageType;
   isOpen: boolean;
   toggleDropdown: () => void;
@@ -21,7 +21,8 @@ const Dropdown: React.FC<DropdownProps> = ({
   toggleDropdown,
   dropdownRef,
 }) => {
-  const sectorName = getSectorById(sectorId)?.name || 'Сектор';
+  const sectorName =
+    sectorId !== undefined ? getSectorById(sectorId)?.name : 'Сектор';
 
   const basePath = pageType === 'add-plant' ? '/add-plant' : '/all-plants';
 

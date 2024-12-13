@@ -1,4 +1,5 @@
 // src/components/Navbar/Navbar.tsx
+
 import React, { useEffect, useRef, useState } from 'react';
 import PageType, { pageConfig } from '../../configs/pageConfig';
 import useIsMobile from '../../hooks/useInMobile';
@@ -23,18 +24,20 @@ interface NavbarProps {
   toggleEditing?: () => void;
   handleSave?: () => void;
   searchableColumns?: SearchableColumn[];
+  onAction?: (action: string, file?: File) => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
   sectorId,
   pageType = 'home',
   onSearch,
-  isEditing,
+  isEditing = false,
   toggleEditing,
   handleSave,
   searchableColumns = [],
+  onAction,
 }) => {
-  const config = pageConfig[pageType]; // Берем конфигурацию для текущего pageType
+  const config = pageConfig[pageType];
   const [isNavItemsDropdownOpen, setIsNavItemsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -105,7 +108,7 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
       )}
 
-      {sectorId && config.showButtonGroup && (
+      {config.showButtonGroup && (
         <ButtonGroup
           pageType={pageType}
           isEditing={isEditing}
@@ -117,10 +120,11 @@ const Navbar: React.FC<NavbarProps> = ({
           setSelectedColumns={setSelectedColumns}
           onSearch={onSearch}
           searchQuery={searchQuery}
+          onAction={onAction}
         />
       )}
 
-      {sectorId && isMobile && <MobileActions isOpen={isMobileMenuOpen} />}
+      {isMobile && <MobileActions isOpen={isMobileMenuOpen} />}
     </div>
   );
 };

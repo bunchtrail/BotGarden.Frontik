@@ -1,4 +1,5 @@
 // src/pages/AddPlantPage/AddPlantPage.tsx
+
 import React, { useContext, useEffect, useState } from 'react';
 import CollapsibleSection from '../../../../components/CollapsibleSection';
 import ErrorMessage from '../../../../components/Misc/ErrorMessage';
@@ -23,6 +24,8 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
   const formContext = useContext(FormContext);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { handleSave, loading, saveError, saveSuccess } = useFormActions();
+
+  const [isEditing, setIsEditing] = useState(false); // Добавляем состояние редактирования
 
   useEffect(() => {
     const handleResize = () => {
@@ -64,12 +67,18 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
     });
   };
 
+  const toggleEditing = () => {
+    setIsEditing((prev) => !prev);
+  };
+
   return (
     <>
       <Navbar
         sectorId={sectorId}
         pageType='add-plant'
         handleSave={handleSave}
+        isEditing={isEditing}
+        toggleEditing={toggleEditing}
       />
       <div className='app-container'>
         <div className={`app-container ${styles.addPlantPage}`}>

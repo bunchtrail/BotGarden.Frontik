@@ -1,4 +1,5 @@
 // src/components/Navbar/NavItems.tsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PageType, { pageConfig } from '../../configs/pageConfig';
@@ -29,35 +30,22 @@ const NavItems: React.FC<NavItemsProps> = ({
     <div
       className={`${styles.navItems} ${isMobileMenuOpen ? styles.show : ''}`}
     >
-      {sectorId ? (
-        <>
-          {config.navLinks.map((link) => (
-            <Link to={link.to} className={styles.navItem} key={link.to}>
-              <i className={`${link.iconClass} ${styles.icon}`} />
-              <LinkTitle title={link.label} />
-            </Link>
-          ))}
+      {config.navLinks.map((link) => (
+        <Link to={link.to} className={styles.navItem} key={link.to}>
+          <i className={`${link.iconClass} ${styles.icon}`} />
+          <LinkTitle title={link.label} />
+        </Link>
+      ))}
 
-          {/* Показываем Dropdown, если это не home, но в данном примере логика может остаться прежней */}
-          {pageType !== 'home' && (
-            <Dropdown
-              sectorId={sectorId}
-              pageType={pageType}
-              isOpen={isDropdownOpen}
-              toggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
-              dropdownRef={dropdownRef}
-            />
-          )}
-        </>
-      ) : (
-        <>
-          {config.navLinks.map((link) => (
-            <Link to={link.to} className={styles.navItem} key={link.to}>
-              <i className={`${link.iconClass} ${styles.icon}`} />
-              <LinkTitle title={link.label} />
-            </Link>
-          ))}
-        </>
+      {/* Показываем Dropdown, если задан sectorId и есть dropdownItems */}
+      {config.dropdownItems && (
+        <Dropdown
+          sectorId={sectorId}
+          pageType={pageType}
+          isOpen={isDropdownOpen}
+          toggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
+          dropdownRef={dropdownRef}
+        />
       )}
     </div>
   );

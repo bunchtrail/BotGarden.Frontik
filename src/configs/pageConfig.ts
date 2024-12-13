@@ -16,6 +16,7 @@ export interface ButtonConfig {
   action: string;
   icon: string;
   label: string;
+  condition?: string; // Новое поле для условия отображения
 }
 
 interface PageConfig {
@@ -25,7 +26,8 @@ interface PageConfig {
   dropdownBasePath?: string;
   dropdownItems?: DropdownItem[];
   navLinks: PageNavLink[];
-  buttonGroup?: ButtonConfig[];
+  staticButtons?: ButtonConfig[];
+  dynamicButtons?: ButtonConfig[]; // Добавляем динамические кнопки
 }
 
 export const pageConfig: Record<string, PageConfig> = {
@@ -39,7 +41,8 @@ export const pageConfig: Record<string, PageConfig> = {
       { to: '/all-plants/3', iconClass: 'fas fa-seedling', label: 'Цветоводство - все записи' },
       { to: '/map', iconClass: 'fas fa-map', label: 'Карта' },
     ],
-    buttonGroup: [],
+    staticButtons: [], // Нет статических кнопок
+    dynamicButtons: [], // Нет динамических кнопок
   },
   'all-plants': {
     showSearch: true,
@@ -54,11 +57,13 @@ export const pageConfig: Record<string, PageConfig> = {
     navLinks: [
       { to: '/home', iconClass: 'fas fa-home', label: 'Вернуться на главный экран' },
     ],
-    buttonGroup: [
-      { action: 'toggleEditing', icon: 'pencil', label: 'Редактировать' },
-      { action: 'save', icon: 'save', label: 'Сохранить' },
-      { action: 'reset', icon: 'undo', label: 'Сбросить' },
+    staticButtons: [
       { action: 'back', icon: 'backward', label: 'Назад' },
+      { action: 'toggleEditing', icon: 'pencil', label: 'Редактировать' }, // Удалили условие
+    ],
+    dynamicButtons: [
+      { action: 'save', icon: 'save', label: 'Сохранить', condition: 'isEditing' },
+      { action: 'reset', icon: 'undo', label: 'Сбросить', condition: 'isEditing' },
     ],
   },
   'add-plant': {
@@ -74,9 +79,11 @@ export const pageConfig: Record<string, PageConfig> = {
     navLinks: [
       { to: '/home', iconClass: 'fas fa-home', label: 'Вернуться на главный экран' },
     ],
-    buttonGroup: [
-      { action: 'save', icon: 'save', label: 'Сохранить' },
+    staticButtons: [
       { action: 'back', icon: 'backward', label: 'Назад' },
+    ],
+    dynamicButtons: [
+      { action: 'save', icon: 'save', label: 'Сохранить', condition: 'isEditing' },
     ],
   },
   map: {
@@ -86,7 +93,7 @@ export const pageConfig: Record<string, PageConfig> = {
     navLinks: [
       { to: '/home', iconClass: 'fas fa-home', label: 'Вернуться на главный экран' },
     ],
-    buttonGroup: [
+    staticButtons: [
       { action: 'add-plant', icon: 'seedling', label: 'Добавить растение' },
       { action: 'add-area', icon: 'map-marked-alt', label: 'Добавить область' },
       { action: 'edit-area', icon: 'edit', label: 'Редактировать область' },
@@ -94,10 +101,7 @@ export const pageConfig: Record<string, PageConfig> = {
       { action: 'remove-plant', icon: 'trash', label: 'Удалить растение' },
       { action: 'upload-image', icon: 'image', label: 'Загрузить изображение' },
     ],
-    dropdownItems: [
-      { pathSuffix: '/settings', iconClass: 'fas fa-cog', label: 'Настройки' },
-      { pathSuffix: '/help', iconClass: 'fas fa-question-circle', label: 'Помощь' },
-    ],
+    dynamicButtons: [], // Для карты, возможно, нет динамических кнопок
   },
 };
 

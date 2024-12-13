@@ -55,20 +55,12 @@ const MapPage: React.FC = () => {
     }
   };
 
-  const searchableColumns = [
-    { field: 'name', label: 'Название' },
-    { field: 'coordinates', label: 'Координаты' },
-  ];
-
   const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY;
 
   return (
     <>
-      <Navbar
-        pageType='map'
-        onAction={onAction}
-        searchableColumns={searchableColumns}
-      />
+      <Navbar pageType='map' onAction={onAction} />
+
       <div className={`app-container ${styles.mapContainer}`}>
         <div className={styles.mapWrapper}>
           <YMaps
