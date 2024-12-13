@@ -40,7 +40,7 @@
   transform: translateY(0);
   transition: transform var(--navbar-transition), max-height var(--navbar-transition), background-color var(--navbar-transition);
   backdrop-filter: var(--navbar-blur);
-  height: 62px; /* Фиксирован��ая высота навбара */
+  height: 62px; /* Фиксированная высота навбара */
 }
 
 /* Добавляем новый класс для создания отступа под навбаром */
@@ -161,6 +161,21 @@
 
 .button.active {
   border-color: var(--primary-color);
+}
+
+.button:hover {
+  background-color: var(--accent-color);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.button[title="Загрузить карту"] {
+  background-color: #28a745;
+  color: white;
+}
+
+.button[title="Загрузить карту"]:hover {
+  background-color: #218838;
 }
 
 /* Выпадающее меню */

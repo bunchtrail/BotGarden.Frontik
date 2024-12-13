@@ -16,4 +16,3 @@ export const setTokens = (accessToken: string, refreshToken: string): void => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
   };
-  
