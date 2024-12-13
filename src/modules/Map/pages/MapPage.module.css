@@ -1,0 +1,11 @@
+/* src/modules/Map/pages/MapPage.module.css */
+.mapPageContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Полная высота окна */
+}
+
+.mapWrapper {
+  flex: 1; /* Заполняет оставшееся пространство */
+  position: relative;
+}

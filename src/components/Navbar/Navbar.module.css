@@ -24,7 +24,6 @@
   box-sizing: border-box;
 }
 
-/* Контейнер навбара */
 .navbarContainer {
   display: flex;
   justify-content: space-between;
@@ -32,15 +31,12 @@
   padding: 10px 20px;
   background-color: var(--navbar-bg-color);
   box-shadow: var(--navbar-shadow);
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   z-index: 1000;
   transform: translateY(0);
   transition: transform var(--navbar-transition), max-height var(--navbar-transition), background-color var(--navbar-transition);
   backdrop-filter: var(--navbar-blur);
-  height: 62px; /* Фиксированная высота навбара */
+  height: 62px;
 }
 
 /* Добавляем новый класс для создания отступа под навбаром */

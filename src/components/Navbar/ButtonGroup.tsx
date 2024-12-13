@@ -37,6 +37,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
   const navigate = useNavigate();
   const [isColumnsDropdownOpen, setIsColumnsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleColumnSelection = (column: string) => {
     if (!setSelectedColumns) return;
@@ -52,6 +53,13 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
       }
       return updated;
     });
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && onAction) {
+      onAction('upload-image', file);
+    }
   };
 
   useEffect(() => {
@@ -80,13 +88,22 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 
   return (
     <div className={styles.buttonGroup}>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        accept="image/*"
+        onChange={handleFileUpload}
+      />
       {/* Рендерим статические кнопки */}
       {config.staticButtons?.map((btn) => (
         <button
           key={btn.action}
           className={styles.button}
           onClick={() => {
-            if (btn.action === 'back') {
+            if (btn.action === 'upload-image') {
+              fileInputRef.current?.click();
+            } else if (btn.action === 'back') {
               navigate(-1);
             } else if (btn.action === 'toggleEditing') {
               toggleEditing?.();

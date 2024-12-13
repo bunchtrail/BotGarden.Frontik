@@ -9,17 +9,27 @@ export const login = async (email: string, password: string): Promise<LoginRespo
   return response.data;
 };
 
-export const refreshToken = async (accessToken: string, refreshToken: string): Promise<{
+export const refreshToken = async (
+  accessToken: string,
+  refreshToken: string
+): Promise<{
   AccessToken: string;
   RefreshToken: string;
 }> => {
-  const response = await client.post('/api/Account/refresh', {
-    Token: accessToken || '',
-    RefreshToken: refreshToken,
-  });
-  return response.data;
+  try {
+    const response = await client.post('/api/Account/refresh', {
+      Token: accessToken || '',
+      RefreshToken: refreshToken,
+    });
+    console.log('Refresh response:', response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      console.error('Ошибка при обновлении токенов:', error.response.data);
+    } else {
+      console.error('Ошибка при обновлении токенов:', error.message);
+    }
+    throw error;
+  }
 };
 
-export const logout = async (): Promise<void> => {
-  await client.post('/api/Account/logout');
-};
