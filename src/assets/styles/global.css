@@ -5,8 +5,9 @@
 /* Контейнеры приложения */
 .app-container {
   width: 100%;
-  margin: 0 auto;
-  padding: 2rem;
+  margin-top: 6rem;
+  padding: 0; /* Убираем отступы */
+  margin: 0;  /* Убираем отступ сверху */
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: var(--shadow-md);

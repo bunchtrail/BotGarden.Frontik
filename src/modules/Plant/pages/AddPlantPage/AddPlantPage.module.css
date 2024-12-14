@@ -7,6 +7,11 @@
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(10px);
+  padding-top: 20px; /* Добавляем отступ сверху */
+  padding-bottom: 20px; /* Добавляем отступ снизу для последнего элемента */
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
 }
 
 .form {
@@ -202,6 +207,13 @@
   .form textarea {
     font-size: 0.9rem;
     padding: 0.75rem;
+  }
+}
+
+@media (max-width: 813px) {
+  .addPlantPage {
+    padding: 15px;
+    padding-top: 20px;
   }
 }
 

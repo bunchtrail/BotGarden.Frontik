@@ -1,9 +1,9 @@
 // src/components/Navbar/Dropdown.tsx
 import React, { useRef } from 'react';
-import { Link } from 'react-router-dom';
-import styles from './Navbar.module.css';
+import { useNavigate } from 'react-router-dom';
 import PageType, { pageConfig } from '../../configs/pageConfig';
 import { getSectorById } from '../../utils/data';
+import styles from './Navbar.module.css';
 
 interface DropdownProps {
   sectorId?: number;
@@ -23,6 +23,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   onAction,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -32,15 +33,16 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const config = pageConfig[pageType];
-  const sectorName = sectorId !== undefined ? getSectorById(sectorId)?.name : 'Настройки';
+  const sectorName =
+    sectorId !== undefined ? getSectorById(sectorId)?.name : 'Настройки';
 
   return (
     <div className={styles.dropdownContainer} ref={dropdownRef}>
       <input
-        type="file"
+        type='file'
         ref={fileInputRef}
         style={{ display: 'none' }}
-        accept="image/*"
+        accept='image/*'
         onChange={handleFileUpload}
       />
       <button
@@ -59,26 +61,30 @@ const Dropdown: React.FC<DropdownProps> = ({
           }`}
         />
       </button>
-      <div
-        className={`${styles.dropdownContent} ${isOpen ? styles.show : ''} ${
-          isOpen ? styles.animate : ''
-        }`}
-      >
-        {config.dropdownItems?.map((item) => (
-          <div
-            key={item.pathSuffix}
-            className={styles.dropdownItem}
-            onClick={() => {
-              if (item.pathSuffix === '/upload-image') {
-                fileInputRef.current?.click();
-              }
-            }}
-          >
-            <i className={`${item.iconClass} ${styles.icon}`} />
-            {item.label}
-          </div>
-        ))}
-      </div>
+      {isOpen && (
+        <div
+          className={`${styles.dropdownContent} ${styles.show} ${styles.animate}`}
+        >
+          {config.dropdownItems?.map((item) => (
+            <div
+              key={item.pathSuffix}
+              className={styles.dropdownItem}
+              onClick={() => {
+                if (item.pathSuffix === '/upload-image') {
+                  fileInputRef.current?.click();
+                } else {
+                  const basePath = config.dropdownBasePath || '';
+                  navigate(basePath + item.pathSuffix);
+                  toggleDropdown();
+                }
+              }}
+            >
+              <i className={`${item.iconClass} ${styles.icon}`} />
+              {item.label}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

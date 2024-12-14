@@ -198,11 +198,7 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({ sectorId }) => {
         handleSave={handleSave}
         searchableColumns={searchableColumns} // Передаём список доступных для поиска столбцов с метками
       />
-      <div
-        className={`app-container ${styles.plantsAllContainer} ${
-          isEditing ? 'full-width' : ''
-        }`}
-      >
+      <div className={styles.plantsAllContainer}>
         {filteredPlants.length === 0 ? (
           <>
             <h1>Растения в данном разделе отсутствуют</h1>

@@ -1,4 +1,3 @@
-import L from 'leaflet';
 import { useEffect, useState } from 'react';
 import { getCustomMapUrl, setCustomMapUrl } from '../services/mapService';
 

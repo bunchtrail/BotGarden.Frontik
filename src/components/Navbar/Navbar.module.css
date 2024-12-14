@@ -25,6 +25,9 @@
 }
 
 .navbarContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -32,7 +35,7 @@
   background-color: var(--navbar-bg-color);
   box-shadow: var(--navbar-shadow);
   width: 100%;
-  z-index: 1000;
+  z-index: 9999; /* Увеличиваем z-index навбара */
   transform: translateY(0);
   transition: transform var(--navbar-transition), max-height var(--navbar-transition), background-color var(--navbar-transition);
   backdrop-filter: var(--navbar-blur);
@@ -42,6 +45,14 @@
 /* Добавляем новый класс для создания отступа под навбаром */
 :global(body) {
   padding-top: 62px; /* Соответствует высоте навбара */
+}
+
+:global(.app-container) {
+  position: relative;
+  z-index: 1; /* Уменьшаем z-index контейнера приложения */
+  padding: 20px;
+  margin-top: 62px; /* Добавляем отступ равный высоте навбара */
+  min-height: calc(100vh - 62px); /* Устанавливаем минимальную высоту с учетом навбара */
 }
 
 /* Скрытие навбара при прокрутке */
@@ -177,6 +188,7 @@
 /* Выпадающее меню */
 .dropdownContainer {
   position: relative;
+  z-index: 9999; /* Увеличиваем z-index */
 }
 
 .dropdownButton {
@@ -218,79 +230,93 @@
 }
 
 .dropdownContent {
-  display: none;
   position: absolute;
-  background-color: var(--dropdown-bg-color);
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: rgba(28, 28, 30, 0.98); /* Делаем фон темнее */
   backdrop-filter: var(--navbar-blur);
   border: 1px solid var(--navbar-border-color);
-  border-radius: var(--border-radius);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  min-width: 200px;
-  top: 100%;
-  left: 0;
-  z-index: 1000;
-  transform-origin: top;
-  transition: opacity var(--navbar-transition), transform var(--navbar-transition);
-  margin-top: 5px;
+  border-radius: 12px;
+  min-width: 220px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Усиливаем тень */
+  z-index: 9999; /* Увеличиваем z-index */
+  padding: 8px;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transition: all 0.2s cubic-bezier(0.3, 0, 0.2, 1);
 }
 
 .dropdownContent.show {
-  display: block;
   opacity: 1;
-  transform: translateY(0);
-}
-
-.dropdownContent.hide {
-  opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(0) scale(1);
 }
 
 /* Элементы выпадающего меню */
 .dropdownItem {
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 12px;
+  margin: 2px 0;
   color: var(--navbar-text-color);
-  font-size: 15px;
-  font-weight: 500;
-  border-radius: var(--border-radius);
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color var(--navbar-transition), color var(--navbar-transition), transform var(--navbar-transition);
-  height: 42px;
-  min-height: 42px;
+  transition: all 0.2s cubic-bezier(0.3, 0, 0.2, 1);
+  font-weight: 400;
+  height: 36px;
+  min-height: 36px;
+  font-size: 14px;
 }
 
 .dropdownItem:hover {
   background-color: var(--navbar-item-bg-hover);
   color: var(--navbar-text-hover-color);
-  transform: translateX(2px);
+  transform: translateX(0);
 }
 
 .dropdownItem i, 
 .dropdownItem svg {
   margin-right: 8px;
   font-size: 16px;
-  color: var(--navbar-text-color);
-  transition: color var(--navbar-transition);
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
 }
 
 .dropdownItem:hover i,
 .dropdownItem:hover svg {
-  color: var(--navbar-text-hover-color);
+  opacity: 1;
+}
+
+/* Разделитель в выпадающем меню */
+.dropdownDivider {
+  height: 1px;
+  background-color: var(--navbar-border-color);
+  margin: 6px 0;
+}
+
+/* Заголовок группы в выпадающем меню */
+.dropdownGroupTitle {
+  color: var(--navbar-text-color);
+  opacity: 0.6;
+  font-size: 12px;
+  padding: 6px 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Стиль скроллбара для выпадающего меню */
 .dropdownContent::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .dropdownContent::-webkit-scrollbar-track {
   background: transparent;
+  margin: 4px;
 }
 
 .dropdownContent::-webkit-scrollbar-thumb {
   background: var(--navbar-border-color);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 .dropdownContent::-webkit-scrollbar-thumb:hover {
@@ -684,7 +710,7 @@ input:checked + .slider:before {
     margin-top: 5px;
     box-shadow: none;
     border: none;
-    background-color: var(--dropdown-bg-color);
+    background-color: rgba(28, 28, 30, 0.98); /* Обновляем цвет и для мобильной версии */
   }
 
   .dropdownItem {
