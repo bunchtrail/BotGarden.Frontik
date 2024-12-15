@@ -20,11 +20,15 @@ const MapPage: React.FC = () => {
     <div className={styles.mapPageContainer}>
       <Navbar pageType='map' onAction={handleAction} />
       <div className={styles.mapWrapper}>
-        <MapView
-          markers={markers}
-          customMapUrl={customMapUrl}
-          bounds={bounds}
-        />
+        {bounds ? (
+          <MapView
+            markers={markers}
+            customMapUrl={customMapUrl}
+            bounds={bounds}
+          />
+        ) : (
+          <div>Загрузка карты...</div>
+        )}
       </div>
     </div>
   );

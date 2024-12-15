@@ -1,43 +1,22 @@
-/* src/assets/styles/base/_variables.css */
-
-/* Импорт шрифта */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
-/* Переменные для кнопок */
 :root {
-  --btn-padding: 0.75rem 3rem;
-  --btn-padding-md: 0.6rem 2.5rem;
-  --btn-padding-sm: 0.5rem 2rem;
-  --btn-font-size: 1rem;
-  --btn-font-size-md: 0.9rem;
-  --btn-font-size-sm: 0.8rem;
-  --btn-border-radius: 36px;
-  --btn-transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --box-shadow-hover: 0 6px 8px rgba(0, 0, 0, 0.15);
-  --transform-hover: translateY(-2px);
-
-  /* Общие переменные */
-  --font-family: 'Roboto', sans-serif;
-  --line-height: 1.5;
-  --font-weight: 400;
-
-  /* Цветовая схема - Light Mode */
-  --page-background: ##ffffff;
-  --color-text: #213547;
-  --color-background: var(--page-background);
-  --color-primary: #3cb371;
-  --color-primary-hover: #2e8b57;
-  --color-error: #d9534f;
-  --color-link: #646cff;
-  --color-link-hover: #535bf2;
-
-  /* Входные поля - Light Mode */
-  --input-background: #f9f9f9;
-  --input-border: #ccc;
-  --input-text: var(--color-text);
-  --input-error-border: var(--color-error);
-
-  /* Отступы и размеры */
-  --border-radius: 8px;
+  --color-background: #f5f5f7;
+  --color-text: #1d1d1f;
+  --color-text-secondary: #86868b;
+  --color-navbar: rgba(29, 29, 31, 0.72);
+  --color-primary: #0071e3;
+  --color-primary-hover: #0077ed;
+  --color-primary-dark: #005bb5;
+  --color-surface: rgba(255, 255, 255, 0.8);
+  --color-surface-hover: rgba(255, 255, 255, 0.9);
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-error: #ff3b30;
+  --color-success: #34c759;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --blur-background: blur(20px);
+  --section-spacing: 2rem;
+  --section-inner-spacing: 1.25rem;
+  --border-radius-lg: 12px;
+  --border-radius-md: 8px;
+  --navbar-height: 50px;
 }

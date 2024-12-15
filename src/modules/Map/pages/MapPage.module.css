@@ -2,10 +2,15 @@
 .mapPageContainer {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Полная высота окна */
+  height: calc(100vh - 63px); /* Полная высота окна минус высота навбара */
+  margin-top: 63px; /* Отступ сверху равный высоте навбара */
 }
 
 .mapWrapper {
   flex: 1; /* Заполняет оставшееся пространство */
   position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

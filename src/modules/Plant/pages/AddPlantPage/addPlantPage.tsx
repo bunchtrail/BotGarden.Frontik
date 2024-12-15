@@ -1,5 +1,3 @@
-// src/pages/AddPlantPage/AddPlantPage.tsx
-
 import React, { useContext, useEffect, useState } from 'react';
 import CollapsibleSection from '../../../../components/CollapsibleSection';
 import ErrorMessage from '../../../../components/Misc/ErrorMessage';
@@ -25,7 +23,7 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { handleSave, loading, saveError, saveSuccess } = useFormActions();
 
-  const [isEditing, setIsEditing] = useState(false); // Добавляем состояние редактирования
+  const [isEditing, setIsEditing] = useState(false); // Состояние редактирования
 
   useEffect(() => {
     const handleResize = () => {
@@ -55,7 +53,7 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
   const [isBiometricOpen, setBiometricOpen] = useState(true);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { id, value } = e.target;
     setFormData({
@@ -80,81 +78,87 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
         isEditing={isEditing}
         toggleEditing={toggleEditing}
       />
-      <div className={`app-container ${styles.addPlantPage}`}>
+      <div className={styles.addPlantPage}>
         {saveError && <ErrorMessage message={saveError} type='general' />}
         {saveSuccess && <SuccessMessage message={saveSuccess} />}
 
-        <CollapsibleSection
-          title='Идентификация'
-          isOpen={isIdentificationOpen}
-          onToggle={() => setIdentificationOpen(!isIdentificationOpen)}
-        >
-          <IdentificationSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </CollapsibleSection>
+        <h2 className={styles.formTitle}>Добавить растение</h2>
 
-        <CollapsibleSection
-          title='Классификация'
-          isOpen={isClassificationOpen}
-          onToggle={() => setClassificationOpen(!isClassificationOpen)}
-        >
-          <ClassificationSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </CollapsibleSection>
-
-        <CollapsibleSection
-          title='Происхождение и Среда Обитания'
-          isOpen={isOriginOpen}
-          onToggle={() => setOriginOpen(!isOriginOpen)}
-        >
-          <OriginSection formData={formData} handleChange={handleChange} />
-        </CollapsibleSection>
-
-        <CollapsibleSection
-          title='Использование и Защита'
-          isOpen={isUsageOpen}
-          onToggle={() => setUsageOpen(!isUsageOpen)}
-        >
-          <UsageSection formData={formData} handleChange={handleChange} />
-        </CollapsibleSection>
-
-        <CollapsibleSection
-          title='Расположение'
-          isOpen={isLocationOpen}
-          onToggle={() => setLocationOpen(!isLocationOpen)}
-        >
-          <LocationSection formData={formData} handleChange={handleChange} />
-        </CollapsibleSection>
-
-        {sectorId === 2 && (
+        <form className={styles.form} onSubmit={handleSave}>
           <CollapsibleSection
-            title='Биометрические Данные'
-            isOpen={isBiometricOpen}
-            onToggle={() => setBiometricOpen(!isBiometricOpen)}
+            title='Идентификация'
+            isOpen={isIdentificationOpen}
+            onToggle={() => setIdentificationOpen(!isIdentificationOpen)}
           >
-            <BiometricSection
+            <IdentificationSection
               formData={formData}
               handleChange={handleChange}
             />
           </CollapsibleSection>
-        )}
 
-        <CollapsibleSection
-          title='Дополнительная Информация'
-          isOpen={isAdditionalOpen}
-          onToggle={() => setAdditionalOpen(!isAdditionalOpen)}
-        >
-          <AdditionalSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </CollapsibleSection>
+          <CollapsibleSection
+            title='Классификация'
+            isOpen={isClassificationOpen}
+            onToggle={() => setClassificationOpen(!isClassificationOpen)}
+          >
+            <ClassificationSection
+              formData={formData}
+              handleChange={handleChange}
+            />
+          </CollapsibleSection>
 
-        {loading && <div className={styles.loading}>Сохранение...</div>}
+          <CollapsibleSection
+            title='Происхождение и Среда Обитания'
+            isOpen={isOriginOpen}
+            onToggle={() => setOriginOpen(!isOriginOpen)}
+          >
+            <OriginSection formData={formData} handleChange={handleChange} />
+          </CollapsibleSection>
+
+          <CollapsibleSection
+            title='Использование и Защита'
+            isOpen={isUsageOpen}
+            onToggle={() => setUsageOpen(!isUsageOpen)}
+          >
+            <UsageSection formData={formData} handleChange={handleChange} />
+          </CollapsibleSection>
+
+          <CollapsibleSection
+            title='Расположение'
+            isOpen={isLocationOpen}
+            onToggle={() => setLocationOpen(!isLocationOpen)}
+          >
+            <LocationSection formData={formData} handleChange={handleChange} />
+          </CollapsibleSection>
+
+          {sectorId === 2 && (
+            <CollapsibleSection
+              title='Биометрические Данные'
+              isOpen={isBiometricOpen}
+              onToggle={() => setBiometricOpen(!isBiometricOpen)}
+            >
+              <BiometricSection
+                formData={formData}
+                handleChange={handleChange}
+              />
+            </CollapsibleSection>
+          )}
+
+          <CollapsibleSection
+            title='Дополнительная Информация'
+            isOpen={isAdditionalOpen}
+            onToggle={() => setAdditionalOpen(!isAdditionalOpen)}
+          >
+            <AdditionalSection
+              formData={formData}
+              handleChange={handleChange}
+            />
+          </CollapsibleSection>
+
+          {loading && <div className={styles.loading}>Сохранение...</div>}
+        </form>
+
+        
       </div>
     </>
   );

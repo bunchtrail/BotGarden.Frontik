@@ -1,0 +1,37 @@
+/* src/assets/styles/LeafletOverrides.css */
+
+/* Отступ контролов от верхнего края, учитывая высоту навбара */
+.leaflet-top.leaflet-left {
+    top: 70px; /* 63px (навигация) + 7px отступа */
+  }
+  
+  .leaflet-control-zoom {
+    box-shadow: none;
+    border-radius: 8px;
+  }
+  
+  .leaflet-control-attribution {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 12px;
+  }
+  
+  /* Изменение стилей для кнопок управления */
+  .leaflet-control-zoom-in,
+  .leaflet-control-zoom-out {
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #cccccc;
+    width: 30px;
+    height: 30px;
+    line-height: 28px;
+    font-size: 18px;
+  }
+  
+  .leaflet-control-zoom-in:hover,
+  .leaflet-control-zoom-out:hover {
+    background-color: #f0f0f0;
+    color: #007AFF;
+  }
+  

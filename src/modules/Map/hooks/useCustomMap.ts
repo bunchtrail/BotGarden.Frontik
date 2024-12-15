@@ -1,3 +1,4 @@
+// src/modules/Map/hooks/useCustomMap.ts
 import { useEffect, useState } from 'react';
 import { getCustomMapUrl, setCustomMapUrl } from '../services/mapService';
 
@@ -50,6 +51,10 @@ export const useCustomMap = () => {
         }
       });
     };
+    img.onerror = () => {
+      console.error('Failed to load image.');
+      // Обработка ошибки загрузки изображения
+    };
     img.src = imageUrl;
   };
 
@@ -59,6 +64,10 @@ export const useCustomMap = () => {
       const base64Url = e.target?.result as string;
       loadImageBounds(base64Url);
       setCustomMapUrl(base64Url);
+    };
+    reader.onerror = () => {
+      console.error('Failed to read file.');
+      // Обработка ошибки чтения файла
     };
     reader.readAsDataURL(file);
   };

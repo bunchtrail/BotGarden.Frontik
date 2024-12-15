@@ -1,12 +1,9 @@
-import 'leaflet/dist/leaflet.css';
+// src/modules/Map/components/MapView.tsx
 import { CRS, LatLngBoundsLiteral, LatLngTuple } from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import React, { useEffect } from 'react';
-import {
-  ImageOverlay,
-  MapContainer,
-  TileLayer,
-  useMap,
-} from 'react-leaflet';
+import { ImageOverlay, MapContainer, TileLayer, useMap } from 'react-leaflet';
+import '../../../assets/styles/LeafletOverrides.css'; 
 import { MarkerData } from '../services/mapService';
 import MapMarkerLayer from './MapMarkerLayer';
 import styles from './MapView.module.css';
@@ -23,20 +20,21 @@ const FitBounds: React.FC<{ bounds: LatLngBoundsLiteral }> = ({ bounds }) => {
   useEffect(() => {
     if (bounds) {
       map.fitBounds(bounds);
-      map.setMinZoom(map.getZoom());
+      // Удаляем установку минимального зума, чтобы избежать ограничения
+      // map.setMinZoom(map.getZoom());
     }
   }, [bounds, map]);
 
   return null;
 };
 
-const DEFAULT_CENTER: LatLngTuple = [55.751244, 37.618423];
+const DEFAULT_CENTER: LatLngTuple = [55.751244, 37.618423]; // Москва
 
 const MapView: React.FC<MapViewProps> = ({ markers, customMapUrl, bounds }) => {
   const isCustomMap = !!customMapUrl && !!bounds;
   const crs = isCustomMap ? CRS.Simple : CRS.EPSG3857;
 
-  // Рассчитываем центр изображения как кортеж из двух чисел
+  // Рассчитываем центр изображения как середину границ
   const center: LatLngTuple =
     isCustomMap && bounds
       ? [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2]
@@ -65,10 +63,9 @@ const MapView: React.FC<MapViewProps> = ({ markers, customMapUrl, bounds }) => {
       crs={crs}
       scrollWheelZoom={true}
       zoomControl={true}
-      minZoom={-1} // Минимальный уровень зума
-      maxZoom={4} // Максимальный уровень зума
-      style={{ width: '100%', height: '100%' }}
-      attributionControl={false} // Disable default attribution
+      minZoom={isCustomMap ? 0 : 1} // Устанавливаем minZoom для большей гибкости
+      maxZoom={isCustomMap ? 4 : 18} // Устанавливаем maxZoom для большей гибкости
+      attributionControl={false} // Отключение стандартной атрибуции
     >
       {layers}
     </MapContainer>
