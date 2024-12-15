@@ -3,7 +3,7 @@ import { CRS, LatLngBoundsLiteral, LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import React, { useEffect } from 'react';
 import { ImageOverlay, MapContainer, TileLayer, useMap } from 'react-leaflet';
-import '../../../assets/styles/LeafletOverrides.css'; 
+import '../../../assets/styles/LeafletOverrides.css';
 import { MarkerData } from '../services/mapService';
 import MapMarkerLayer from './MapMarkerLayer';
 import styles from './MapView.module.css';
@@ -22,6 +22,7 @@ const FitBounds: React.FC<{ bounds: LatLngBoundsLiteral }> = ({ bounds }) => {
       map.fitBounds(bounds);
       // Удаляем установку минимального зума, чтобы избежать ограничения
       // map.setMinZoom(map.getZoom());
+      map.setMinZoom(-3);
     }
   }, [bounds, map]);
 
@@ -64,7 +65,7 @@ const MapView: React.FC<MapViewProps> = ({ markers, customMapUrl, bounds }) => {
       scrollWheelZoom={true}
       zoomControl={true}
       minZoom={isCustomMap ? 0 : 1} // Устанавливаем minZoom для большей гибкости
-      maxZoom={isCustomMap ? 4 : 18} // Устанавливаем maxZoom для большей гибкости
+      maxZoom={isCustomMap ? 13 : 18} // Устанавливаем maxZoom на 18 для большей гибкости
       attributionControl={false} // Отключение стандартной атрибуции
     >
       {layers}
