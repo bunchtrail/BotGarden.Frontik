@@ -89,10 +89,10 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
   return (
     <div className={styles.buttonGroup}>
       <input
-        type="file"
+        type='file'
         ref={fileInputRef}
         style={{ display: 'none' }}
-        accept="image/*"
+        accept='image/*'
         onChange={handleFileUpload}
       />
       {/* Рендерим статические кнопки */}

@@ -81,11 +81,9 @@ export const pageConfig: Record<string, PageConfig> = {
     ],
     staticButtons: [
       { action: 'back', icon: 'backward', label: 'Назад' },
-      { action: 'save', icon: 'save', label: 'Сохранить'},
-
+      { action: 'save', icon: 'save', label: 'Сохранить' },
     ],
-    dynamicButtons: [
-    ],
+    dynamicButtons: [],
   },
   map: {
     showSearch: false,

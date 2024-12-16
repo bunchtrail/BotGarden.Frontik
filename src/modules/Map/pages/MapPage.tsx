@@ -1,18 +1,28 @@
 // src/modules/Map/pages/MapPage.tsx
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Navbar from '../../../components/Navbar/Navbar';
-import MapView from '../components/MapView';
+import MapView, { MapViewRef } from '../components/MapView';
 import { useCustomMap } from '../hooks/useCustomMap';
-import { getMarkers } from '../services/mapService';
+import { mapActionsConfig } from '../mapActions/mapActionsConfig';
+import { fetchMarkers, MarkerData } from '../services/mapService';
 import styles from './MapPage.module.css';
 
 const MapPage: React.FC = () => {
-  const markers = getMarkers();
-  const { url: customMapUrl, bounds, setCustomMap } = useCustomMap();
+  const [markers, setMarkers] = useState<MarkerData[]>([]);
+
+  useEffect(() => {
+    fetchMarkers().then(setMarkers);
+  }, []);
+  const { url: customMapUrl, bounds } = useCustomMap();
+
+  const mapViewRef = useRef<MapViewRef>(null);
 
   const handleAction = (action: string, file?: File) => {
-    if (action === 'upload-image' && file) {
-      setCustomMap(file);
+    const handler = mapActionsConfig[action];
+    if (handler) {
+      handler(mapViewRef, file);
+    } else {
+      console.warn(`Нет обработчика для действия: ${action}`);
     }
   };
 
@@ -22,6 +32,7 @@ const MapPage: React.FC = () => {
       <div className={styles.mapWrapper}>
         {bounds ? (
           <MapView
+            ref={mapViewRef}
             markers={markers}
             customMapUrl={customMapUrl}
             bounds={bounds}

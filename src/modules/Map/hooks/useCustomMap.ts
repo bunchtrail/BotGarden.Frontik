@@ -1,6 +1,6 @@
 // src/modules/Map/hooks/useCustomMap.ts
+
 import { useEffect, useState } from 'react';
-import { getCustomMapUrl, setCustomMapUrl } from '../services/mapService';
 
 interface CustomMapState {
   url: string | null;
@@ -22,8 +22,8 @@ export const useCustomMap = () => {
     loadSavedMap();
   }, []);
 
-  const loadSavedMap = async () => {
-    const savedUrl = getCustomMapUrl();
+  const loadSavedMap = () => {
+    const savedUrl = localStorage.getItem('customMapUrl');
     if (savedUrl) {
       loadImageBounds(savedUrl);
     }
@@ -58,18 +58,24 @@ export const useCustomMap = () => {
     img.src = imageUrl;
   };
 
-  const setCustomMap = async (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64Url = e.target?.result as string;
-      loadImageBounds(base64Url);
-      setCustomMapUrl(base64Url);
-    };
-    reader.onerror = () => {
-      console.error('Failed to read file.');
-      // Обработка ошибки чтения файла
-    };
-    reader.readAsDataURL(file);
+  const setCustomMap = (input?: File | string) => {
+    if (!input) return;
+
+    if (input instanceof File) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64Url = e.target?.result as string;
+        loadImageBounds(base64Url);
+        localStorage.setItem('customMapUrl', base64Url);
+      };
+      reader.onerror = () => {
+        console.error('Failed to read file.');
+      };
+      reader.readAsDataURL(input);
+    } else if (typeof input === 'string') {
+      loadImageBounds(input);
+      localStorage.setItem('customMapUrl', input);
+    }
   };
 
   return { ...mapState, setCustomMap };
