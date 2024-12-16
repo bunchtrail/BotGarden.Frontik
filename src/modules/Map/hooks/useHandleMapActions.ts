@@ -1,23 +1,29 @@
 // src/hooks/useHandleMapActions.ts
 
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
+import { EditMode, MapAction } from '../types';
 
-type EditMode = 'none' | 'add' | 'edit';
-type MapAction = 'addArea' | 'editArea' | 'disable';
+const useHandleMapActions = (
+  setEditMode: (mode: EditMode) => void,
+  currentMode: EditMode
+) => {
+  const handleMapAction = useCallback(
+    (action: MapAction) => {
+      const newMode =
+        action === 'addArea'
+          ? currentMode === 'add'
+            ? 'none'
+            : 'add'
+          : action === 'edit'
+          ? currentMode === 'edit'
+            ? 'none'
+            : 'edit'
+          : 'none';
 
-const useHandleMapActions = (setEditMode: (mode: EditMode) => void) => {
-  const [currentMode, setCurrentMode] = useState<EditMode>('none');
-
-  const handleMapAction = useCallback((action: MapAction) => {
-    const newMode = action === 'addArea' 
-      ? (currentMode === 'add' ? 'none' : 'add')
-      : action === 'editArea'
-      ? (currentMode === 'edit' ? 'none' : 'edit')
-      : 'none';
-
-    setCurrentMode(newMode);
-    setEditMode(newMode);
-  }, [currentMode, setEditMode]);
+      setEditMode(newMode);
+    },
+    [currentMode, setEditMode]
+  );
 
   return handleMapAction;
 };

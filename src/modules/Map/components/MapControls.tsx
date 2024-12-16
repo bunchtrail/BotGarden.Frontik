@@ -39,13 +39,13 @@ const MapControls: React.FC<MapControlsProps> = ({
                     color: '#97009c',
                   },
                   showArea: true,
+                  metric: false,
                 }
               : false,
         }}
         edit={{
           edit: editMode === 'edit',
           remove: editMode === 'edit',
-          featureGroup: undefined,
         }}
         onCreated={onCreated}
         onEdited={onEdited}

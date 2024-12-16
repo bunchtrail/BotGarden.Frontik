@@ -11,12 +11,17 @@ import useHandleMapActions from '../hooks/useHandleMapActions';
 import useMapAreas from '../hooks/useMapAreas';
 import useMapInteractions from '../hooks/useMapInteractions';
 import { AreaData, MarkerData } from '../services/mapService';
+import { EditMode } from '../types';
 import MapControls from './MapControls';
 import MapLayers from './MapLayers';
 import styles from './MapView.module.css';
 
+// Add or update the MapAction type
+type MapAction = 'add' | 'edit' | 'delete' | 'none' | 'addArea';
+
+// Update the MapViewRef interface to use MapAction
 export interface MapViewRef {
-  handleMapAction: (action: string) => void;
+  handleMapAction: (action: MapAction) => void;
 }
 
 interface MapViewProps {
@@ -45,9 +50,8 @@ const MapView = React.forwardRef<MapViewRef, MapViewProps>(
     const isCustomMap = !!customMapUrl && !!bounds;
     const crs = isCustomMap ? CRS.Simple : CRS.EPSG3857;
 
-    const { areas, addArea, updateArea, deleteArea, reloadAreas } =
-      useMapAreas();
-    const [editMode, setEditMode] = useState<'none' | 'add' | 'edit'>('none');
+    const { areas, addArea, updateArea, deleteArea } = useMapAreas(); // removed reloadAreas
+    const [editMode, setEditMode] = useState<EditMode>('none');
 
     const center: LatLngTuple =
       isCustomMap && bounds
@@ -56,7 +60,7 @@ const MapView = React.forwardRef<MapViewRef, MapViewProps>(
 
     const mapRef = useRef<L.Map | null>(null);
 
-    useMapInteractions(mapRef.current, editMode);
+    useMapInteractions(mapRef.current, editMode); // Ensure useMapInteractions accepts two arguments
 
     const handleMapAction = useHandleMapActions(setEditMode, editMode);
 

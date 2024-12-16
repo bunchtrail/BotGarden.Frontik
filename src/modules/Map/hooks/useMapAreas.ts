@@ -36,16 +36,11 @@ const useMapAreas = () => {
     }
   };
 
-  const reloadAreas = async () => {
-    await loadAreas(); // Позволяет вручную перезагрузить области
-  };
-
   return {
     areas,
     addArea,
     updateArea,
     deleteArea,
-    reloadAreas,
   };
 };
 
