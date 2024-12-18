@@ -22,15 +22,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   dropdownRef,
   onAction,
 }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && onAction) {
-      onAction('upload-image', file);
-    }
-  };
 
   const config = pageConfig[pageType];
   const sectorName =
@@ -38,13 +30,6 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   return (
     <div className={styles.dropdownContainer} ref={dropdownRef}>
-      <input
-        type='file'
-        ref={fileInputRef}
-        style={{ display: 'none' }}
-        accept='image/*'
-        onChange={handleFileUpload}
-      />
       <button
         className={styles.dropdownButton}
         onClick={toggleDropdown}
@@ -70,13 +55,13 @@ const Dropdown: React.FC<DropdownProps> = ({
               key={item.pathSuffix}
               className={styles.dropdownItem}
               onClick={() => {
-                if (item.pathSuffix === '/upload-image') {
-                  fileInputRef.current?.click();
+                if (item.pathSuffix === '/upload-image' && onAction) {
+                  onAction('upload-image');
                 } else {
                   const basePath = config.dropdownBasePath || '';
                   navigate(basePath + item.pathSuffix);
-                  toggleDropdown();
                 }
+                toggleDropdown();
               }}
             >
               <i className={`${item.iconClass} ${styles.icon}`} />
