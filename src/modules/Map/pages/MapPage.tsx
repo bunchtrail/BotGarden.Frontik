@@ -4,17 +4,35 @@ import Navbar from '../../../components/Navbar/Navbar';
 import MapViewer from '../components/MapViewer/MapViewer';
 import { uploadMapFile } from '../utils/mapUploader';
 import styles from './MapPage.module.css';
+import { MapMode } from '../types/mapControls';
 
 const MapPage: React.FC = () => {
   const [mapImageURL, setMapImageURL] = useState<string | null>(null);
+  const [currentMode, setCurrentMode] = useState<MapMode>(MapMode.VIEW);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAction = (action: string, file?: File) => {
-    if (action === 'upload-image') {
-      // Открываем диалог выбора файла
-      fileInputRef.current?.click();
-    } else {
-      console.warn(`Нет обработчика для действия: ${action}`);
+  const handleAction = (action: string) => {
+    switch (action) {
+      case 'upload-image':
+        fileInputRef.current?.click();
+        break;
+      case 'add-plant':
+        setCurrentMode(MapMode.ADD_PLANT);
+        break;
+      case 'add-area':
+        setCurrentMode(MapMode.ADD_AREA);
+        break;
+      case 'edit-area':
+        setCurrentMode(MapMode.EDIT_AREA);
+        break;
+      case 'edit-plant':
+        setCurrentMode(MapMode.EDIT_PLANT);
+        break;
+      case 'remove-plant':
+        setCurrentMode(MapMode.REMOVE_PLANT);
+        break;
+      default:
+        console.warn(`Нет обработчика для действия: ${action}`);
     }
   };
 
@@ -32,7 +50,6 @@ const MapPage: React.FC = () => {
   return (
     <div className={styles.mapPageContainer}>
       <Navbar pageType='map' onAction={handleAction} />
-      {/* Скрытый input для загрузки файла */}
       <input
         type='file'
         ref={fileInputRef}
@@ -41,7 +58,10 @@ const MapPage: React.FC = () => {
         onChange={handleFileChange}
       />
       <div className={styles.mapWrapper}>
-        <MapViewer mapImageURL={mapImageURL} />
+        <MapViewer 
+          mapImageURL={mapImageURL}
+          currentMode={currentMode}
+        />
       </div>
     </div>
   );

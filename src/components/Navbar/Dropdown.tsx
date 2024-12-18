@@ -1,5 +1,5 @@
 // src/components/Navbar/Dropdown.tsx
-import React, { useRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageType, { pageConfig } from '../../configs/pageConfig';
 import { getSectorById } from '../../utils/data';
