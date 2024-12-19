@@ -18,6 +18,7 @@ interface ButtonGroupProps {
   onSearch?: (query: string, selectedColumns: string[]) => void;
   searchQuery?: string;
   onAction?: (action: string, file?: File) => void;
+  activeMode?: string;
 }
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({
@@ -32,6 +33,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
   onSearch,
   searchQuery,
   onAction,
+  activeMode,
 }) => {
   const config = pageConfig[pageType];
   const navigate = useNavigate();
@@ -123,18 +125,18 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
       {/* Рендерим динамические кнопки */}
       {config.dynamicButtons?.map((btn) => {
         const shouldRender = btn.condition === 'isEditing' ? isEditing : true;
+        const isActive = activeMode === btn.action;
 
         if (!shouldRender) return null;
 
         return (
           <button
             key={btn.action}
-            className={styles.button}
+            className={`${styles.button} ${isActive ? styles.active : ''}`}
             onClick={() => {
               if (btn.action === 'save') {
                 handleSave?.();
               } else if (btn.action === 'reset') {
-                // Реализуйте функцию сброса при необходимости
                 console.log('Сбросить изменения');
               } else {
                 onAction?.(btn.action);
@@ -143,9 +145,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
             title={btn.label}
           >
             <i className={`fas fa-${btn.icon} ${styles.icon}`} />
-            {!isMobile && (
-              <span style={{ marginLeft: '5px' }}>{btn.label}</span>
-            )}
+            {!isMobile && <span style={{ marginLeft: '5px' }}>{btn.label}</span>}
           </button>
         );
       })}

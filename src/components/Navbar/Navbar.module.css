@@ -146,6 +146,7 @@
   height: 42px;
   min-height: 42px;
   min-width: 120px;
+  transition: all 0.3s ease;
 }
 
 .button i, .button svg {
@@ -167,13 +168,35 @@
 }
 
 .button.active {
-  border-color: var(--primary-color);
+  background-color: #2563eb;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
 }
 
-.button:hover {
-  background-color: var(--accent-color);
+.button.active:hover {
+  background-color: #1d4ed8;
+}
+
+.button.active i {
   color: white;
-  transition: all 0.3s ease;
+}
+
+/* Добавим анимацию при переключении */
+@keyframes buttonActivate {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.button.active {
+  animation: buttonActivate 0.3s ease;
 }
 
 .button[title="Загрузить карту"] {

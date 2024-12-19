@@ -1,5 +1,6 @@
+// src/hooks/useDrawControl.ts
 import L from 'leaflet';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { MapMode } from '../types/mapControls';
 
 interface UseDrawControlProps {
@@ -9,72 +10,130 @@ interface UseDrawControlProps {
   onAreaCreated?: (area: L.Layer) => void;
 }
 
-const POLYGON_STYLES = {
-  drawing: {
-    color: '#3388ff',
-    weight: 2,
-    opacity: 0.9,
-    fillColor: '#3388ff',
-    fillOpacity: 0.2,
-    dashArray: '5, 10',
-  },
-  created: {
-    color: '#2ecc71',
-    weight: 3,
-    opacity: 1,
-    fillColor: '#2ecc71',
-    fillOpacity: 0.3,
-  },
-};
-
 export const useDrawControl = ({
   map,
   mode,
   drawnItems,
   onAreaCreated,
 }: UseDrawControlProps) => {
+  const drawControlRef = useRef<L.Control.Draw | null>(null);
+  const isAltPressedRef = useRef(false);
+
   useEffect(() => {
     if (!map || !drawnItems) return;
 
-    let drawControl: L.Control.Draw | null = null;
+    // Функция для включения всех взаимодействий с картой
+    const enableMapInteractions = () => {
+      map.dragging.enable();
+      map.touchZoom.enable();
+      map.doubleClickZoom.enable();
+      map.scrollWheelZoom.enable();
+      map.boxZoom.enable();
+      map.keyboard.enable();
+      map.getContainer().style.cursor = 'grab';
+    };
 
-    if (mode === MapMode.ADD_AREA) {
+    // Функция для отключения всех взаимодействий с картой
+    const disableMapInteractions = () => {
+      map.dragging.disable();
+      map.touchZoom.disable();
+      map.doubleClickZoom.disable();
+      map.scrollWheelZoom.disable();
+      map.boxZoom.disable();
+      map.keyboard.disable();
+      map.getContainer().style.cursor = '';
+    };
+
+    // Функция для инициализации drawControl на основе текущего режима
+    const initializeDrawControl = () => {
       const drawOptions: L.Control.DrawConstructorOptions = {
         draw: {
+          rectangle: false,
+          circle: false,
+          circlemarker: false,
+          polyline: false,
           polygon: {
             allowIntersection: false,
             showArea: true,
             metric: false,
-            shapeOptions: POLYGON_STYLES.drawing,
           },
-          circle: false,
-          rectangle: false,
-          circlemarker: false,
           marker: false,
-          polyline: false as const,
+        },
+        edit: {
+          featureGroup: drawnItems,
+          edit: false,
         },
       };
 
-      drawControl = new L.Control.Draw(drawOptions);
-      map.addControl(drawControl);
+      if (mode === MapMode.ADD_AREA) {
+        drawControlRef.current = new L.Control.Draw(drawOptions);
+        map.addControl(drawControlRef.current);
 
-      map.on(
-        'draw:created' as L.DrawEvents.Created['type'],
-        ((event: L.DrawEvents.Created) => {
-          const layer = event.layer;
-          if (layer instanceof L.Polygon) {
-            layer.setStyle(POLYGON_STYLES.created);
+        // Включаем handler при инициализации
+        const handler = (drawControlRef.current as any)._toolbars?.draw?._modes?.polygon?.handler;
+        if (handler) {
+          handler.enable();
+          
+          // Переопределяем метод добавления вершины
+          const originalAddVertex = handler.addVertex;
+          handler.addVertex = function(latlng: L.LatLng) {
+            if (isAltPressedRef.current) {
+              originalAddVertex.call(this, latlng);
+            }
+          };
+        }
+
+        map.on(L.Draw.Event.CREATED, (e: L.LeafletEvent) => {
+          if (mode === MapMode.ADD_AREA && onAreaCreated) {
+            const layer = (e as L.DrawEvents.Created).layer;
+            drawnItems.addLayer(layer);
+            onAreaCreated(layer);
           }
-          drawnItems.addLayer(layer);
-          onAreaCreated?.(layer);
-        }) as L.LeafletEventHandlerFn
-      );
-    }
-
-    return () => {
-      if (map && drawControl) {
-        map.removeControl(drawControl);
+        });
       }
     };
+
+    // Изменяем обработчики Alt
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Alt' && !isAltPressedRef.current) {
+          isAltPressedRef.current = true;
+          map.getContainer().style.cursor = 'crosshair';
+        }
+    };
+      
+    const handleKeyUp = (e: KeyboardEvent) => {
+        if (e.key === 'Alt' && isAltPressedRef.current) {
+          isAltPressedRef.current = false;
+          map.getContainer().style.cursor = 'grab';
+        }
+    };
+      
+
+    // Инициализируем контрол рисования при изменении режима
+    initializeDrawControl();
+
+    // Добавляем обработчики событий клавиш
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
+    // Обработчик для закрытия попапа удаления при взаимодействии с картой
+    const handleMapInteraction = () => {
+      // Здесь можно добавить логику для закрытия попапов, если необходимо
+      // Например, setDeletePopup(null);
+    };
+
+    // Добавляем глобальные обработчики взаимодействия с картой
+    map.on('mousedown touchstart dragstart', handleMapInteraction);
+
+    return () => {
+      if (drawControlRef.current) {
+        map.removeControl(drawControlRef.current);
+      }
+      map.off(L.Draw.Event.CREATED);
+      map.off('mousedown touchstart dragstart', handleMapInteraction);
+      enableMapInteractions();
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
   }, [map, mode, drawnItems, onAreaCreated]);
-}; 
+};

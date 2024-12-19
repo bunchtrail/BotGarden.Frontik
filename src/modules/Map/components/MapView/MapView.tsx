@@ -1,18 +1,21 @@
+// src/components/MapView/MapView.tsx
 import L from 'leaflet';
 import 'leaflet-draw';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet/dist/leaflet.css';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDrawControl } from '../../hooks/useDrawControl';
-import { AreaData } from '../../services/mapService';
+import { AreaData, MarkerData } from '../../services/mapService';
 import { MapMode } from '../../types/mapControls';
 import { createAreaPopup } from '../AreaPopup/AreaPopup';
+import { ConfirmationPopup } from '../ConfirmationPopup/ConfirmationPopup';
 import styles from './MapView.module.css';
 
 interface MapViewProps {
   mapImageURL: string | null;
   mode: MapMode;
   areas?: AreaData[];
+  markers?: MarkerData[];
   onAreaCreated?: (area: L.Layer) => void;
   onAreaEdited?: (areaId: number, newPositions: [number, number][]) => void;
   onAreaDeleted?: (areaId: number) => void;
@@ -22,6 +25,7 @@ export const MapView: React.FC<MapViewProps> = ({
   mapImageURL,
   mode,
   areas = [],
+  markers = [],
   onAreaCreated,
   onAreaEdited,
   onAreaDeleted,
@@ -30,6 +34,10 @@ export const MapView: React.FC<MapViewProps> = ({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const imageOverlayRef = useRef<L.ImageOverlay | null>(null);
   const drawnItemsRef = useRef<L.FeatureGroup | null>(null);
+  const [deletePopup, setDeletePopup] = useState<{
+    areaId: number;
+    position: L.Point;
+  } | null>(null);
 
   // Инициализация карты
   useEffect(() => {
@@ -63,7 +71,7 @@ export const MapView: React.FC<MapViewProps> = ({
     };
   }, []);
 
-  // Используем новый хук вместо старого useEffect
+  // Используем хук useDrawControl
   useDrawControl({
     map: mapInstanceRef.current,
     mode,
@@ -74,8 +82,6 @@ export const MapView: React.FC<MapViewProps> = ({
   // Обработка изменений mapImageURL
   useEffect(() => {
     if (!mapInstanceRef.current) return;
-
-    console.log('MapView received mapImageURL:', mapImageURL); // Для отладки
 
     if (imageOverlayRef.current) {
       imageOverlayRef.current.remove();
@@ -95,12 +101,9 @@ export const MapView: React.FC<MapViewProps> = ({
 
     const img = new Image();
 
-    img.onerror = (error) => {
-      console.error('Error loading image:', error); // Для отладки
-    };
+    img.onerror = (error) => {};
 
     img.onload = () => {
-      console.log('Image loaded successfully:', img.width, 'x', img.height); // Для отладки
       if (!mapInstanceRef.current) return;
 
       const width = img.width;
@@ -135,7 +138,6 @@ export const MapView: React.FC<MapViewProps> = ({
         .addTo(mapInstanceRef.current);
     };
 
-    console.log('Attempting to load image from:', mapImageURL); // Для отладки
     img.src = mapImageURL;
   }, [mapImageURL]);
 
@@ -176,7 +178,16 @@ export const MapView: React.FC<MapViewProps> = ({
       if (mode === MapMode.DELETE_AREA) {
         polygon.on('click', () => {
           if (onAreaDeleted) {
-            onAreaDeleted((polygon as any).areaId);
+            // Закрываем все открытые попапы перед показом попапа удаления
+            polygon.closePopup();
+
+            const latLng = polygon.getBounds().getCenter();
+            const containerPoint =
+              mapInstanceRef.current!.latLngToContainerPoint(latLng);
+            setDeletePopup({
+              areaId: (polygon as any).areaId,
+              position: containerPoint,
+            });
           }
         });
       }
@@ -190,14 +201,24 @@ export const MapView: React.FC<MapViewProps> = ({
     if (!mapInstanceRef.current || !drawnItemsRef.current) return;
 
     if (mode === MapMode.EDIT_AREA) {
-      // Включаем редактирование для всех полигонов
       drawnItemsRef.current.getLayers().forEach((layer: L.Layer) => {
         if (layer instanceof L.Polygon) {
-          const editor = new L.EditToolbar.Edit(mapInstanceRef.current!, {
-            featureGroup: drawnItemsRef.current,
+          (layer as any).editing?.enable();
+          (layer as any)._editing = true;
+
+          layer.on('contextmenu', (e: L.LeafletMouseEvent) => {
+            if (onAreaDeleted && mapInstanceRef.current) {
+              // Закрываем все открытые попапы перед показом попапа удаления
+              layer.closePopup();
+
+              const containerPoint =
+                mapInstanceRef.current.latLngToContainerPoint(e.latlng);
+              setDeletePopup({
+                areaId: (layer as any).areaId,
+                position: containerPoint,
+              });
+            }
           });
-          editor.enable();
-          (layer as any)._editor = editor;
         }
       });
 
@@ -221,17 +242,142 @@ export const MapView: React.FC<MapViewProps> = ({
       return () => {
         drawnItemsRef.current?.getLayers().forEach((layer: L.Layer) => {
           if (layer instanceof L.Polygon) {
-            const editor = (layer as any)._editor;
-            if (editor) {
-              editor.disable();
-              delete (layer as any)._editor;
+            if ((layer as any)._editing) {
+              (layer as any).editing?.disable();
+              delete (layer as any)._editing;
             }
             layer.off('edit', handleEdit);
+            layer.off('contextmenu');
           }
         });
       };
     }
-  }, [mode, onAreaEdited]);
+  }, [mode, onAreaEdited, onAreaDeleted]);
+
+  // Эффект для закрытия попапа удаления при взаимодействии с картой
+  useEffect(() => {
+    if (!deletePopup || !mapInstanceRef.current) return;
+
+    const handleMapInteraction = () => {
+      setDeletePopup(null);
+    };
+
+    // Добавляем обработчики событий
+    mapInstanceRef.current.on(
+      'mousedown touchstart dragstart',
+      handleMapInteraction
+    );
+
+    // Убираем обработчики при размонтировании или изменении deletePopup
+    return () => {
+      mapInstanceRef.current?.off(
+        'mousedown touchstart dragstart',
+        handleMapInteraction
+      );
+    };
+  }, [deletePopup]);
+
+  // Глобальный обработчик кликов по карте для предотвращения добавления маркеров
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+
+    const handleMapClick = (e: L.LeafletMouseEvent) => {
+      // Проверяем, находится ли карта в режиме редактирования
+      if (mode === MapMode.EDIT_AREA) {
+        // Предотвращаем добавление маркеров
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
+        return;
+      }
+
+      // Проверяем, удерживается ли клавиша Alt
+      if (e.originalEvent.altKey) {
+        // Предотвращаем добавление маркеров при удерживании Alt
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
+        return;
+      }
+    };
+
+    mapInstanceRef.current.on('click', handleMapClick);
+
+    return () => {
+      mapInstanceRef.current?.off('click', handleMapClick);
+    };
+  }, [mode]);
+
+  // Добавляем эффект для отображения маркеров
+  useEffect(() => {
+    if (!mapInstanceRef.current || !drawnItemsRef.current) {
+      console.log('Карта или слой не инициализированы');
+      return;
+    }
+
+    if (!mapImageURL) {
+      console.log('Изображение карты не загружено');
+      return;
+    }
+
+    console.log('Обновление маркеров:', markers);
+
+    // Очищаем существующие маркеры
+    drawnItemsRef.current.getLayers().forEach((layer) => {
+      if (layer instanceof L.Marker) {
+        drawnItemsRef.current?.removeLayer(layer);
+      }
+    });
+
+    // Добавляем новые маркеры
+    markers.forEach((marker) => {
+      console.log('Создание маркера:', marker);
+
+      // Преобразуем координаты в систему координат карты
+      const point = mapInstanceRef.current!.project(
+        L.latLng(marker.position),
+        mapInstanceRef.current!.getMaxZoom() - 1
+      );
+
+      const latLng = mapInstanceRef.current!.unproject(
+        point,
+        mapInstanceRef.current!.getMaxZoom() - 1
+      );
+
+      try {
+        const leafletMarker = L.marker(latLng, {
+          icon: L.divIcon({
+            className: styles.plantMarker,
+            html: `<div class="${styles.markerContent}"></div>`,
+            iconSize: [16, 16],
+            iconAnchor: [8, 8],
+          }),
+        });
+
+        // Проверяем, что маркер создался
+        console.log('Leaflet маркер создан:', leafletMarker);
+
+        const popup = createAreaPopup({
+          title: marker.title || 'Без названия',
+          description: marker.description || 'Без описания',
+        });
+
+        leafletMarker.bindPopup(popup);
+
+        // Проверяем, что слой существует
+        if (!drawnItemsRef.current) {
+          console.error('drawnItems слой не инициализирован');
+          return;
+        }
+
+        drawnItemsRef.current.addLayer(leafletMarker);
+        console.log('Маркер добавлен на карту');
+
+        // Проверяем, что маркер действительно добавлен
+        console.log('Текущие слои:', drawnItemsRef.current.getLayers());
+      } catch (error) {
+        console.error('Ошибка при создании маркера:', error);
+      }
+    });
+  }, [markers, mapImageURL]);
 
   return (
     <div className={styles.mapContainer}>
@@ -240,6 +386,26 @@ export const MapView: React.FC<MapViewProps> = ({
         <div className={styles.placeholder}>
           Загрузите изображение карты, используя кнопку "Загрузить" в меню
         </div>
+      )}
+      {mode === MapMode.ADD_AREA && (
+        <div className={styles.hint}>
+          Зажмите Alt для добавления точки области
+        </div>
+      )}
+      {deletePopup && (
+        <ConfirmationPopup
+          title='Удаление области'
+          message='Вы уверены, что хотите удалить эту область?'
+          confirmText='Удалить'
+          cancelText='Отмена'
+          type='danger'
+          position={deletePopup.position}
+          onConfirm={() => {
+            onAreaDeleted?.(deletePopup.areaId);
+            setDeletePopup(null);
+          }}
+          onCancel={() => setDeletePopup(null)}
+        />
       )}
     </div>
   );

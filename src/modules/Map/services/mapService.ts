@@ -28,7 +28,7 @@ export interface PlantDto {
 export interface AreaDto {
   locationId: number;
   locationPath: string;
-  geometry: string; // WKT
+  geometry: string;
 }
 
 export interface AddAreaRequest {
@@ -50,15 +50,20 @@ export interface PlantIdsDto {
 export async function fetchMarkers(): Promise<MarkerData[]> {
   try {
     const response = await client.get<PlantDto[]>('/api/map/GetAll');
+    console.log('Ответ сервера:', response.data);
     const plants = response.data;
-    return plants.map((p) => ({
-      id: p.plantId,
-      position: [p.latitude, p.longitude],
-      title: p.species,
-      description: p.variety,
-    }));
+    return plants.map((p) => {
+      const marker = {
+        id: p.plantId,
+        position: [p.latitude, p.longitude] as [number, number],
+        title: p.species,
+        description: p.variety || p.note || '',
+      };
+      console.log('Преобразованный маркер с координатами:', marker.position);
+      return marker;
+    });
   } catch (error) {
-    console.error('Error fetching markers:', error);
+    console.error('Ошибка при загрузке растений:', error);
     return [];
   }
 }
@@ -75,7 +80,6 @@ export async function fetchAreas(): Promise<AreaData[]> {
       description: '', // Добавьте описание, если доступно
     }));
   } catch (error) {
-    console.error('Error fetching areas:', error);
     return [];
   }
 }
@@ -91,7 +95,6 @@ export async function addAreaToServer(area: AreaData): Promise<AreaDto | null> {
     const response = await client.post<AreaDto>('/api/map/AddArea', requestBody);
     return response.data;
   } catch (error) {
-    console.error('Error adding area:', error);
     return null;
   }
 }
@@ -108,7 +111,6 @@ export async function updateAreaOnServer(area: AreaData): Promise<AreaDto | null
     const response = await client.put<AreaDto>('/api/map/UpdateArea', requestBody);
     return response.data;
   } catch (error) {
-    console.error('Error updating area:', error);
     return null;
   }
 }
@@ -116,10 +118,9 @@ export async function updateAreaOnServer(area: AreaData): Promise<AreaDto | null
 // Delete area on server
 export async function deleteAreaOnServer(id: number): Promise<boolean> {
   try {
-    await client.delete(`/DeleteArea/${id}`);
+    await client.delete(`/api/map/DeleteArea/${id}`);
     return true;
   } catch (error) {
-    console.error('Error deleting area:', error);
     return false;
   }
 }
@@ -127,10 +128,9 @@ export async function deleteAreaOnServer(id: number): Promise<boolean> {
 // Delete plant on server
 export async function deletePlantOnServer(id: number): Promise<boolean> {
   try {
-    await client.delete(`/DeletePlant/${id}`);
+    await client.delete(`/api/map/DeletePlant/${id}`);
     return true;
   } catch (error) {
-    console.error('Error deleting plant:', error);
     return false;
   }
 }
@@ -141,10 +141,9 @@ export async function deletePlantsInArea(plantIds: number[]): Promise<boolean> {
     const requestBody: PlantIdsDto = {
       PlantIds: plantIds,
     };
-    await client.post('/DeletePlantsInArea', requestBody);
+    await client.post('/api/map/DeletePlantsInArea', requestBody);
     return true;
   } catch (error) {
-    console.error('Error deleting plants in area:', error);
     return false;
   }
 }
@@ -179,14 +178,12 @@ export function parseWKTPolygon(wkt: string): [number, number][] {
 // Получить текущий путь к изображению карты
 export async function fetchMapImage(): Promise<string | null> {
   try {
-    const response = await client.get<{ MapImagePath: string }>('/api/map/GetMapImage');
-    // Проверяем наличие данных перед обработкой
-    if (response.data && response.data.MapImagePath) {
-      return response.data.MapImagePath.replace(/"/g, '');
+    const response = await client.get<{ mapImagePath: string }>('/api/map/GetMapImage');
+    if (response.data && response.data.mapImagePath) {
+      return response.data.mapImagePath.replace(/"/g, '');
     }
     return null;
   } catch (error) {
-    console.error('Ошибка при получении карты:', error);
     return null;
   }
 }
@@ -197,17 +194,15 @@ export async function uploadMapImage(file: File): Promise<string | null> {
     const formData = new FormData();
     formData.append('file', file);
     
-    const response = await client.post<{ MapImagePath: string }>('/api/map/UploadMapImage', formData, {
+    const response = await client.post<{ mapImagePath: string }>('/api/map/UploadMapImage', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     
-    // Проверяем наличие данных перед обработкой
-    if (response.data && response.data.MapImagePath) {
-      return response.data.MapImagePath.replace(/"/g, '');
+    if (response.data && response.data.mapImagePath) {
+      return response.data.mapImagePath.replace(/"/g, '');
     }
     return null;
   } catch (error) {
-    console.error('Ошибка при загрузке карты:', error);
     return null;
   }
 }

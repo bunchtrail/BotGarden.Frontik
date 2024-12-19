@@ -10,13 +10,15 @@ import {
   deleteAreaOnServer,
   fetchAreas,
   fetchMapImage,
+  fetchMarkers,
+  MarkerData,
   updateAreaOnServer,
 } from '../services/mapService';
 import { MapMode } from '../types/mapControls';
 import { uploadMapFile } from '../utils/mapUploader';
 import styles from './MapPage.module.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://localhost:7076';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const MapPage: React.FC = () => {
   const [mapImageURL, setMapImageURL] = useState<string | null>(null);
@@ -24,6 +26,7 @@ const MapPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pendingArea, setPendingArea] = useState<Layer | null>(null);
   const [areas, setAreas] = useState<AreaData[]>([]);
+  const [markers, setMarkers] = useState<MarkerData[]>([]);
 
   // Загрузка областей и карты при монтировании
   useEffect(() => {
@@ -33,16 +36,13 @@ const MapPage: React.FC = () => {
         setAreas(fetchedAreas);
 
         const mapPath = await fetchMapImage();
-        console.log('Fetched map path:', mapPath); // Для отладки
-        console.log('API_BASE_URL:', API_BASE_URL); // Для отладки
 
         if (mapPath) {
           const normalizedPath = mapPath.replace(/\\/g, '/');
           const fullURL = `${API_BASE_URL}/${normalizedPath}`;
-          console.log('Full image URL:', fullURL); // Для отладки
           setMapImageURL(fullURL);
         } else {
-          console.log('No map path received from server'); // Для отладки
+          console.log('No map path received from server');
         }
       } catch (error) {
         console.error('Error loading data:', error);
@@ -51,25 +51,49 @@ const MapPage: React.FC = () => {
     loadData();
   }, []);
 
+  useEffect(() => {
+    const loadMarkers = async () => {
+      try {
+        const fetchedMarkers = await fetchMarkers();
+        console.log('Загруженные маркеры:', fetchedMarkers);
+        setMarkers(fetchedMarkers);
+      } catch (error) {
+        console.error('Ошибка при загрузке маркеров:', error);
+      }
+    };
+
+    loadMarkers();
+  }, []);
+
   const handleAction = (action: string) => {
     switch (action) {
       case 'upload-image':
         fileInputRef.current?.click();
         break;
       case 'add-plant':
-        setCurrentMode(MapMode.ADD_PLANT);
+        setCurrentMode((prev) =>
+          prev === MapMode.ADD_PLANT ? MapMode.VIEW : MapMode.ADD_PLANT
+        );
         break;
       case 'add-area':
-        setCurrentMode(MapMode.ADD_AREA);
+        setCurrentMode((prev) =>
+          prev === MapMode.ADD_AREA ? MapMode.VIEW : MapMode.ADD_AREA
+        );
         break;
       case 'edit-area':
-        setCurrentMode(MapMode.EDIT_AREA);
+        setCurrentMode((prev) =>
+          prev === MapMode.EDIT_AREA ? MapMode.VIEW : MapMode.EDIT_AREA
+        );
         break;
       case 'edit-plant':
-        setCurrentMode(MapMode.EDIT_PLANT);
+        setCurrentMode((prev) =>
+          prev === MapMode.EDIT_PLANT ? MapMode.VIEW : MapMode.EDIT_PLANT
+        );
         break;
       case 'remove-plant':
-        setCurrentMode(MapMode.REMOVE_PLANT);
+        setCurrentMode((prev) =>
+          prev === MapMode.REMOVE_PLANT ? MapMode.VIEW : MapMode.REMOVE_PLANT
+        );
         break;
       default:
         console.warn(`Нет обработчика для действия: ${action}`);
@@ -83,10 +107,8 @@ const MapPage: React.FC = () => {
     if (file) {
       const path = await uploadMapFile(file);
       if (path) {
-        // Нормализуем путь и убираем лишние кавычки
         const normalizedPath = path.replace(/\\/g, '/').replace(/"/g, '');
         const fullURL = `${API_BASE_URL}/${normalizedPath}`;
-        console.log('Full image URL after upload:', fullURL); // Для отладки
         setMapImageURL(fullURL);
       }
       event.target.value = '';
@@ -118,11 +140,10 @@ const MapPage: React.FC = () => {
             ...prev,
             {
               ...areaData,
-              id: result.LocationId,
+              id: result.locationId,
             },
           ]);
           setPendingArea(null);
-          setCurrentMode(MapMode.VIEW);
         }
       } catch (error) {
         console.error('Не удалось сохранить область:', error);
@@ -139,7 +160,6 @@ const MapPage: React.FC = () => {
       }
     }
     setPendingArea(null);
-    setCurrentMode(MapMode.VIEW);
   };
 
   const handleAreaEdited = async (
@@ -161,26 +181,19 @@ const MapPage: React.FC = () => {
           area.id === areaId ? { ...area, positions: newPositions } : area
         )
       );
-      setCurrentMode(MapMode.VIEW);
     }
   };
 
   const handleAreaDeleted = async (areaId: number) => {
-    const confirmed = window.confirm(
-      'Вы уверены, что хотите удалить эту область?'
-    );
-    if (!confirmed) return;
-
     const success = await deleteAreaOnServer(areaId);
     if (success) {
       setAreas((prev) => prev.filter((area) => area.id !== areaId));
-      setCurrentMode(MapMode.VIEW);
     }
   };
 
   return (
     <>
-      <Navbar pageType='map' onAction={handleAction} />
+      <Navbar pageType='map' onAction={handleAction} activeMode={currentMode} />
 
       <div className={styles.mapPageContainer}>
         <input
@@ -195,6 +208,7 @@ const MapPage: React.FC = () => {
             mapImageURL={mapImageURL}
             mode={currentMode}
             areas={areas}
+            markers={markers}
             onAreaCreated={handleAreaCreated}
             onAreaEdited={handleAreaEdited}
             onAreaDeleted={handleAreaDeleted}

@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import React from 'react';
 import styles from './AreaPopup.module.css';
 
 interface AreaPopupProps {
@@ -8,12 +7,16 @@ interface AreaPopupProps {
 }
 
 export const createAreaPopup = ({ title, description }: AreaPopupProps): L.Popup => {
-  const container = L.DomUtil.create('div', styles.popupContainer);
+  const container = L.DomUtil.create('div', styles.container);
   
   const content = `
-    <div class="${styles.popupContent}">
-      <h3 class="${styles.title}">${title}</h3>
-      ${description ? `<p class="${styles.description}">${description}</p>` : ''}
+    <div class="${styles.popup}">
+      <div class="${styles.content}">
+        <div class="${styles.header}">
+          <h3 class="${styles.title}">${title}</h3>
+        </div>
+        ${description ? `<p class="${styles.message}">${description}</p>` : ''}
+      </div>
     </div>
   `;
   
@@ -21,6 +24,7 @@ export const createAreaPopup = ({ title, description }: AreaPopupProps): L.Popup
   
   return L.popup({
     maxWidth: 300,
-    className: styles.customPopup,
+    className: styles.leafletPopupCustom,
+    closeButton: true,
   }).setContent(container);
 }; 
