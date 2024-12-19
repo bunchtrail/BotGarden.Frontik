@@ -85,11 +85,6 @@ const MapPage: React.FC = () => {
           prev === MapMode.EDIT_AREA ? MapMode.VIEW : MapMode.EDIT_AREA
         );
         break;
-      case 'edit-plant':
-        setCurrentMode((prev) =>
-          prev === MapMode.EDIT_PLANT ? MapMode.VIEW : MapMode.EDIT_PLANT
-        );
-        break;
       case 'remove-plant':
         setCurrentMode((prev) =>
           prev === MapMode.REMOVE_PLANT ? MapMode.VIEW : MapMode.REMOVE_PLANT
