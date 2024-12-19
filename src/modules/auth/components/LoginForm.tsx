@@ -1,12 +1,19 @@
 // src/modules/Auth/components/LoginForm.tsx
 
-import React, { useState, useEffect } from 'react';
-import ErrorMessage from '../../../components/Misc/ErrorMessage';
+import React, { useEffect, useState } from 'react';
 import Button from '../../../components/Button/Button';
-import './login.css'; 
+import ErrorMessage from '../../../components/Misc/ErrorMessage';
+import './login.css';
 
 interface LoginFormProps {
-  onSuccess: (email: string, password: string) => void;
+  onSuccess: (
+    email: string,
+    password: string
+  ) => Promise<{
+    error: boolean;
+    message?: string;
+    type?: 'general' | 'unauthorized';
+  }>;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
@@ -27,7 +34,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     if (error) {
       setError(null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email, password]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -50,24 +56,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     setFieldErrors({});
     setError(null);
     setLoading(true);
+
     try {
-      await onSuccess(email, password);
-    } catch (err: any) {
-      if (err.type === 'unauthorized') {
+      const result = await onSuccess(email, password);
+      if (result.error && result.message) {
         setError({
-          message: 'Неавторизован. Пожалуйста, проверьте свои учетные данные.',
-          type: 'unauthorized',
+          message: result.message,
+          type: result.type,
         });
-      } else {
-        setError({ message: 'Ошибка авторизации', type: 'general' });
       }
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDismissError = () => {
-    setError(null);
   };
 
   return (
@@ -76,7 +76,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         <ErrorMessage
           message={error.message}
           type={error.type}
-          onDismiss={handleDismissError}
+          onDismiss={() => setError(null)}
         />
       )}
       <div className='form-group'>

@@ -5,12 +5,11 @@
 /* Контейнеры приложения */
 .app-container {
   width: 100%;
-  margin-top: 6rem;
-  padding: 0; /* Убираем отступы */
-  margin: 0;  /* Убираем отступ сверху */
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: var(--shadow-md);
+  min-height: calc(100vh - 62px); /* Учитываем высоту навбара */
+  background-color: var(--color-background);
+  position: relative;
+  z-index: 1;
+  padding: var(--content-padding);
 }
 
 .app-container.full-width {
@@ -47,6 +46,29 @@
   --border-radius-lg: 12px;
   --border-radius-md: 8px;
   --navbar-height: 50px;
+  --content-max-width: 1200px;
+  --content-padding: 2rem;
+  --content-padding-mobile: 1rem;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --card-border-radius: 24px;
+  --card-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: 
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --animation-duration: 0.3s;
+  --animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Цвета для ошибок */
+  --color-error-light: rgba(255, 59, 48, 0.1);
+  --color-error-border: #ff3b30;
+  --color-error-text: #d63031;
+  
+  /* Тени для сообщений об ошибках */
+  --error-shadow: 
+    0 2px 4px rgba(255, 59, 48, 0.1),
+    0 1px 2px rgba(255, 59, 48, 0.06);
 }
 
 /* Общие стили */
@@ -58,6 +80,8 @@ body {
   -webkit-font-smoothing: antialiased;
   margin: 0;
   padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 a:hover {
@@ -78,4 +102,110 @@ body[data-page="map"] .app-container {
   box-shadow: none;
   height: 100vh;
   overflow: hidden;
+}
+
+/* Добавляем стили для плавных переходов */
+* {
+  transition: background-color var(--transition-smooth),
+              color var(--transition-smooth),
+              border-color var(--transition-smooth),
+              box-shadow var(--transition-smooth);
+}
+
+/* Обновляем стили для контейнеров */
+.container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--content-padding);
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: var(--content-padding-mobile);
+  }
+}
+
+@media (max-width: 813px) {
+  .app-container {
+    padding: var(--content-padding-mobile);
+    margin-top: 62px; /* Отступ под навбаром на мобильных */
+  }
+
+  /* Обновляем стили для всех страниц на мобильных устройствах */
+  body {
+    padding-top: 62px; /* Фиксированный отступ под навбаром */
+  }
+
+  /* Стили для контейнеров страниц */
+  .page-container {
+    padding: 1rem;
+    margin-top: 0;
+  }
+
+  /* Убираем лишние отступы у контейнеров */
+  .container,
+  .content-wrapper {
+    padding: 0.5rem;
+    margin-top: 0;
+  }
+}
+
+/* Добавляем стили для корректного отображения навбара */
+:global(.navbar-visible) {
+  margin-top: 62px;
+}
+
+:global(.navbar-hidden) {
+  margin-top: 0;
+  transition: margin-top 0.3s ease;
+}
+
+._mobileActions_1k50i_1181 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+._mobileActions_1k50i_1181 button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+._mobileActions_1k50i_1181 button i {
+  margin-right: 5px;
+}
+
+/* Глобальные стили для анимаций */
+.fade-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--animation-duration) var(--animation-timing),
+              transform var(--animation-duration) var(--animation-timing);
+}
+
+.fade-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity var(--animation-duration) var(--animation-timing),
+              transform var(--animation-duration) var(--animation-timing);
 }

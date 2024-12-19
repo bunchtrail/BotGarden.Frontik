@@ -5,7 +5,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { AuthenticationError } from '../../../utils/errors';
 import LoginContainer from '../components/LoginContainer';
 import LoginForm from '../components/LoginForm';
-import './login.css'; // Обновленный путь
+import './login.css';
 
 function Login() {
   const navigate = useNavigate();
@@ -20,17 +20,30 @@ function Login() {
   const handleLoginSuccess = async (email: string, password: string) => {
     try {
       await login(email, password);
+      return { error: false };
     } catch (error: any) {
       if (error instanceof AuthenticationError) {
-        throw error; // Передаем структурированную ошибку в LoginForm
+        const safeMessage = error.type === 'unauthorized' 
+          ? 'Неверный email или пароль'
+          : 'Произошла ошибка при входе в систему. Пожалуйста, попробуйте позже';
+
+        return {
+          error: true,
+          message: safeMessage,
+          type: (error.type || 'unauthorized') as 'unauthorized' | 'general',
+        };
       }
-      throw new AuthenticationError('Ошибка авторизации', 'general');
+      return {
+        error: true,
+        message: 'Произошла ошибка при входе в систему. Пожалуйста, попробуйте позже',
+        type: 'general' as const,
+      };
     }
   };
 
   return (
     <LoginContainer>
-      <h1>Авторизация</h1>
+      <h1>Добро пожаловать</h1>
       <LoginForm onSuccess={handleLoginSuccess} />
     </LoginContainer>
   );

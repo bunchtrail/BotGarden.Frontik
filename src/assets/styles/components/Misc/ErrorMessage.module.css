@@ -1,29 +1,98 @@
 /* src/components/Misc/ErrorMessage.module.css */
 
 .errorMessage {
-  min-height: 1.5rem; /* Reserve space for the error message */
+  width: 100%;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  border-radius: var(--border-radius-md);
+  background: var(--color-error-light);
+  border: 1px solid var(--color-error-border);
+  color: var(--color-error-text);
+  font-size: 0.95rem;
   opacity: 0;
-  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s var(--animation-timing);
+  position: relative;
   overflow: hidden;
-  margin-bottom: 0;
-  transition: opacity 0.5s ease, margin-bottom 0.5s ease;
+  box-shadow: var(--error-shadow);
+}
+
+.errorContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.errorIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.errorDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex-grow: 1;
+}
+
+.errorTitle {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.errorText {
+  font-size: 0.9rem;
+  opacity: 0.9;
 }
 
 .visible {
   opacity: 1;
-  visibility: visible;
-  margin-bottom: 1rem;
+  transform: translateY(0);
+}
+
+.leaving {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--color-error-border);
+  width: 100%;
+  animation: progress 5s linear forwards;
+}
+
+@keyframes progress {
+  from { width: 100%; }
+  to { width: 0%; }
 }
 
 .unauthorized {
-  color: #ff9800;
-  background-color: rgba(255, 152, 0, 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  position: relative;
+  background: rgba(255, 149, 0, 0.1);
+  border-color: #ff9500;
+  
+  .progressBar {
+    background: #ff9500;
+  }
 }
 
-.unauthorized::before {
-  content: '⚠️';
-  margin-right: 0.5rem;
+@media (max-width: 768px) {
+  .errorMessage {
+    padding: 0.875rem 1rem;
+  }
+  
+  .errorIcon {
+    font-size: 1.1rem;
+  }
+  
+  .errorTitle {
+    font-size: 0.95rem;
+  }
+  
+  .errorText {
+    font-size: 0.85rem;
+  }
 }

@@ -20,36 +20,36 @@ body, html, #root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Центрирование по вертикали */
-  min-height: 80vh; /* Заполнение всей высоты экрана */
+  justify-content: center;
+  min-height: 100vh;
   padding: 2rem;
-  background-color: var(--color-background); /* Фон в зависимости от темы */
+  background: linear-gradient(135deg, var(--color-background) 0%, #ffffff 100%);
+}
+
+.login-container h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 2rem;
+  text-align: center;
+  letter-spacing: -0.5px;
 }
 
 /* Форма логина */
 .login-form {
   width: 100%;
   max-width: 400px;
-  background-color: var(--input-background); 
-  padding: 2rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow); 
-  animation: fadeIn 0.5s ease-in-out;
-  position: relative;
-  transition: all 0.3s ease; /* Ensure smooth transitions */
-  border: 1px solid #ccc; 
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: var(--blur-background);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Add space for error message */
-.login-form .error-message-wrapper {
-  min-height: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-/* Анимация появления формы */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+.login-form:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .form-group {
@@ -57,110 +57,112 @@ body, html, #root {
 }
 
 .form-group label {
-  margin-bottom: 0.5rem;
   display: block;
-  color: var(--color-text);
+  margin-bottom: 0.5rem;
   font-weight: 500;
+  color: var(--color-text);
+  font-size: 0.95rem;
 }
 
 .input-field {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--input-border);
-  color: var(--input-text);
-  border-radius: var(--border-radius);
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-md);
   font-size: 1rem;
-  background-color: var(--input-background);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .input-field:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 5px rgba(60, 179, 113, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
   outline: none;
 }
 
-.error-message {
-  color: var(--color-error);
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(-10px);
-  animation: fadeInError 0.5s forwards;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+.input-field.input-error {
+  border-color: var(--color-error);
 }
 
-@keyframes fadeInError {
-  to { opacity: 1; transform: translateY(0); }
+.field-error {
+  color: var(--color-error);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
 }
 
 .login-button {
   width: 100%;
-  padding: 0.75rem;
-  background-color: var(--color-primary);
+  padding: 0.875rem;
+  background: var(--color-primary);
+  color: white;
   border: none;
-  border-radius: var(--border-radius);
-  color: #ffffff;
+  border-radius: var(--border-radius-md);
   font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  position: relative;
-  box-shadow: var(--box-shadow);
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-button:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.login-button:active {
+  transform: translateY(0);
 }
 
 .login-button:disabled {
-  background-color: #a5d6a7;
+  background: var(--color-text-secondary);
   cursor: not-allowed;
-}
-
-.login-button:hover:not(:disabled) {
-  background-color: var(--color-primary-hover);
-  transform: scale(1.03);
 }
 
 .spinner {
   width: 20px;
   height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.6);
-  border-top: 3px solid #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* Адаптивные стили */
-@media (max-width: 480px) {
+/* Адаптивный дизайн */
+@media (max-width: 768px) {
   .login-container {
     padding: 1rem;
   }
 
+  .login-container h1 {
+    font-size: 2rem;
+  }
+
   .login-form {
-    max-width: 100%;
     padding: 1.5rem;
   }
 }
 
-/* Стили для ошибок */
-.input-error {
-  border-color: var(--color-error);
-  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+/* Анимация появления формы */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.field-error {
-  color: var(--color-error);
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
-  opacity: 0;
-  transform: translateY(-5px);
-  animation: fadeInFieldError 0.3s forwards;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-@keyframes fadeInFieldError {
-  to { opacity: 1; transform: translateY(0); }
+.login-form {
+  animation: fadeIn 0.5s ease-out;
 }

@@ -5,24 +5,37 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4rem 2rem;
+  padding: 3rem 2.5rem;
   background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   max-width: 1000px;
-  margin: 4rem auto;
+  margin: 2rem auto;
   box-sizing: border-box;
 }
 
 /* Заголовок формы */
 .formTitle {
-  color: #333333;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  font-size: 2rem;
+  color: #1a1a1a;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  font-size: 2.25rem;
   text-align: center;
-  border-bottom: 2px solid #e0e0e0;
-  padding-bottom: 0.5rem;
+  border-bottom: none;
+  padding-bottom: 0;
+  position: relative;
+}
+
+.formTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #007AFF, #00C6FF);
+  border-radius: 2px;
 }
 
 /* Стили формы */
@@ -30,7 +43,8 @@
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: 32px;
+  padding: 0 1rem;
 }
 
 /* Стили кнопок */
@@ -105,12 +119,12 @@
 .form select,
 .form textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #cccccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  padding: 0.875rem 1.25rem;
+  border: 1.5px solid #e6e6e6;
+  border-radius: 12px;
+  background-color: #fafafa;
   font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .form input:focus,
@@ -118,16 +132,17 @@
 .form textarea:focus {
   border-color: #007AFF;
   background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.08);
   outline: none;
 }
 
 /* Стили лейблов */
 .form label {
-  font-weight: 500;
-  color: #333333;
-  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #2c2c2c;
+  margin-bottom: 0.75rem;
   font-size: 0.95rem;
+  letter-spacing: 0.2px;
 }
 
 /* Сообщения об ошибках */
@@ -142,7 +157,12 @@
   text-align: center;
   margin-top: 2rem;
   font-size: 1rem;
-  color: #666666;
+  color: #007AFF;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 /* Медиа-запросы для больших экранов */
@@ -166,8 +186,19 @@
 /* Медиа-запросы для мобильных устройств */
 @media (max-width: 768px) {
   .addPlantPage {
-    padding: 2rem 1.5rem;
-    margin: 2rem 1rem;
+    padding: 2rem 1rem;
+    margin: 1rem;
+    border-radius: 16px;
+  }
+
+  .formTitle {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .form {
+    gap: 24px;
+    padding: 0;
   }
 
   .buttonGroup {
@@ -178,10 +209,6 @@
   .submitButton,
   .resetButton {
     width: 100%;
-  }
-
-  .form {
-    gap: 16px;
   }
 
   .form input[type="text"],

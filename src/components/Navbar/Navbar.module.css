@@ -662,152 +662,157 @@ input:checked + .slider:before {
     flex-direction: column;
     align-items: flex-start;
     padding: 10px;
-    padding-top: 60px;
     height: auto;
-    max-height: 60px;
-    overflow: hidden;
-    transition: max-height var(--navbar-transition), background-color var(--navbar-transition);
     min-height: 62px;
+    max-height: 62px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, background-color 0.3s ease;
   }
 
-  :global(body) {
-    padding-top: 62px; /* Минимальный отступ на мобильных устройствах */
-  }
-
-  .navbarContainer.hidden {
-    transform: translateY(-100%);
-  }
-
-  .navbarContainer:not(.hidden) {
+  .navbarContainer.expanded {
     max-height: 100vh;
-    background-color: rgba(52, 58, 64, 0.98);
     overflow-y: auto;
+    background-color: var(--navbar-bg-color);
   }
 
   .navItems {
     flex-direction: column;
     width: 100%;
-    display: none;
     padding: 10px 0;
-    transition: max-height var(--navbar-transition), opacity var(--navbar-transition);
+    display: none;
   }
 
-  .navItems.show {
+  .navbarContainer.expanded .navItems {
     display: flex;
-    max-height: 500px;
-    opacity: 1;
-  }
-
-  .navItems:not(.show) {
-    max-height: 0;
-    opacity: 0;
   }
 
   .navItem {
     width: 100%;
     margin: 5px 0;
-    border-radius: var(--border-radius);
-    height: 42px;
-    min-height: 42px;
+    padding: 12px 16px;
+  }
+
+  .searchContainer {
+    width: 100%;
+    margin: 10px 0;
+    order: -1; /* Поднимаем поиск наверх */
+  }
+
+  .navbarSearch {
+    width: 100%;
+    margin: 0;
+  }
+
+  .navbarSearch:focus {
+    width: 100%; /* Отменяем расширение при фокусе на мобильных */
   }
 
   .buttonGroup {
-    display: none !important;
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    display: none;
   }
 
+  .navbarContainer.expanded .buttonGroup {
+    display: flex;
+  }
+
+  /* Стили для мобильной кнопки меню */
+  .mobileToggle {
+    display: block;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--navbar-text-color);
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1001;
+    padding: 8px;
+  }
+
+  /* Стили для выпадающих меню на мобильных */
   .dropdownContainer {
     width: 100%;
-    margin: 5px 0;
   }
 
   .dropdownButton {
     width: 100%;
-    padding: 0 16px;
-    height: 42px;
-    min-height: 42px;
+    margin: 5px 0;
   }
 
   .dropdownContent {
     position: relative;
     width: 100%;
-    margin-top: 5px;
-    box-shadow: none;
-    border: none;
-    background-color: rgba(28, 28, 30, 0.98); /* Обновляем цвет и для мобильной версии */
-  }
-
-  .dropdownItem {
-    padding: 0 16px;
-    height: 42px;
-    min-height: 42px;
-  }
-
-  .mobileToggle {
-    display: block;
-  }
-
-  .mobileActions {
-    display: flex;
-  }
-
-  .mobileMenuContainer.show {
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-    animation: slideDown var(--navbar-transition) forwards;
-  }
-
-  .searchContainer {
-    margin: 10px 0;
-    width: 100%;
-    height: 42px;
-    min-height: 42px;
-  }
-
-  .navbarSearch {
-    margin: 0;
-    width: 100%;
-    height: 42px;
-    min-height: 42px;
-  }
-
-  .navbarSearch:focus {
-    width: 100%;
-  }
-
-  .columnsButton {
-    width: 100%;
-    justify-content: space-between;
-    margin: 0;
-    height: 42px;
-    min-height: 42px;
-  }
-
-  .columnsDropdown {
-    position: relative;
-    width: 100%;
-    max-height: 300px;
-    margin-top: 5px;
-  }
-
-  .buttonGroup {
-    flex-wrap: wrap;
-  }
-
-  .columnsButton {
-    width: 100%;
+    top: 5px;
+    right: auto;
     margin-bottom: 10px;
   }
 
-  .columnsDropdown {
-    right: auto;
+  /* Адаптация для кнопок действий */
+  .button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Адаптация для переключателя режима редактирования */
+  .editToggle {
+    margin: 10px 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* Добавляем промежуточную точку для планшетов */
+@media (min-width: 814px) and (max-width: 1024px) {
+  .navbarSearch {
+    width: 200px;
+  }
+
+  .navbarSearch:focus {
+    width: 300px;
+  }
+
+  .navItem {
+    padding: 0 12px;
+    font-size: 14px;
+  }
+
+  .button {
+    min-width: 100px;
+    padding: 0 12px;
+    font-size: 14px;
+  }
+}
+
+/* Анимация для мобильного меню */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobileMenuContainer {
+  display: none;
+}
+
+@media (max-width: 813px) {
+  .mobileMenuContainer {
+    display: block;
     width: 100%;
   }
 
-  .searchContainer {
-    flex-direction: column;
-    width: 100%;
-    margin: 0;
+  .mobileMenuContainer.show {
+    animation: slideDown 0.3s ease forwards;
   }
 }
 

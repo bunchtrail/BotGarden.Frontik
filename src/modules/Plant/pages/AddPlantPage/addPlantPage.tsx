@@ -73,6 +73,15 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
     setIsEditing((prev) => !prev);
   };
 
+  const sectionStyles = {
+    marginBottom: '1.5rem',
+    background: '#ffffff',
+    borderRadius: '16px',
+    padding: '1.5rem',
+    boxShadow: '0 2px 12px rgba(0, 0, 0, 0.04)',
+    transition: 'all 0.3s ease',
+  };
+
   return (
     <>
       <Navbar

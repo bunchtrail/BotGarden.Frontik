@@ -65,7 +65,6 @@ client.interceptors.response.use(
           return client(originalRequest);
         } catch (err) {
           clearTokens();
-          window.location.href = '/login';
           return Promise.reject(err);
         }
       }
@@ -79,7 +78,7 @@ client.interceptors.response.use(
           throw new Error('No refresh token available');
         }
 
-        const data = await refreshTokenFunc(currentAccessToken, currentRefreshToken); // Используем переименованный импорт
+        const data = await refreshTokenFunc(currentAccessToken, currentRefreshToken);
         setTokens(data.accessToken, data.refreshToken);
 
         originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
@@ -89,7 +88,6 @@ client.interceptors.response.use(
       } catch (err) {
         processQueue(err, null);
         clearTokens();
-        window.location.href = '/login';
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

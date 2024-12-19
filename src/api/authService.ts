@@ -1,18 +1,24 @@
 // src/api/authService.ts
-import { setTokens } from '../services/tokenService'; // Добавленный импорт
+import { setTokens } from '../services/tokenService';
 import { LoginResponse } from '../types/authTypes';
+import { AuthenticationError } from '../utils/errors';
 import client from './client';
 
-// Именованный экспорт функции login
 export const login = async (email: string, password: string): Promise<LoginResponse> => {
-  const response = await client.post<LoginResponse>('/api/Account/login', {
-    email,
-    password,
-  });
-  return response.data;
+  try {
+    const response = await client.post<LoginResponse>('/api/Account/login', {
+      email,
+      password,
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      throw new AuthenticationError('Неверные учетные данные', 'unauthorized');
+    }
+    throw new AuthenticationError('Ошибка при входе в систему', 'general');
+  }
 };
 
-// Именованный экспорт функции refreshToken
 export const refreshToken = async (
   accessToken: string,
   refreshToken: string
@@ -21,23 +27,14 @@ export const refreshToken = async (
   refreshToken: string;
 }> => {
   try {
-    console.log(accessToken, refreshToken);
     const response = await client.post('/api/Account/refresh', {
       Token: accessToken || '',
       RefreshToken: refreshToken,
     });
-    console.log('Refresh response:', response.data);
 
-    // Сохраняем новые токены после успешного обновления
     setTokens(response.data.accessToken, response.data.refreshToken);
-
     return response.data;
   } catch (error: any) {
-    if (error.response) {
-      console.error('Ошибка при обновлении токенов:', error.response.data);
-    } else {
-      console.error('Ошибка при обновлении токенов:', error.message);
-    }
-    throw error;
+    throw new AuthenticationError('Ошибка обновления сессии', 'general');
   }
 };

@@ -1,0 +1,54 @@
+.homeContainer {
+  min-height: calc(100vh - 62px); /* Учитываем высоту навбара */
+  display: flex;
+  flex-direction: column;
+
+  background-size: 300px;
+  background-repeat: repeat;
+  padding: 2rem;
+}
+
+.contentWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.content {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 24px;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 800px;
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  margin: 1.5rem 0 2.5rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .homeContainer {
+    padding: 1rem;
+  }
+  
+  .content {
+    padding: 1.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    margin: 1rem 0 2rem;
+  }
+} 
