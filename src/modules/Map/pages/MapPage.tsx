@@ -2,9 +2,9 @@
 import React, { useRef, useState } from 'react';
 import Navbar from '../../../components/Navbar/Navbar';
 import MapViewer from '../components/MapViewer/MapViewer';
+import { MapMode } from '../types/mapControls';
 import { uploadMapFile } from '../utils/mapUploader';
 import styles from './MapPage.module.css';
-import { MapMode } from '../types/mapControls';
 
 const MapPage: React.FC = () => {
   const [mapImageURL, setMapImageURL] = useState<string | null>(null);
@@ -58,10 +58,7 @@ const MapPage: React.FC = () => {
         onChange={handleFileChange}
       />
       <div className={styles.mapWrapper}>
-        <MapViewer 
-          mapImageURL={mapImageURL}
-          currentMode={currentMode}
-        />
+        <MapViewer mapImageURL={mapImageURL} currentMode={currentMode} />
       </div>
     </div>
   );

@@ -156,8 +156,8 @@ function coordsToWKT(coords: [number, number][]): string {
   return `POLYGON((${coordStrings}, ${coords[0][1]} ${coords[0][0]}))`;
 }
 
-// Helper: Parse WKT polygon to coordinates
-function parseWKTPolygon(wkt: string): [number, number][] {
+// Export the parseWKTPolygon helper
+export function parseWKTPolygon(wkt: string): [number, number][] {
   const match = wkt.match(/\(\(([^)]+)\)\)/);
   if (!match) return [];
   const coordsStr = match[1].trim();
@@ -166,7 +166,11 @@ function parseWKTPolygon(wkt: string): [number, number][] {
     return [lat, lon] as [number, number];
   });
   // Remove last coordinate if it's same as first
-  if (coords.length > 0 && coords[0][0] === coords[coords.length - 1][0] && coords[0][1] === coords[coords.length - 1][1]) {
+  if (
+    coords.length > 0 &&
+    coords[0][0] === coords[coords.length - 1][0] &&
+    coords[0][1] === coords[coords.length - 1][1]
+  ) {
     coords.pop();
   }
   return coords;

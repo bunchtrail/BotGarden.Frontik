@@ -1,4 +1,5 @@
 import { MapControl, MapMode } from '../types/mapControls';
+import { Map } from 'leaflet';
 
 // Базовые контролы, доступные во всех режимах
 const baseControls: MapControl[] = [
@@ -38,7 +39,11 @@ const modeSpecificControls: Record<MapMode, MapControl[]> = {
       id: 'draw-area',
       icon: 'fas fa-draw-polygon',
       title: 'Нарисовать область',
-      action: () => {},
+      action: (map: Map) => {
+        // Enable polygon drawing on the map
+        // This could involve setting a state or triggering a drawing tool
+        map.fire('startDrawing');
+      },
     }
   ],
   [MapMode.EDIT_AREA]: [

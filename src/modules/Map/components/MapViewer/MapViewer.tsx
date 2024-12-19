@@ -3,6 +3,11 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import React, { useEffect, useState } from 'react';
 import { getMapControls } from '../../config/mapControls';
+import {
+  addAreaToServer,
+  AreaData,
+  parseWKTPolygon,
+} from '../../services/mapService';
 import { MapMode } from '../../types/mapControls';
 import MapControls from '../MapControls/MapControls';
 import styles from './MapViewer.module.css';
@@ -22,8 +27,8 @@ const MapViewer: React.FC<MapViewerProps> = ({ mapImageURL, currentMode }) => {
       center: [0, 0],
       zoom: 1,
       crs: L.CRS.Simple,
-      maxZoom: 8, // Увеличиваем максимальный зум
-      minZoom: -2, // Добавляем возможность отдалиться
+      maxZoom: 12, // Увеличиваем максимальный зум
+      minZoom: -3, // Добавляем возможность отдалиться
       zoomControl: false, // Отключаем встроенные контролы
     });
 
@@ -50,6 +55,48 @@ const MapViewer: React.FC<MapViewerProps> = ({ mapImageURL, currentMode }) => {
       setMapInstance(null);
     };
   }, [mapImageURL]);
+
+  useEffect(() => {
+    if (mapInstance) {
+      const onStartDrawing = () => {
+        // Initialize drawing process
+        // Example: Adding a temporary layer to capture polygon
+        const tempLayer = L.polygon([]).addTo(mapInstance);
+      };
+
+      const onDrawComplete = async (e: any) => {
+        const layer = e.layer;
+        const latlngs = layer
+          .getLatLngs()[0]
+          .map(
+            (latlng: L.LatLng) => [latlng.lat, latlng.lng] as [number, number]
+          );
+        const newArea: AreaData = {
+          id: Date.now(), // Temporary ID
+          positions: latlngs,
+          title: 'New Area',
+          description: '',
+        };
+        const savedArea = await addAreaToServer(newArea);
+        if (savedArea) {
+          // Parse WKT to coordinates
+          const coordinates = parseWKTPolygon(savedArea.geometry);
+          // Add the saved area to the map using coordinates
+          L.polygon(coordinates).addTo(mapInstance);
+          // Remove the temporary layer
+          mapInstance.removeLayer(layer);
+        }
+      };
+
+      mapInstance.on('startDrawing', onStartDrawing);
+      mapInstance.on('draw:created', onDrawComplete);
+
+      return () => {
+        mapInstance.off('startDrawing', onStartDrawing);
+        mapInstance.off('draw:created', onDrawComplete);
+      };
+    }
+  }, [mapInstance]);
 
   return (
     <div className={styles.mapContainer}>

@@ -2,10 +2,10 @@ import React from 'react';
 import { MapControl, MapControlsProps } from '../../types/mapControls';
 import styles from './MapControls.module.css';
 
-const MapControls: React.FC<Omit<MapControlsProps, 'onModeChange'>> = ({ 
-  map, 
-  controls, 
-  currentMode 
+const MapControls: React.FC<Omit<MapControlsProps, 'onModeChange'>> = ({
+  map,
+  controls,
+  currentMode,
 }) => {
   const handleControlClick = (control: MapControl) => {
     map && control.action(map);
