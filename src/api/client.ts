@@ -2,9 +2,12 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from '../services/tokenService';
 import { API_URL } from '../utils/data';
+import { refreshToken as refreshTokenFunc } from './authService'; // Переименованный импорт
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://localhost:7076';
 
 const client = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -28,16 +31,17 @@ client.interceptors.request.use(
 // Механизм очереди для запросов, ожидающих обновления токена
 let isRefreshing = false;
 let failedQueue: Array<{
-  resolve: (value?: AxiosResponse<any>) => void;
+  resolve: (value: string) => void;
   reject: (error: any) => void;
 }> = [];
 
+// Функция для обработки очереди
 const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else if (token) {
-      prom.resolve({ data: { token } } as AxiosResponse);
+      prom.resolve(token);
     }
   });
   failedQueue = [];
@@ -50,55 +54,46 @@ client.interceptors.response.use(
     const originalRequest = error.config as any;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
       if (isRefreshing) {
         try {
-          const token = await new Promise((resolve, reject) => {
+          const token = await new Promise<string>((resolve, reject) => {
             failedQueue.push({ resolve, reject });
           });
           originalRequest.headers['Authorization'] = `Bearer ${token}`;
-          return await client(originalRequest);
+          return client(originalRequest);
         } catch (err) {
-          return await Promise.reject(err);
+          clearTokens();
+          window.location.href = '/login';
+          return Promise.reject(err);
         }
       }
 
-      originalRequest._retry = true;
       isRefreshing = true;
 
-      const currentRefreshToken = getRefreshToken();
-      const currentAccessToken = getAccessToken();
+      try {
+        const currentAccessToken = getAccessToken() || '';
+        const currentRefreshToken = getRefreshToken();
+        if (!currentRefreshToken) {
+          throw new Error('No refresh token available');
+        }
 
-      if (!currentRefreshToken || !currentAccessToken) {
-        isRefreshing = false;
+        const data = await refreshTokenFunc(currentAccessToken, currentRefreshToken); // Используем переименованный импорт
+        setTokens(data.accessToken, data.refreshToken);
+
+        originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
+        processQueue(null, data.accessToken);
+
+        return client(originalRequest);
+      } catch (err) {
+        processQueue(err, null);
         clearTokens();
         window.location.href = '/login';
-        return Promise.reject(error);
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
       }
-
-      return new Promise((resolve, reject) => {
-        client
-          .post('/api/Account/refresh', {
-            token: currentAccessToken,
-            refreshToken: currentRefreshToken,
-          })
-          .then(({ data }) => {
-            console.log('Получены новые токены:', data);
-            setTokens(data.accessToken, data.refreshToken);
-            client.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-            originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
-            processQueue(null, data.accessToken);
-            resolve(client(originalRequest));
-          })
-          .catch((err) => {
-            processQueue(err, null);
-            clearTokens();
-            window.location.href = '/login';
-            reject(err);
-          })
-          .finally(() => {
-            isRefreshing = false;
-          });
-      });
     }
 
     return Promise.reject(error);

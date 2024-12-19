@@ -81,16 +81,18 @@ export const pageConfig: Record<string, PageConfig> = {
     ],
     staticButtons: [
       { action: 'back', icon: 'backward', label: 'Назад' },
-      { action: 'save', icon: 'save', label: 'Сохранить'},
-
+      { action: 'save', icon: 'save', label: 'Сохранить' },
     ],
-    dynamicButtons: [
-    ],
+    dynamicButtons: [],
   },
   map: {
     showSearch: false,
     showButtonGroup: true,
     showColumnsDropdown: false,
+    dropdownBasePath: '/map',
+    dropdownItems: [
+      { pathSuffix: '/upload-image', iconClass: 'fas fa-image', label: 'Загрузить изображение' },
+    ],
     navLinks: [
       { to: '/home', iconClass: 'fas fa-home', label: 'Вернуться на главный экран' },
     ],
@@ -98,9 +100,7 @@ export const pageConfig: Record<string, PageConfig> = {
       { action: 'add-plant', icon: 'seedling', label: 'Добавить растение' },
       { action: 'add-area', icon: 'map-marked-alt', label: 'Добавить область' },
       { action: 'edit-area', icon: 'edit', label: 'Редактировать область' },
-      { action: 'edit-plant', icon: 'pencil-alt', label: 'Редактировать растение' },
-      { action: 'remove-plant', icon: 'trash', label: 'Удалить растение' },
-      { action: 'upload-image', icon: 'image', label: 'Загрузить изображение' },
+      { action: 'delete-plants-in-area', icon: 'trash', label: 'Удалить растения в области' },
     ],
     dynamicButtons: [], // Для карты, возможно, нет динамических кнопок
   },

@@ -1,40 +1,39 @@
 /* Общий контейнер */
 .plantsAllContainer {
-  padding: 20px;
+  padding: 0 0 2rem 0; /* Убираем внутренние отступы, добавляем отступ снизу */
   text-align: center;
   overflow: hidden;
-  margin-top: 2rem;
+  margin: 0 auto;  /* Центрируем таблицу */
+  margin-top: 6rem;
+  max-width: 1650px; /* Устанавливаем максимальную ширину */
 }
-
 /* Обертка для таблицы */
 .tableWrapper {
   width: 100%;
   overflow-x: auto;
-  border-radius: 12px;
-  box-shadow: var(--shadow-md);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   background: var(--color-surface);
-  margin-bottom: 20px;
+  margin: 0;       /* Убираем отступы */
+  padding: 0;      /* Убираем внутренние отступы */
 }
 
-/* Стили скроллбара в таблице */
+/* Стили скроллбара в стиле macOS */
 .tableWrapper::-webkit-scrollbar {
-  height: 12px;
-  background-color: var(--color-surface);
+  height: 8px;
 }
 
 .tableWrapper::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  border: 2px solid var(--color-surface);
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
 .tableWrapper::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .tableWrapper::-webkit-scrollbar-track {
-  background-color: var(--color-surface-hover);
-  border-radius: 6px;
+  background-color: transparent;
 }
 
 /* Основная таблица */
@@ -43,10 +42,12 @@
   border-collapse: separate;
   border-spacing: 0;
   background: var(--color-surface);
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
   transition: background-color 0.3s ease;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
 }
 
 /* Таблица в режиме редактирования */
@@ -57,10 +58,13 @@
 /* Ячейки и заголовки таблицы */
 .plantsTable th,
 .plantsTable td {
-  border: none;
   padding: 16px 24px;
   text-align: left;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  max-width: 300px; /* Ограничение ширины ячеек */
+  white-space: nowrap; /* Предотвращаем перенос текста */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Добавляем многоточие при переполнении */
 }
 
 .editingTable th,
@@ -71,12 +75,15 @@
 
 /* Заголовки таблицы */
 .plantsTable th {
-  background-color: var(--color-surface-hover);
+  background-color: rgba(0, 0, 0, 0.03);
   font-weight: 600;
   font-size: 14px;
   color: var(--color-text);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-transform: none;
+  letter-spacing: 0.3px;
+  position: sticky; /* Фиксируем заголовки */
+  top: 0;
+  z-index: 1;
 }
 
 /* Ховер на строках таблицы */
@@ -90,33 +97,51 @@
 
 /* Отдельные строки растений */
 .plantRow {
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
 }
 
 .plantRow td {
   font-size: 15px;
+  line-height: 1.6;
   color: var(--color-text);
   position: relative;
   padding: 12px 16px;
+  font-weight: 400;
+}
+
+.plantRow:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.01);
 }
 
 .plantRow:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 122, 255, 0.04);
+}
+
+.plantRow td:hover {
+  white-space: normal;
+  overflow: visible;
+  background-color: rgba(255, 255, 255, 0.95);
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  height: auto;
+  color: var(--color-text);
 }
 
 /* Строка в режиме редактирования */
 .editingRow {
-  background-color: rgba(0, 113, 227, 0.05);
+  background-color: rgba(0, 122, 255, 0.05);
 }
 
 /* Поля ввода для редактирования */
 .editInput {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   background: var(--color-surface);
-  border-radius: 6px;
-  font-size: 15px;
+  border-radius: 8px;
+  font-size: 14px;
   color: var(--color-text);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -128,8 +153,8 @@
 
 .editInput:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
+  border-color: rgb(0, 122, 255);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
 }
 
 /* Ошибки */
@@ -194,19 +219,21 @@ input:checked + .slider:before {
 
 /* Кнопки действий в строке растений */
 .plantRow button {
-  padding: 8px 12px;
+  padding: 6px 12px;
   margin-right: 8px;
   border: none;
-  border-radius: 6px;
-  background-color: var(--color-primary);
-  color: #fff;
+  border-radius: 8px;
+  background-color: rgb(0, 122, 255);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease, transform 0.1s ease;
+  transition: all 0.2s ease, transform 0.1s ease;
 }
 
 .plantRow button:hover {
-  background-color: var(--color-primary-dark);
+  background-color: rgb(0, 111, 233);
+  transform: translateY(-1px);
 }
 
 .plantRow button:active {
@@ -217,12 +244,23 @@ input:checked + .slider:before {
 @media (max-width: 768px) {
   .plantsTable th,
   .plantsTable td {
-    padding: 12px 16px;
+    padding: 14px 16px;
     font-size: 14px;
+    max-width: 200px; /* Уменьшаем максимальную ширину на мобильных */
   }
 
   .plantsAllContainer {
     padding: 16px;
     margin: 80px auto 20px;
   }
+  
+  .plantRow button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+.editingTable .plantRow td {
+  padding-top: 20px;
+  padding-bottom: 20px;
 }

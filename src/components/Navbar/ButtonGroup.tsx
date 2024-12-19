@@ -1,7 +1,7 @@
 // src/components/Navbar/ButtonGroup.tsx
 
 import React, { useEffect, useRef, useState } from 'react';
-import { FaBackward, FaColumns, FaPencilAlt, FaSave, FaUndo } from 'react-icons/fa';
+import { FaColumns } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import PageType, { pageConfig } from '../../configs/pageConfig';
 import styles from './Navbar.module.css';
@@ -18,6 +18,7 @@ interface ButtonGroupProps {
   onSearch?: (query: string, selectedColumns: string[]) => void;
   searchQuery?: string;
   onAction?: (action: string, file?: File) => void;
+  activeMode?: string;
 }
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({
@@ -32,11 +33,13 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
   onSearch,
   searchQuery,
   onAction,
+  activeMode,
 }) => {
   const config = pageConfig[pageType];
   const navigate = useNavigate();
   const [isColumnsDropdownOpen, setIsColumnsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleColumnSelection = (column: string) => {
     if (!setSelectedColumns) return;
@@ -52,6 +55,13 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
       }
       return updated;
     });
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && onAction) {
+      onAction('upload-image', file);
+    }
   };
 
   useEffect(() => {
@@ -80,13 +90,22 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 
   return (
     <div className={styles.buttonGroup}>
+      <input
+        type='file'
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        accept='image/*'
+        onChange={handleFileUpload}
+      />
       {/* Рендерим статические кнопки */}
       {config.staticButtons?.map((btn) => (
         <button
           key={btn.action}
           className={styles.button}
           onClick={() => {
-            if (btn.action === 'back') {
+            if (btn.action === 'upload-image') {
+              fileInputRef.current?.click();
+            } else if (btn.action === 'back') {
               navigate(-1);
             } else if (btn.action === 'toggleEditing') {
               toggleEditing?.();
@@ -105,20 +124,19 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 
       {/* Рендерим динамические кнопки */}
       {config.dynamicButtons?.map((btn) => {
-        const shouldRender =
-          btn.condition === 'isEditing' ? isEditing : true;
+        const shouldRender = btn.condition === 'isEditing' ? isEditing : true;
+        const isActive = activeMode === btn.action;
 
         if (!shouldRender) return null;
 
         return (
           <button
             key={btn.action}
-            className={styles.button}
+            className={`${styles.button} ${isActive ? styles.active : ''}`}
             onClick={() => {
               if (btn.action === 'save') {
                 handleSave?.();
               } else if (btn.action === 'reset') {
-                // Реализуйте функцию сброса при необходимости
                 console.log('Сбросить изменения');
               } else {
                 onAction?.(btn.action);
@@ -146,9 +164,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
               aria-expanded={isColumnsDropdownOpen}
             >
               <FaColumns />
-              {!isMobile && (
-                <span style={{ marginLeft: '8px' }}>Столбцы</span>
-              )}
+              {!isMobile && <span style={{ marginLeft: '8px' }}>Столбцы</span>}
             </button>
             {isColumnsDropdownOpen && (
               <div

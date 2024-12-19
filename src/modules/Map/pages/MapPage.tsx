@@ -1,115 +1,229 @@
 // src/modules/Map/pages/MapPage.tsx
-import React, { useState } from 'react';
-import { Map, Placemark, Polygon, YMaps } from 'react-yandex-maps';
+import { Layer, Polygon } from 'leaflet';
+import React, { useEffect, useRef, useState } from 'react';
 import Navbar from '../../../components/Navbar/Navbar';
-import CustomImageOverlay from '../components/CustomImageOverlay/CustomImageOverlay';
-import { useMapLogic } from '../hooks/useMapLogic';
-
-// Импортируем стили
+import { AreaPathModal } from '../components/AreaPathModal/AreaPathModal';
+import { MapView } from '../components/MapView/MapView';
+import {
+  addAreaToServer,
+  AreaData,
+  deleteAreaOnServer,
+  fetchAreas,
+  fetchMapImage,
+  fetchMarkers,
+  MarkerData,
+  updateAreaOnServer,
+} from '../services/mapService';
+import { MapMode } from '../types/mapControls';
+import { uploadMapFile } from '../utils/mapUploader';
 import styles from './MapPage.module.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 const MapPage: React.FC = () => {
-  const {
-    areas,
-    plants,
-    handleMapClick,
-    handlePlacemarkClick,
-    handlePolygonClick,
-    handleAddPlantMode,
-    handleAddAreaMode,
-    handleEditAreaMode,
-    handleEditPlantMode,
-    handleRemovePlantMode,
-  } = useMapLogic();
+  const [mapImageURL, setMapImageURL] = useState<string | null>(null);
+  const [currentMode, setCurrentMode] = useState<MapMode>(MapMode.VIEW);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pendingArea, setPendingArea] = useState<Layer | null>(null);
+  const [areas, setAreas] = useState<AreaData[]>([]);
+  const [markers, setMarkers] = useState<MarkerData[]>([]);
 
-  const [customImageUrl, setCustomImageUrl] = useState<string | null>(null);
+  // Загрузка областей и карты при монтировании
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const fetchedAreas = await fetchAreas();
+        setAreas(fetchedAreas);
 
-  const defaultCenter: [number, number] = [55.751574, 37.573856]; // Москва
-  const defaultZoom = 9;
+        const mapPath = await fetchMapImage();
 
-  const onAction = (action: string, file?: File) => {
+        if (mapPath) {
+          const normalizedPath = mapPath.replace(/\\/g, '/');
+          const fullURL = `${API_BASE_URL}/${normalizedPath}`;
+          setMapImageURL(fullURL);
+        } else {
+          console.log('No map path received from server');
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
+    };
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    const loadMarkers = async () => {
+      try {
+        const fetchedMarkers = await fetchMarkers();
+        console.log('Загруженные маркеры:', fetchedMarkers);
+        setMarkers(fetchedMarkers);
+      } catch (error) {
+        console.error('Ошибка при загрузке маркеров:', error);
+      }
+    };
+
+    loadMarkers();
+  }, []);
+
+  const handleAction = (action: string) => {
     switch (action) {
+      case 'upload-image':
+        fileInputRef.current?.click();
+        break;
       case 'add-plant':
-        handleAddPlantMode();
+        setCurrentMode((prev) =>
+          prev === MapMode.ADD_PLANT ? MapMode.VIEW : MapMode.ADD_PLANT
+        );
         break;
       case 'add-area':
-        handleAddAreaMode();
+        setCurrentMode((prev) =>
+          prev === MapMode.ADD_AREA ? MapMode.VIEW : MapMode.ADD_AREA
+        );
         break;
       case 'edit-area':
-        handleEditAreaMode();
-        break;
-      case 'edit-plant':
-        handleEditPlantMode();
+        setCurrentMode((prev) =>
+          prev === MapMode.EDIT_AREA ? MapMode.VIEW : MapMode.EDIT_AREA
+        );
         break;
       case 'remove-plant':
-        handleRemovePlantMode();
+        setCurrentMode((prev) =>
+          prev === MapMode.REMOVE_PLANT ? MapMode.VIEW : MapMode.REMOVE_PLANT
+        );
         break;
-      case 'upload-image':
-        if (file) {
-          const url = URL.createObjectURL(file);
-          setCustomImageUrl(url);
-        }
+      case 'delete-plants-in-area':
+        setCurrentMode((prev) =>
+          prev === MapMode.REMOVE_PLANT ? MapMode.VIEW : MapMode.REMOVE_PLANT
+        );
         break;
       default:
-        break;
+        console.warn(`Нет обработчика для действия: ${action}`);
     }
   };
 
-  const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY;
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const path = await uploadMapFile(file);
+      if (path) {
+        const normalizedPath = path.replace(/\\/g, '/').replace(/"/g, '');
+        const fullURL = `${API_BASE_URL}/${normalizedPath}`;
+        setMapImageURL(fullURL);
+      }
+      event.target.value = '';
+    }
+  };
+
+  const handleAreaCreated = (area: Layer) => {
+    setPendingArea(area);
+  };
+
+  const handlePathSave = async (path: string) => {
+    if (pendingArea && pendingArea instanceof Polygon) {
+      try {
+        const latLngs = pendingArea.getLatLngs()[0] as L.LatLng[];
+        const coordinates = latLngs.map(
+          (ll) => [ll.lat, ll.lng] as [number, number]
+        );
+
+        const areaData: AreaData = {
+          id: 0,
+          positions: coordinates,
+          title: path,
+          description: '',
+        };
+
+        const result = await addAreaToServer(areaData);
+        if (result) {
+          setAreas((prev) => [
+            ...prev,
+            {
+              ...areaData,
+              id: result.locationId,
+            },
+          ]);
+          setPendingArea(null);
+        }
+      } catch (error) {
+        console.error('Не удалось сохранить область:', error);
+      }
+    }
+  };
+
+  const handlePathCancel = () => {
+    if (pendingArea) {
+      // Удаляем нарисованную область
+      const map = (pendingArea as any)._map;
+      if (map) {
+        map.removeLayer(pendingArea);
+      }
+    }
+    setPendingArea(null);
+  };
+
+  const handleAreaEdited = async (
+    areaId: number,
+    newPositions: [number, number][]
+  ) => {
+    const areaToUpdate = areas.find((a) => a.id === areaId);
+    if (!areaToUpdate) return;
+
+    const updatedArea: AreaData = {
+      ...areaToUpdate,
+      positions: newPositions,
+    };
+
+    const result = await updateAreaOnServer(updatedArea);
+    if (result) {
+      setAreas((prev) =>
+        prev.map((area) =>
+          area.id === areaId ? { ...area, positions: newPositions } : area
+        )
+      );
+    }
+  };
+
+  const handleAreaDeleted = async (areaId: number) => {
+    const success = await deleteAreaOnServer(areaId);
+    if (success) {
+      setAreas((prev) => prev.filter((area) => area.id !== areaId));
+    }
+  };
+
+  const handleMarkersUpdated = (updatedMarkers: MarkerData[]) => {
+    setMarkers(updatedMarkers);
+  };
 
   return (
     <>
-      <Navbar pageType='map' onAction={onAction} />
+      <Navbar pageType='map' onAction={handleAction} activeMode={currentMode} />
 
-      <div className={`app-container ${styles.mapContainer}`}>
+      <div className={styles.mapPageContainer}>
+        <input
+          type='file'
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          accept='image/*'
+          onChange={handleFileChange}
+        />
         <div className={styles.mapWrapper}>
-          <YMaps
-            query={{
-              apikey: apiKey,
-              lang: 'ru_RU',
-            }}
-          >
-            <Map
-              defaultState={{ center: defaultCenter, zoom: defaultZoom }}
-              width='100%'
-              height='100%'
-              onClick={handleMapClick}
-              className={styles.map}
-            >
-              {areas.map((area) => (
-                <Polygon
-                  key={area.id}
-                  geometry={[area.coordinates]}
-                  options={{
-                    fillColor: '#00FF0088',
-                    strokeColor: '#0000FF',
-                    strokeWidth: 2,
-                  }}
-                  onClick={() => handlePolygonClick(area.id)}
-                />
-              ))}
-
-              {plants.map((plant) => (
-                <Placemark
-                  key={plant.id}
-                  geometry={plant.coordinates}
-                  properties={{ hintContent: plant.name }}
-                  options={{ preset: 'islands#greenDotIcon' }}
-                  onClick={() => handlePlacemarkClick(plant.id)}
-                />
-              ))}
-
-              {customImageUrl && (
-                <CustomImageOverlay
-                  imageUrl={customImageUrl}
-                  coordinates={[
-                    [55.75, 37.57],
-                    [55.76, 37.58],
-                  ]}
-                />
-              )}
-            </Map>
-          </YMaps>
+          <MapView
+            mapImageURL={mapImageURL}
+            mode={currentMode}
+            areas={areas}
+            markers={markers}
+            onAreaCreated={handleAreaCreated}
+            onAreaEdited={handleAreaEdited}
+            onAreaDeleted={handleAreaDeleted}
+            onMarkersUpdated={handleMarkersUpdated}
+          />
+          {pendingArea && (
+            <AreaPathModal
+              onSave={handlePathSave}
+              onCancel={handlePathCancel}
+            />
+          )}
         </div>
       </div>
     </>

@@ -1,0 +1,23 @@
+.locationSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.coordinates {
+  display: flex;
+  gap: 1rem;
+}
+
+.coordinates input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 150px;
+}
+
+.mapContainer {
+  height: 400px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+} 

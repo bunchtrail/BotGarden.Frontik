@@ -1,5 +1,5 @@
 // src/context/AuthContext.tsx
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; // Исправленный импорт
 import React, {
   createContext,
   ReactNode,
@@ -9,13 +9,16 @@ import React, {
   useState,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login as loginService } from '../api/authService';
+import {
+  login as loginService,
+  refreshToken as refreshTokenService,
+} from '../api/authService';
 import {
   clearTokens,
   getAccessToken,
   getRefreshToken,
   setTokens,
-} from '../services/tokenService'
+} from '../services/tokenService';
 import { LoginResponse } from '../types/authTypes';
 import { AuthenticationError } from '../utils/errors';
 
@@ -39,7 +42,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  // Функция для проверки срока действия токена
+  // Проверка истечения токена
   const isTokenExpired = (token: string): boolean => {
     try {
       const decodedToken: DecodedToken = jwtDecode(token);
@@ -50,7 +53,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // Функция для логина
+  // Попытка обновления токена
+  const attemptTokenRefresh = async () => {
+    const token = getAccessToken(); // This might be null or an expired token
+    const refreshTokenValue = getRefreshToken();
+
+    if (!refreshTokenValue) {
+      return false;
+    }
+
+    try {
+      const data = await refreshTokenService(token || '', refreshTokenValue);
+      setTokens(data.accessToken, data.refreshToken);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // Логин
   const login = async (email: string, password: string) => {
     try {
       const data: LoginResponse = await loginService(email, password);
@@ -58,17 +79,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setIsAuthenticated(true);
       navigate('/home');
     } catch (error) {
-      // Предотвращение вывода ошибки в консоль
       const authError = new AuthenticationError(
         'Неверные учетные данные',
         'unauthorized'
       );
-      authError.stack = ''; // Очистка стека вызовов
+      authError.stack = '';
       throw authError;
     }
   };
 
-  // Функция для выхода из системы
+  // Выход
   const logout = () => {
     clearTokens();
     setIsAuthenticated(false);
@@ -77,36 +97,50 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const hasCheckedAuth = useRef(false);
 
-  // Проверка токена при загрузке
+  // Проверка при загрузке приложения
   useEffect(() => {
     if (hasCheckedAuth.current) return;
     hasCheckedAuth.current = true;
 
     const checkAuth = async () => {
-      const token = getAccessToken();
-      const refreshTokenValue = getRefreshToken();
+      try {
+        const token = getAccessToken();
+        const refreshTokenValue = getRefreshToken();
 
-      if (token && !isTokenExpired(token)) {
-        setIsAuthenticated(true);
-        setLoading(false);
-      } else if (refreshTokenValue) {
-        try {
+        if (!token && !refreshTokenValue) {
+          // Нет токенов - сразу выходим
           setIsAuthenticated(false);
-        } catch (error) {
-          clearTokens();
-          setIsAuthenticated(false);
-        } finally {
           setLoading(false);
+          return;
         }
-      } else {
-        clearTokens();
+
+        if (token && !isTokenExpired(token)) {
+          // Токен действителен
+          setIsAuthenticated(true);
+          setLoading(false);
+          return;
+        }
+
+        // Пытаемся обновить токен
+        if (refreshTokenValue) {
+          const refreshed = await attemptTokenRefresh();
+          setIsAuthenticated(refreshed);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
         setIsAuthenticated(false);
+      } finally {
         setLoading(false);
       }
     };
 
     checkAuth();
   }, []);
+
+  // Перехват запросов или попытка обновления перед критичными операциями (опционально)
+  // Можно добавить сюда эффекты или использовать перехватчики запросов, но для упрощения
+  // мы не будем это делать прямо сейчас.
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout, loading }}>

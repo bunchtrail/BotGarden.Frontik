@@ -1,43 +1,18 @@
-/* src/assets/styles/base/_reset.css */
+/* base/_reset.css */
 
-*, *::before, *::after {
+/* Сброс стилей браузера */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
   margin: 0;
   padding: 0;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-family);
-  line-height: var(--line-height);
-  font-weight: var(--font-weight);
-  color: var(--color-text);
-  background-color: var(--color-background);
-  color-scheme: var(--color-scheme);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: var(--color-link);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-a:hover {
-  color: var(--color-link-hover);
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-
-button {
-  cursor: pointer;
-  font-family: var(--font-family);
 }

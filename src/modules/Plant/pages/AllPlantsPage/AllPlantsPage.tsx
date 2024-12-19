@@ -188,11 +188,7 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({ sectorId }) => {
   }, [plants, debouncedSearchQuery, selectedColumns]);
 
   return (
-    <div
-      className={`app-container ${styles.plantsAllContainer} ${
-        isEditing ? 'full-width' : ''
-      }`}
-    >
+    <>
       <Navbar
         sectorId={sectorId}
         pageType='all-plants'
@@ -202,24 +198,26 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({ sectorId }) => {
         handleSave={handleSave}
         searchableColumns={searchableColumns} // Передаём список доступных для поиска столбцов с метками
       />
-      {filteredPlants.length === 0 ? (
-        <>
-          <h1>Растения в данном разделе отсутствуют</h1>
-          <Button
-            key={sectorId}
-            onClick={() => navigate(`/add-plant/${sectorId}`)}
-          >
-            Добавить растение
-          </Button>
-        </>
-      ) : (
-        <PlantsTable
-          plants={filteredPlants} // Передаём отфильтрованные растения
-          onPlantUpdate={handlePlantUpdate}
-          isEditing={isEditing}
-        />
-      )}
-    </div>
+      <div className={styles.plantsAllContainer}>
+        {filteredPlants.length === 0 ? (
+          <>
+            <h1>Растения в данном разделе отсутствуют</h1>
+            <Button
+              key={sectorId}
+              onClick={() => navigate(`/add-plant/${sectorId}`)}
+            >
+              Добавить растение
+            </Button>
+          </>
+        ) : (
+          <PlantsTable
+            plants={filteredPlants} // Передаём отфильтрованные растения
+            onPlantUpdate={handlePlantUpdate}
+            isEditing={isEditing}
+          />
+        )}
+      </div>
+    </>
   );
 };
 

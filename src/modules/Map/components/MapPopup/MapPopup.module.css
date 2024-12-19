@@ -1,0 +1,137 @@
+.container {
+  min-width: 280px;
+  max-width: 400px;
+}
+
+.popup {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-top: 4px solid transparent;
+}
+
+.popup.info { border-color: #3b82f6; }
+.popup.warning { border-color: #f59e0b; }
+.popup.danger { border-color: #ef4444; }
+
+.content {
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.message {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.customPopupContainer {
+  position: absolute;
+  z-index: 1000;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+
+.customPopup {
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.customPopup.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.leafletPopupWrapper {
+  margin-bottom: 20px;
+}
+
+.leafletPopupWrapper :global(.leaflet-popup-content-wrapper) {
+  padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.leafletPopupWrapper :global(.leaflet-popup-content) {
+  margin: 0;
+  width: auto !important;
+}
+
+.leafletPopupWrapper :global(.leaflet-popup-close-button) {
+  padding: 8px;
+  color: #64748b;
+  font-size: 24px;
+  font-weight: normal;
+  right: 4px;
+  top: 4px;
+  transition: color 0.2s;
+}
+
+.leafletPopupWrapper :global(.leaflet-popup-close-button:hover) {
+  color: #475569;
+  background: none;
+}
+
+.leafletPopupWrapper :global(.leaflet-popup-tip) {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.button-secondary {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.button-secondary:hover {
+  background: #e2e8f0;
+}
+
+.button-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.button-primary:hover {
+  background: #2563eb;
+}
+
+.button-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.button-danger:hover {
+  background: #dc2626;
+} 

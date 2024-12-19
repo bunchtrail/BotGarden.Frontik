@@ -25,6 +25,7 @@ interface NavbarProps {
   handleSave?: () => void;
   searchableColumns?: SearchableColumn[];
   onAction?: (action: string, file?: File) => void;
+  activeMode?: string;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -36,6 +37,7 @@ const Navbar: React.FC<NavbarProps> = ({
   handleSave,
   searchableColumns = [],
   onAction,
+  activeMode,
 }) => {
   const config = pageConfig[pageType];
   const [isNavItemsDropdownOpen, setIsNavItemsDropdownOpen] = useState(false);
@@ -91,6 +93,7 @@ const Navbar: React.FC<NavbarProps> = ({
         isDropdownOpen={isNavItemsDropdownOpen}
         setIsDropdownOpen={setIsNavItemsDropdownOpen}
         dropdownRef={navItemsDropdownRef}
+        onAction={onAction}
       />
 
       {config.showSearch && (
@@ -121,6 +124,7 @@ const Navbar: React.FC<NavbarProps> = ({
           onSearch={onSearch}
           searchQuery={searchQuery}
           onAction={onAction}
+          activeMode={activeMode}
         />
       )}
 
