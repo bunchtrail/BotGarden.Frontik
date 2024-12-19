@@ -98,29 +98,35 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
         onChange={handleFileUpload}
       />
       {/* Рендерим статические кнопки */}
-      {config.staticButtons?.map((btn) => (
-        <button
-          key={btn.action}
-          className={styles.button}
-          onClick={() => {
-            if (btn.action === 'upload-image') {
-              fileInputRef.current?.click();
-            } else if (btn.action === 'back') {
-              navigate(-1);
-            } else if (btn.action === 'toggleEditing') {
-              toggleEditing?.();
-            } else if (btn.action === 'save') {
-              handleSave?.();
-            } else {
-              onAction?.(btn.action);
-            }
-          }}
-          title={btn.label}
-        >
-          <i className={`fas fa-${btn.icon} ${styles.icon}`} />
-          {!isMobile && <span style={{ marginLeft: '5px' }}>{btn.label}</span>}
-        </button>
-      ))}
+      {config.staticButtons?.map((btn) => {
+        const isActive = activeMode === btn.action;
+        
+        console.log('Button action:', btn.action, 'Active mode:', activeMode, 'Is active:', isActive);
+        
+        return (
+          <button
+            key={btn.action}
+            className={`${styles.button} ${isActive ? styles.active : ''}`}
+            onClick={() => {
+              if (btn.action === 'upload-image') {
+                fileInputRef.current?.click();
+              } else if (btn.action === 'back') {
+                navigate(-1);
+              } else if (btn.action === 'toggleEditing') {
+                toggleEditing?.();
+              } else if (btn.action === 'save') {
+                handleSave?.();
+              } else {
+                onAction?.(btn.action);
+              }
+            }}
+            title={btn.label}
+          >
+            <i className={`fas fa-${btn.icon} ${styles.icon}`} />
+            {!isMobile && <span style={{ marginLeft: '5px' }}>{btn.label}</span>}
+          </button>
+        );
+      })}
 
       {/* Рендерим динамические кнопки */}
       {config.dynamicButtons?.map((btn) => {

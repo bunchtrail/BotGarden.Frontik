@@ -39,7 +39,7 @@ export const useDrawControl = ({
     const initializeDrawControl = () => {
       const drawOptions: L.Control.DrawConstructorOptions = {
         draw: {
-          rectangle: mode === MapMode.REMOVE_PLANT ? {
+          rectangle: (mode === MapMode.REMOVE_PLANT || mode === MapMode.DELETE_PLANTS_IN_AREA) ? {
             metric: false,
             shapeOptions: {
               color: '#ff0000',
@@ -56,13 +56,14 @@ export const useDrawControl = ({
           } : false,
           marker: false,
         },
-        edit: {
+        edit: mode === MapMode.DELETE_PLANTS_IN_AREA ? false : {
           featureGroup: drawnItems,
           edit: false,
-        },
+          remove: mode !== MapMode.DELETE_PLANTS_IN_AREA
+        }
       };
 
-      if (mode === MapMode.ADD_AREA || mode === MapMode.REMOVE_PLANT) {
+      if (mode === MapMode.ADD_AREA || mode === MapMode.REMOVE_PLANT || mode === MapMode.DELETE_PLANTS_IN_AREA) {
         drawControlRef.current = new L.Control.Draw(drawOptions);
         map.addControl(drawControlRef.current);
 
@@ -88,7 +89,7 @@ export const useDrawControl = ({
           if (mode === MapMode.ADD_AREA && onAreaCreated) {
             drawnItems.addLayer(layer);
             onAreaCreated(layer);
-          } else if (mode === MapMode.REMOVE_PLANT && onRemoveInArea) {
+          } else if ((mode === MapMode.REMOVE_PLANT || mode === MapMode.DELETE_PLANTS_IN_AREA) && onRemoveInArea) {
             const bounds = (layer as L.Rectangle).getBounds();
             onRemoveInArea(bounds);
             // Добавляем слой во временную группу и сразу удаляем

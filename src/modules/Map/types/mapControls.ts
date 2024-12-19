@@ -2,11 +2,10 @@ import L from 'leaflet';
 
 export enum MapMode {
   VIEW = 'view',
+  ADD_PLANT = 'add-plant',
   ADD_AREA = 'add-area',
   EDIT_AREA = 'edit-area',
-  DELETE_AREA = 'delete-area',
-  ADD_PLANT = 'add-plant',
-  EDIT_PLANT = 'edit-plant',
+  DELETE_PLANTS_IN_AREA = 'delete-plants-in-area',
   REMOVE_PLANT = 'remove-plant'
 }
 

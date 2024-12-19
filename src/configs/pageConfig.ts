@@ -102,7 +102,7 @@ export const pageConfig: Record<string, PageConfig> = {
       { action: 'edit-area', icon: 'edit', label: 'Редактировать область' },
       { action: 'delete-plants-in-area', icon: 'trash', label: 'Удалить растения в области' },
     ],
-    dynamicButtons: [], // Для карты, возможно, нет динамических кнопок
+    dynamicButtons: [],
   },
 };
 

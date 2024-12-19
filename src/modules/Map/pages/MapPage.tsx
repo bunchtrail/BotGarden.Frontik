@@ -85,14 +85,11 @@ const MapPage: React.FC = () => {
           prev === MapMode.EDIT_AREA ? MapMode.VIEW : MapMode.EDIT_AREA
         );
         break;
-      case 'remove-plant':
-        setCurrentMode((prev) =>
-          prev === MapMode.REMOVE_PLANT ? MapMode.VIEW : MapMode.REMOVE_PLANT
-        );
-        break;
       case 'delete-plants-in-area':
         setCurrentMode((prev) =>
-          prev === MapMode.REMOVE_PLANT ? MapMode.VIEW : MapMode.REMOVE_PLANT
+          prev === MapMode.DELETE_PLANTS_IN_AREA
+            ? MapMode.VIEW
+            : MapMode.DELETE_PLANTS_IN_AREA
         );
         break;
       default:
