@@ -90,6 +90,11 @@ const MapPage: React.FC = () => {
           prev === MapMode.REMOVE_PLANT ? MapMode.VIEW : MapMode.REMOVE_PLANT
         );
         break;
+      case 'delete-plants-in-area':
+        setCurrentMode((prev) =>
+          prev === MapMode.REMOVE_PLANT ? MapMode.VIEW : MapMode.REMOVE_PLANT
+        );
+        break;
       default:
         console.warn(`Нет обработчика для действия: ${action}`);
     }
@@ -186,6 +191,10 @@ const MapPage: React.FC = () => {
     }
   };
 
+  const handleMarkersUpdated = (updatedMarkers: MarkerData[]) => {
+    setMarkers(updatedMarkers);
+  };
+
   return (
     <>
       <Navbar pageType='map' onAction={handleAction} activeMode={currentMode} />
@@ -207,6 +216,7 @@ const MapPage: React.FC = () => {
             onAreaCreated={handleAreaCreated}
             onAreaEdited={handleAreaEdited}
             onAreaDeleted={handleAreaDeleted}
+            onMarkersUpdated={handleMarkersUpdated}
           />
           {pendingArea && (
             <AreaPathModal

@@ -8,6 +8,7 @@ interface UseDrawControlProps {
   mode: MapMode;
   drawnItems: L.FeatureGroup | null;
   onAreaCreated?: (area: L.Layer) => void;
+  onRemoveInArea?: (bounds: L.LatLngBounds) => void;
 }
 
 export const useDrawControl = ({
@@ -15,6 +16,7 @@ export const useDrawControl = ({
   mode,
   drawnItems,
   onAreaCreated,
+  onRemoveInArea,
 }: UseDrawControlProps) => {
   const drawControlRef = useRef<L.Control.Draw | null>(null);
   const isAltPressedRef = useRef(false);
@@ -33,30 +35,24 @@ export const useDrawControl = ({
       map.getContainer().style.cursor = 'grab';
     };
 
-    // Функция для отключения всех взаимодействий с картой
-    const disableMapInteractions = () => {
-      map.dragging.disable();
-      map.touchZoom.disable();
-      map.doubleClickZoom.disable();
-      map.scrollWheelZoom.disable();
-      map.boxZoom.disable();
-      map.keyboard.disable();
-      map.getContainer().style.cursor = '';
-    };
-
     // Функция для инициализации drawControl на основе текущего режима
     const initializeDrawControl = () => {
       const drawOptions: L.Control.DrawConstructorOptions = {
         draw: {
-          rectangle: false,
+          rectangle: mode === MapMode.REMOVE_PLANT ? {
+            shapeOptions: {
+              color: '#ff0000',
+              weight: 2
+            },
+          } : false,
           circle: false,
           circlemarker: false,
           polyline: false,
-          polygon: {
+          polygon: mode === MapMode.ADD_AREA ? {
             allowIntersection: false,
             showArea: true,
             metric: false,
-          },
+          } : false,
           marker: false,
         },
         edit: {
@@ -65,29 +61,38 @@ export const useDrawControl = ({
         },
       };
 
-      if (mode === MapMode.ADD_AREA) {
+      if (mode === MapMode.ADD_AREA || mode === MapMode.REMOVE_PLANT) {
         drawControlRef.current = new L.Control.Draw(drawOptions);
         map.addControl(drawControlRef.current);
 
-        // Включаем handler при инициализации
-        const handler = (drawControlRef.current as any)._toolbars?.draw?._modes?.polygon?.handler;
-        if (handler) {
-          handler.enable();
-          
-          // Переопределяем метод добавления вершины
-          const originalAddVertex = handler.addVertex;
-          handler.addVertex = function(latlng: L.LatLng) {
-            if (isAltPressedRef.current) {
-              originalAddVertex.call(this, latlng);
-            }
-          };
+        if (mode === MapMode.ADD_AREA) {
+          // Включаем handler при инициализации
+          const handler = (drawControlRef.current as any)._toolbars?.draw?._modes?.polygon?.handler;
+          if (handler) {
+            handler.enable();
+            
+            // Переопределяем метод добавления вершины
+            const originalAddVertex = handler.addVertex;
+            handler.addVertex = function(latlng: L.LatLng) {
+              if (isAltPressedRef.current) {
+                originalAddVertex.call(this, latlng);
+              }
+            };
+          }
         }
 
         map.on(L.Draw.Event.CREATED, (e: L.LeafletEvent) => {
+          const layer = (e as L.DrawEvents.Created).layer;
+          
           if (mode === MapMode.ADD_AREA && onAreaCreated) {
-            const layer = (e as L.DrawEvents.Created).layer;
             drawnItems.addLayer(layer);
             onAreaCreated(layer);
+          } else if (mode === MapMode.REMOVE_PLANT && onRemoveInArea) {
+            const bounds = (layer as L.Rectangle).getBounds();
+            onRemoveInArea(bounds);
+            // Добавляем слой во временную группу и сразу удаляем
+            drawnItems.addLayer(layer);
+            drawnItems.removeLayer(layer);
           }
         });
       }
@@ -135,5 +140,5 @@ export const useDrawControl = ({
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [map, mode, drawnItems, onAreaCreated]);
+  }, [map, mode, drawnItems, onAreaCreated, onRemoveInArea]);
 };

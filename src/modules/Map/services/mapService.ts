@@ -46,6 +46,18 @@ export interface PlantIdsDto {
   PlantIds: number[];
 }
 
+export interface AddPlantRequest {
+  Species: string;
+  Variety: string;
+  FamilyId: number;
+  BiometricId: number;
+  SectorId: number;
+  GenusId: number;
+  Latitude: number;
+  Longitude: number;
+  Note: string;
+}
+
 // Fetch all plants (markers)
 export async function fetchMarkers(): Promise<MarkerData[]> {
   try {
@@ -203,6 +215,16 @@ export async function uploadMapImage(file: File): Promise<string | null> {
     }
     return null;
   } catch (error) {
+    return null;
+  }
+}
+
+export async function addPlantToMap(plantData: AddPlantRequest): Promise<PlantDto | null> {
+  try {
+    const response = await client.post<PlantDto>('/api/plant/add', plantData);
+    return response.data;
+  } catch (error) {
+    console.error('Ошибка при добавлении растения:', error);
     return null;
   }
 }

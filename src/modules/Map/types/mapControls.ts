@@ -11,12 +11,8 @@ export enum MapMode {
 }
 
 export interface MapControl {
-  id: string;
-  icon: string;
-  title: string;
-  action: (map: L.Map) => void;
-  mode?: MapMode; // В каком режиме доступен контрол
-  toggleMode?: boolean; // Является ли контрол переключателем режима
+  type: 'zoom' | 'draw';
+  enabled: boolean;
 }
 
 export interface MapControlsProps {

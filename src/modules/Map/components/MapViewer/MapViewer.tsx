@@ -59,8 +59,7 @@ const MapViewer: React.FC<MapViewerProps> = ({ mapImageURL, currentMode }) => {
   useEffect(() => {
     if (mapInstance) {
       const onStartDrawing = () => {
-        // Initialize drawing process
-        // Example: Adding a temporary layer to capture polygon
+
         const tempLayer = L.polygon([]).addTo(mapInstance);
       };
 

@@ -3,12 +3,19 @@ import L from 'leaflet';
 import 'leaflet-draw';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet/dist/leaflet.css';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDrawControl } from '../../hooks/useDrawControl';
 import { useMapImage } from '../../hooks/useMapImage';
 import { useMapInitialization } from '../../hooks/useMapInitialization';
-import { AreaData, MarkerData } from '../../services/mapService';
+import {
+  AddPlantRequest,
+  AreaData,
+  MarkerData,
+  addPlantToMap,
+  deletePlantsInArea,
+} from '../../services/mapService';
 import { MapMode } from '../../types/mapControls';
+import { AddPlantModal } from '../AddPlantModal/AddPlantModal';
 import { ConfirmationPopup } from '../ConfirmationPopup/ConfirmationPopup';
 import { MapAreas } from '../MapAreas/MapAreas';
 import { MapMarkers } from '../MapMarkers/MapMarkers';
@@ -22,6 +29,8 @@ interface MapViewProps {
   onAreaCreated?: (area: L.Layer) => void;
   onAreaEdited?: (areaId: number, newPositions: [number, number][]) => void;
   onAreaDeleted?: (areaId: number) => void;
+  onMarkerAdded?: (marker: MarkerData) => void;
+  onMarkersUpdated?: (markers: MarkerData[]) => void;
 }
 
 export const MapView: React.FC<MapViewProps> = ({
@@ -32,23 +41,114 @@ export const MapView: React.FC<MapViewProps> = ({
   onAreaCreated,
   onAreaEdited,
   onAreaDeleted,
+  onMarkerAdded,
+  onMarkersUpdated,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [deletePopup, setDeletePopup] = useState<{
     areaId: number;
     position: L.Point;
   } | null>(null);
+  const [pendingPlant, setPendingPlant] = useState<{
+    position: [number, number];
+  } | null>(null);
 
   const { mapInstanceRef, drawnItemsRef, markersLayerRef } =
     useMapInitialization(mapContainerRef);
-  const imageOverlayRef = useMapImage(mapInstanceRef, mapImageURL);
+  useMapImage(mapInstanceRef, mapImageURL);
+
+  const handleRemoveInArea = async (bounds: L.LatLngBounds) => {
+    if (!markersLayerRef.current) return;
+
+    const plantsToRemove: number[] = [];
+
+    markersLayerRef.current.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        const latLng = layer.getLatLng();
+        if (bounds.contains(latLng)) {
+          const markerId = markers.find(
+            (m) => m.position[0] === latLng.lat && m.position[1] === latLng.lng
+          )?.id;
+          if (markerId) {
+            plantsToRemove.push(markerId);
+          }
+        }
+      }
+    });
+
+    if (plantsToRemove.length > 0) {
+      const success = await deletePlantsInArea(plantsToRemove);
+      if (success) {
+        if (onMarkersUpdated) {
+          const updatedMarkers = markers.filter(
+            (m) => !plantsToRemove.includes(m.id)
+          );
+          onMarkersUpdated(updatedMarkers);
+        }
+      }
+    }
+  };
 
   useDrawControl({
     map: mapInstanceRef.current,
     mode,
     drawnItems: drawnItemsRef.current,
     onAreaCreated,
+    onRemoveInArea: handleRemoveInArea,
   });
+
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+
+    const handleMapClick = (e: L.LeafletMouseEvent) => {
+      if (mode === MapMode.ADD_PLANT) {
+        const position: [number, number] = [e.latlng.lat, e.latlng.lng];
+        setPendingPlant({ position });
+      }
+    };
+
+    mapInstanceRef.current.on('click', handleMapClick);
+
+    return () => {
+      mapInstanceRef.current?.off('click', handleMapClick);
+    };
+  }, [mode]);
+
+  const handlePlantSave = async (data: {
+    species: string;
+    variety: string;
+    note: string;
+    familyId: number;
+    genusId: number;
+    biometricId: number;
+    sectorId: number;
+  }) => {
+    if (!pendingPlant) return;
+
+    const plantData: AddPlantRequest = {
+      Species: data.species,
+      Variety: data.variety,
+      FamilyId: data.familyId,
+      BiometricId: data.biometricId,
+      SectorId: data.sectorId,
+      GenusId: data.genusId,
+      Latitude: pendingPlant.position[0],
+      Longitude: pendingPlant.position[1],
+      Note: data.note,
+    };
+
+    const result = await addPlantToMap(plantData);
+    if (result) {
+      const newMarker: MarkerData = {
+        id: result.plantId,
+        position: [result.latitude, result.longitude],
+        title: result.species,
+        description: result.variety || result.note || '',
+      };
+      onMarkerAdded?.(newMarker);
+    }
+    setPendingPlant(null);
+  };
 
   return (
     <div className={styles.mapContainer}>
@@ -94,6 +194,14 @@ export const MapView: React.FC<MapViewProps> = ({
             setDeletePopup(null);
           }}
           onCancel={() => setDeletePopup(null)}
+        />
+      )}
+
+      {pendingPlant && (
+        <AddPlantModal
+          position={pendingPlant.position}
+          onSave={handlePlantSave}
+          onCancel={() => setPendingPlant(null)}
         />
       )}
     </div>

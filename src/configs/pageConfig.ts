@@ -100,6 +100,7 @@ export const pageConfig: Record<string, PageConfig> = {
       { action: 'add-plant', icon: 'seedling', label: 'Добавить растение' },
       { action: 'add-area', icon: 'map-marked-alt', label: 'Добавить область' },
       { action: 'edit-area', icon: 'edit', label: 'Редактировать область' },
+      { action: 'delete-plants-in-area', icon: 'trash', label: 'Удалить растения в области' },
     ],
     dynamicButtons: [], // Для карты, возможно, нет динамических кнопок
   },
