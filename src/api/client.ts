@@ -4,8 +4,10 @@ import { clearTokens, getAccessToken, getRefreshToken, setTokens } from '../serv
 import { API_URL } from '../utils/data';
 import { refreshToken as refreshTokenFunc } from './authService'; // Переименованный импорт
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://localhost:7076';
+
 const client = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

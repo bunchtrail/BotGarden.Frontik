@@ -175,3 +175,39 @@ export function parseWKTPolygon(wkt: string): [number, number][] {
   }
   return coords;
 }
+
+// Получить текущий путь к изображению карты
+export async function fetchMapImage(): Promise<string | null> {
+  try {
+    const response = await client.get<{ MapImagePath: string }>('/api/map/GetMapImage');
+    // Проверяем наличие данных перед обработкой
+    if (response.data && response.data.MapImagePath) {
+      return response.data.MapImagePath.replace(/"/g, '');
+    }
+    return null;
+  } catch (error) {
+    console.error('Ошибка при получении карты:', error);
+    return null;
+  }
+}
+
+// Загрузить изображение карты на сервер
+export async function uploadMapImage(file: File): Promise<string | null> {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await client.post<{ MapImagePath: string }>('/api/map/UploadMapImage', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    
+    // Проверяем наличие данных перед обработкой
+    if (response.data && response.data.MapImagePath) {
+      return response.data.MapImagePath.replace(/"/g, '');
+    }
+    return null;
+  } catch (error) {
+    console.error('Ошибка при загрузке карты:', error);
+    return null;
+  }
+}

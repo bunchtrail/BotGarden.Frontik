@@ -1,10 +1,8 @@
 // src/modules/Map/utils/mapUploader.ts
 
+import { uploadMapImage } from '../services/mapService';
 
-export const uploadMapFile = (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      const url = URL.createObjectURL(file);
-      resolve(url);
-    });
-  };
+export async function uploadMapFile(file: File): Promise<string | null> {
+  return await uploadMapImage(file);
+}
   
