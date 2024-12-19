@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Button from '../../../components/Button/Button';
-import ErrorMessage from '../../../components/Misc/ErrorMessage';
+import Message from '../../../components/Misc/Message';
 import './login.css';
 
 interface LoginFormProps {
@@ -73,10 +73,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   return (
     <form className='login-form' onSubmit={handleSubmit} noValidate>
       {error && (
-        <ErrorMessage
+        <Message
           message={error.message}
-          type={error.type}
-          onDismiss={() => setError(null)}
+          type={error.type === 'unauthorized' ? 'unauthorized' : 'error'}
         />
       )}
       <div className='form-group'>

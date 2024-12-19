@@ -17,6 +17,7 @@
   --dropdown-bg-color: rgba(45, 45, 48, 0.98);
   --primary-color: var(--color-primary, #007bff);
   --primary-hover-color: var(--color-primary-hover, #0056b3);
+  --navbar-height: 63px;
 }
 
 /* Общие настройки для всех элементов */
@@ -35,11 +36,11 @@
   background-color: var(--navbar-bg-color);
   box-shadow: var(--navbar-shadow);
   width: 100%;
-  z-index: 9999; /* Увеличиваем z-index навбара */
+  z-index: var(--z-index-navbar);
   transform: translateY(0);
   transition: transform var(--navbar-transition), max-height var(--navbar-transition), background-color var(--navbar-transition);
   backdrop-filter: var(--navbar-blur);
-  height: 62px;
+  height: var(--navbar-height);
 }
 
 /* Добавляем новый класс для создания отступа под навбаром */
@@ -301,7 +302,7 @@
   border-radius: 12px;
   min-width: 220px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Усиливаем тень */
-  z-index: 9999; /* Увеличиваем z-index */
+  z-index: var(--z-index-dropdown);
   padding: 8px;
   opacity: 0;
   transform: translateY(-8px) scale(0.98);

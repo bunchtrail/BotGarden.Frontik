@@ -56,10 +56,12 @@ export const useDrawControl = ({
           } : false,
           marker: false,
         },
-        edit: mode === MapMode.DELETE_PLANTS_IN_AREA ? false : {
+        edit: {
           featureGroup: drawnItems,
           edit: false,
-          remove: mode !== MapMode.DELETE_PLANTS_IN_AREA
+          remove: mode === MapMode.VIEW || mode === MapMode.ADD_PLANT || 
+                 mode === MapMode.ADD_AREA || mode === MapMode.EDIT_AREA || 
+                 mode === MapMode.REMOVE_PLANT
         }
       };
 

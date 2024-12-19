@@ -1,34 +1,44 @@
 import React from 'react';
-import Input from '../../../components/Form/TextInput';
-import FormRow from '../../../components/Form/FormRow';
-import { FormData } from '../../../types/types';
-
+import styles from '../pages/AddPlantPage/AddPlantPage.module.css';
 
 interface UsageSectionProps {
-  formData: FormData;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  formData: any;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
 }
 
 const UsageSection: React.FC<UsageSectionProps> = ({
   formData,
   handleChange,
-}) => (
-  <FormRow>
-    <Input
-      label='Экономическое Использование'
-      id='economicUse'
-      value={formData.economicUse}
-      onChange={handleChange}
-      placeholder='Введите экономическое использование'
-    />
-    <Input
-      label='Статус Защиты'
-      id='protectionStatus'
-      value={formData.protectionStatus}
-      onChange={handleChange}
-      placeholder='Введите статус защиты'
-    />
-  </FormRow>
-);
+}) => {
+  return (
+    <div className={styles.formRow}>
+      <div className={styles.inputContainer}>
+        <label className={styles.inputLabel} htmlFor="usage">
+          Использование
+        </label>
+        <textarea
+          className={styles.inputField}
+          id="usage"
+          value={formData.usage || ''}
+          onChange={handleChange}
+          placeholder="Опишите использование"
+        />
+      </div>
+
+      <div className={styles.inputContainer}>
+        <label className={styles.inputLabel} htmlFor="protection">
+          Защита
+        </label>
+        <textarea
+          className={styles.inputField}
+          id="protection"
+          value={formData.protection || ''}
+          onChange={handleChange}
+          placeholder="Опишите меры защиты"
+        />
+      </div>
+    </div>
+  );
+};
 
 export default UsageSection;

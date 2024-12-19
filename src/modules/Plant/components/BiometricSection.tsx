@@ -1,65 +1,46 @@
 import React from 'react';
-import FormRow from '../../../components/Form/FormRow';
-import Input from '../../../components/Form/TextInput';
-import { FormData } from '../../../types/types';
+import styles from '../pages/AddPlantPage/AddPlantPage.module.css';
 
 interface BiometricSectionProps {
-  formData: FormData;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  formData: any;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
 const BiometricSection: React.FC<BiometricSectionProps> = ({
   formData,
   handleChange,
-}) => (
-  <>
-    <FormRow>
-      <Input
-        label='ID Биометрии'
-        id='biometricId'
-        value={formData.biometricId}
-        onChange={handleChange}
-        placeholder='Введите ID биометрии'
-      />
-      <Input
-        label='Год Наблюдения'
-        id='yearOfObs'
-        value={formData.yearOfObs}
-        onChange={handleChange}
-        placeholder='Введите год наблюдения'
-      />
-      <Input
-        label='Дата Фенофазы'
-        id='phenophaseDate'
-        type='date'
-        value={formData.phenophaseDate}
-        onChange={handleChange}
-      />
-    </FormRow>
-    <FormRow>
-      <Input
-        label='Год'
-        id='year'
-        value={formData.year}
-        onChange={handleChange}
-        placeholder='Введите год'
-      />
-      <Input
-        label='Тип Измерения'
-        id='measurementType'
-        value={formData.measurementType}
-        onChange={handleChange}
-        placeholder='Введите тип измерения'
-      />
-      <Input
-        label='Значение'
-        id='value'
-        value={formData.value}
-        onChange={handleChange}
-        placeholder='Введите значение'
-      />
-    </FormRow>
-  </>
-);
+}) => {
+  return (
+    <div className={styles.formRow}>
+      <div className={styles.inputContainer}>
+        <label className={styles.inputLabel} htmlFor="height">
+          Высота (м)
+        </label>
+        <input
+          className={styles.inputField}
+          type="number"
+          id="height"
+          value={formData.height || ''}
+          onChange={handleChange}
+          placeholder="Введите высоту"
+        />
+      </div>
+
+      <div className={styles.inputContainer}>
+        <label className={styles.inputLabel} htmlFor="diameter">
+          Диаметр ствола (см)
+        </label>
+        <input
+          className={styles.inputField}
+          type="number"
+          id="diameter"
+          value={formData.diameter || ''}
+          onChange={handleChange}
+          placeholder="Введите диаметр"
+        />
+      </div>
+    </div>
+  );
+};
 
 export default BiometricSection;

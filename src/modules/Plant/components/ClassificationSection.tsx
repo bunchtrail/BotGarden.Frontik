@@ -1,51 +1,44 @@
 import React from 'react';
-import FormRow from '../../../components/Form/FormRow';
-import Input from '../../../components/Form/TextInput';
-import { FormData } from '../../../types/types';
+import styles from '../pages/AddPlantPage/AddPlantPage.module.css';
 
 interface ClassificationSectionProps {
-  formData: FormData;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  formData: any;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
 const ClassificationSection: React.FC<ClassificationSectionProps> = ({
   formData,
   handleChange,
-}) => (
-  <>
-    <FormRow>
-      <Input
-        label='Вид'
-        id='species'
-        value={formData.species}
-        onChange={handleChange}
-        placeholder='Введите вид'
-      />
-      <Input
-        label='Синонимы'
-        id='synonyms'
-        value={formData.synonyms}
-        onChange={handleChange}
-        placeholder='Введите синонимы'
-      />
-      <Input
-        label='Разновидность'
-        id='variety'
-        value={formData.variety}
-        onChange={handleChange}
-        placeholder='Введите разновидность'
-      />
-    </FormRow>
-    <FormRow>
-      <Input
-        label='Форма'
-        id='form'
-        value={formData.form}
-        onChange={handleChange}
-        placeholder='Введите форму'
-      />
-    </FormRow>
-  </>
-);
+}) => {
+  return (
+    <div className={styles.formRow}>
+      <div className={styles.inputContainer}>
+        <label className={styles.inputLabel} htmlFor="speciesName">
+          Название вида
+        </label>
+        <input
+          className={styles.inputField}
+          id="speciesName"
+          value={formData.speciesName || ''}
+          onChange={handleChange}
+          placeholder="Введите название вида"
+        />
+      </div>
+
+      <div className={styles.inputContainer}>
+        <label className={styles.inputLabel} htmlFor="subspeciesName">
+          Подвид
+        </label>
+        <input
+          className={styles.inputField}
+          id="subspeciesName"
+          value={formData.subspeciesName || ''}
+          onChange={handleChange}
+          placeholder="Введите подвид"
+        />
+      </div>
+    </div>
+  );
+};
 
 export default ClassificationSection;

@@ -7,13 +7,14 @@ import {
   MarkerData,
 } from '../../Map/services/mapService';
 import { MapMode } from '../../Map/types/mapControls';
-import styles from './LocationSection.module.css';
+import styles from '../pages/AddPlantPage/AddPlantPage.module.css';
+import locationStyles from './LocationSection.module.css';
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 interface LocationSectionProps {
   formData: any;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
 const LocationSection: React.FC<LocationSectionProps> = ({
@@ -27,7 +28,6 @@ const LocationSection: React.FC<LocationSectionProps> = ({
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        // Загрузка изображения карты
         const mapPath = await fetchMapImage();
         if (mapPath) {
           const normalizedPath = mapPath.replace(/\\/g, '/');
@@ -35,7 +35,6 @@ const LocationSection: React.FC<LocationSectionProps> = ({
           setMapImageURL(fullURL);
         }
 
-        // Загрузка областей
         const areasData = await fetchAreas();
         setAreas(areasData);
       } catch (error) {
@@ -81,29 +80,21 @@ const LocationSection: React.FC<LocationSectionProps> = ({
   };
 
   return (
-    <div className={styles.locationSection}>
-      <div className={styles.coordinates}>
-        <input
-          type='number'
-          id='latitude'
-          value={formData.latitude ?? ''}
-          onChange={handleChange}
-          placeholder='Широта'
-          step='any'
-          readOnly
-        />
-        <input
-          type='number'
-          id='longitude'
-          value={formData.longitude ?? ''}
-          onChange={handleChange}
-          placeholder='Долгота'
-          step='any'
-          readOnly
-        />
-      </div>
+    <div className={locationStyles.locationSection}>
+      <input
+        type="hidden"
+        id="latitude"
+        value={formData.latitude || ''}
+        onChange={handleChange}
+      />
+      <input
+        type="hidden"
+        id="longitude"
+        value={formData.longitude || ''}
+        onChange={handleChange}
+      />
 
-      <div className={styles.mapContainer}>
+      <div className={locationStyles.mapContainer}>
         <MapView
           mapImageURL={mapImageURL}
           mode={MapMode.ADD_PLANT}

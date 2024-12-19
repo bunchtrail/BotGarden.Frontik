@@ -45,7 +45,7 @@
   --section-inner-spacing: 1.25rem;
   --border-radius-lg: 12px;
   --border-radius-md: 8px;
-  --navbar-height: 50px;
+  --navbar-height: 63px;
   --content-max-width: 1200px;
   --content-padding: 2rem;
   --content-padding-mobile: 1rem;
@@ -69,6 +69,13 @@
   --error-shadow: 
     0 2px 4px rgba(255, 59, 48, 0.1),
     0 1px 2px rgba(255, 59, 48, 0.06);
+
+  /* Z-index layers */
+  --z-index-base: 1;
+  --z-index-dropdown: 100;
+  --z-index-navbar: 1000;
+  --z-index-modal: 2000;
+  --z-index-message: 3000;
 }
 
 /* Общие стили */

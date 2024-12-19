@@ -28,6 +28,12 @@ const Dropdown: React.FC<DropdownProps> = ({
   const sectorName =
     sectorId !== undefined ? getSectorById(sectorId)?.name : 'Настройки';
 
+  // Находим текущий выбранный элемент и его иконку
+  const currentItem = config.dropdownItems?.find(
+    (item) => sectorId !== undefined && item.pathSuffix === `/${sectorId}`
+  );
+  const iconClass = currentItem?.iconClass || 'fas fa-cog';
+
   return (
     <div className={styles.dropdownContainer} ref={dropdownRef}>
       <button
@@ -37,7 +43,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         aria-expanded={isOpen}
       >
         <div className={styles.dropdownLabel}>
-          <i className={`fas fa-cog ${styles.icon}`} />
+          <i className={`${iconClass} ${styles.icon}`} />
           {sectorName}
         </div>
         <i

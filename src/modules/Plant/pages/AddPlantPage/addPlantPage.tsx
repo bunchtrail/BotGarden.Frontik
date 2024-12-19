@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import CollapsibleSection from '../../../../components/CollapsibleSection';
-import ErrorMessage from '../../../../components/Misc/ErrorMessage';
-import SuccessMessage from '../../../../components/Misc/SuccessMessage';
+import Message from '../../../../components/Misc/Message';
 import Navbar from '../../../../components/Navbar/Navbar';
 import { FormContext } from '../../../../context/FormContext';
 import { useFormActions } from '../../../../hooks/useFormActions';
+import { getSectorById } from '../../../../utils/data';
 import AdditionalSection from '../../components/AdditionalSection';
 import BiometricSection from '../../components/BiometricSection';
 import ClassificationSection from '../../components/ClassificationSection';
@@ -22,8 +22,9 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
   const formContext = useContext(FormContext);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { handleSave, loading, saveError, saveSuccess } = useFormActions();
+  const sector = getSectorById(sectorId);
 
-  const [isEditing, setIsEditing] = useState(false); // Состояние редактирования
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -92,10 +93,15 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
         toggleEditing={toggleEditing}
       />
       <div className={styles.addPlantPage}>
-        {saveError && <ErrorMessage message={saveError} type='general' />}
-        {saveSuccess && <SuccessMessage message={saveSuccess} />}
+        {saveError && <Message message={saveError} type='error' />}
+        {saveSuccess && <Message message={saveSuccess} type='success' />}
 
-        <h2 className={styles.formTitle}>Добавить растение</h2>
+        <h2 className={styles.formTitle}>
+          Добавить растение
+          {sector && (
+            <span className={styles.sectorName}>Раздел: {sector.name}</span>
+          )}
+        </h2>
 
         <form className={styles.form} onSubmit={handleSave}>
           <CollapsibleSection
