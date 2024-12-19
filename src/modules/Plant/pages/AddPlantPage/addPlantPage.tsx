@@ -53,16 +53,20 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
   const [isBiometricOpen, setBiometricOpen] = useState(true);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { id, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [id]:
-        id === 'genusId' || id === 'sectorId' || id === 'familyId'
-          ? Number(value)
+        id === 'latitude' || id === 'longitude'
+          ? value === ''
+            ? null
+            : parseFloat(value)
           : value,
-    });
+    }));
   };
 
   const toggleEditing = () => {
@@ -157,8 +161,6 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
 
           {loading && <div className={styles.loading}>Сохранение...</div>}
         </form>
-
-        
       </div>
     </>
   );

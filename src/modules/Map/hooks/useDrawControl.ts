@@ -40,6 +40,7 @@ export const useDrawControl = ({
       const drawOptions: L.Control.DrawConstructorOptions = {
         draw: {
           rectangle: mode === MapMode.REMOVE_PLANT ? {
+            metric: false,
             shapeOptions: {
               color: '#ff0000',
               weight: 2
@@ -100,17 +101,21 @@ export const useDrawControl = ({
 
     // Изменяем обработчики Alt
     const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Alt' && !isAltPressedRef.current) {
-          isAltPressedRef.current = true;
+      if (e.key === 'Alt' && !isAltPressedRef.current) {
+        isAltPressedRef.current = true;
+        if (mode === MapMode.ADD_AREA) {
           map.getContainer().style.cursor = 'crosshair';
         }
+      }
     };
       
     const handleKeyUp = (e: KeyboardEvent) => {
-        if (e.key === 'Alt' && isAltPressedRef.current) {
-          isAltPressedRef.current = false;
+      if (e.key === 'Alt' && isAltPressedRef.current) {
+        isAltPressedRef.current = false;
+        if (mode === MapMode.ADD_AREA) {
           map.getContainer().style.cursor = 'grab';
         }
+      }
     };
       
 

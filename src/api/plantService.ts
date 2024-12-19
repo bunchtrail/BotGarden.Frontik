@@ -9,7 +9,15 @@ import client from "./client";
  */
 export const savePlant = async (plantData: FormData): Promise<ApiResponse<Plant>> => {
   try {
-    const response = await client.post<ApiResponse<Plant>>('/api/plant/add', plantData);
+    // Преобразуем данные перед отправкой
+    const preparedData = {
+      ...plantData,
+      // Убедимся, что координаты отправляются как строки
+      latitude: plantData.latitude?.toString(),
+      longitude: plantData.longitude?.toString()
+    };
+
+    const response = await client.post<ApiResponse<Plant>>('/api/plant/add', preparedData);
     return response.data;
   } catch (error: any) {
     console.error('Ошибка при сохранении растения:', error);

@@ -26,6 +26,8 @@ interface MapViewProps {
   mode: MapMode;
   areas?: AreaData[];
   markers?: MarkerData[];
+  showAddPlantModal?: boolean;
+  disableAreaPopup?: boolean;
   onAreaCreated?: (area: L.Layer) => void;
   onAreaEdited?: (areaId: number, newPositions: [number, number][]) => void;
   onAreaDeleted?: (areaId: number) => void;
@@ -38,6 +40,8 @@ export const MapView: React.FC<MapViewProps> = ({
   mode,
   areas = [],
   markers = [],
+  showAddPlantModal = true,
+  disableAreaPopup = false,
   onAreaCreated,
   onAreaEdited,
   onAreaDeleted,
@@ -103,7 +107,16 @@ export const MapView: React.FC<MapViewProps> = ({
     const handleMapClick = (e: L.LeafletMouseEvent) => {
       if (mode === MapMode.ADD_PLANT) {
         const position: [number, number] = [e.latlng.lat, e.latlng.lng];
-        setPendingPlant({ position });
+        if (showAddPlantModal) {
+          setPendingPlant({ position });
+        } else {
+          onMarkerAdded?.({
+            id: Date.now(),
+            position,
+            title: '',
+            description: '',
+          });
+        }
       }
     };
 
@@ -112,7 +125,7 @@ export const MapView: React.FC<MapViewProps> = ({
     return () => {
       mapInstanceRef.current?.off('click', handleMapClick);
     };
-  }, [mode]);
+  }, [mode, showAddPlantModal, onMarkerAdded]);
 
   const handlePlantSave = async (data: {
     species: string;
@@ -161,6 +174,7 @@ export const MapView: React.FC<MapViewProps> = ({
         onAreaDeleted={onAreaDeleted}
         onAreaEdited={onAreaEdited}
         setDeletePopup={setDeletePopup}
+        disableAreaPopup={disableAreaPopup}
       />
 
       <MapMarkers

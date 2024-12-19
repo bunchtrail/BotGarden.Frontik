@@ -11,6 +11,7 @@ interface MapAreasProps {
   onAreaDeleted?: (areaId: number) => void;
   onAreaEdited?: (areaId: number, newPositions: [number, number][]) => void;
   setDeletePopup: (popup: { areaId: number; position: L.Point } | null) => void;
+  disableAreaPopup?: boolean;
 }
 
 export const MapAreas: React.FC<MapAreasProps> = ({
@@ -20,6 +21,7 @@ export const MapAreas: React.FC<MapAreasProps> = ({
   onAreaDeleted,
   onAreaEdited,
   setDeletePopup,
+  disableAreaPopup = false,
 }) => {
   useEffect(() => {
     if (!drawnItemsRef.current) return;
@@ -31,11 +33,12 @@ export const MapAreas: React.FC<MapAreasProps> = ({
         area,
         mode,
         onAreaDeleted,
-        setDeletePopup
+        setDeletePopup,
+        disableAreaPopup
       );
       drawnItemsRef.current?.addLayer(polygon);
     });
-  }, [areas, mode, onAreaDeleted]);
+  }, [areas, mode, onAreaDeleted, disableAreaPopup]);
 
   useEffect(() => {
     if (mode === MapMode.EDIT_AREA) {

@@ -3,32 +3,31 @@ import { createAreaPopup } from '../components/AreaPopup/AreaPopup';
 import { AreaData } from '../services/mapService';
 import { MapMode } from '../types/mapControls';
 
-export function createAreaPolygon(
+export const createAreaPolygon = (
   area: AreaData,
   mode: MapMode,
   onAreaDeleted?: (areaId: number) => void,
-  setDeletePopup?: (popup: { areaId: number; position: L.Point } | null) => void
-) {
+  setDeletePopup?: (popup: { areaId: number; position: L.Point } | null) => void,
+  disableAreaPopup: boolean = false
+) => {
   const polygon = L.polygon(area.positions, {
-    color: '#2ecc71',
-    weight: 3,
-    opacity: 1,
-    fillColor: '#2ecc71',
-    fillOpacity: 0.3,
+    color: area.color || '#3388ff',
   });
+
+  if (!disableAreaPopup) {
+    const popup = createAreaPopup({
+      title: area.title || 'Без названия',
+      description: area.description || 'Без описания',
+    });
+    polygon.bindPopup(popup);
+  }
 
   (polygon as any).areaId = area.id;
   
-  const popup = createAreaPopup({
-    title: area.title,
-    description: area.description,
-  });
-
-  polygon.bindPopup(popup);
   setupPolygonEvents(polygon, mode, onAreaDeleted, setDeletePopup);
 
   return polygon;
-}
+};
 
 export function setupAreaEditing(
   featureGroup: L.FeatureGroup | null,
@@ -97,6 +96,21 @@ function setupPolygonEvents(
   polygon.on('mouseout', () => {
     polygon.setStyle({ fillOpacity: 0.3 });
   });
+
+  // Обработчик для режима ADD_PLANT
+  if (mode === MapMode.ADD_PLANT) {
+    polygon.on('click', (e: L.LeafletMouseEvent) => {
+      if (e.originalEvent.altKey) {
+        // Если зажат Alt, показываем попап и предотвращаем добавление маркера
+        const popup = polygon.getPopup();
+        if (popup) {
+          polygon.openPopup();
+        }
+        L.DomEvent.stopPropagation(e);
+      }
+      // Если Alt не зажат, событие пройдет дальше и маркер будет добавлен
+    });
+  }
 
   // Добавляем обработчик удаления в режиме DELETE_AREA
   if (mode === MapMode.DELETE_AREA) {
