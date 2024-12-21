@@ -34,6 +34,13 @@ const AddPlantPage: React.FC<AddPlantPageProp> = ({ sectorId }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    document.body.setAttribute('data-page', 'add-plant');
+    return () => {
+      document.body.removeAttribute('data-page');
+    };
+  }, []);
+
   if (!formContext) {
     return <div>Loading...</div>;
   }

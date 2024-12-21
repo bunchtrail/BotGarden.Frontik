@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PageType, { pageConfig } from '../../configs/pageConfig';
 import useIsMobile from '../../hooks/useInMobile';
-import useNavbarVisibility from '../../hooks/useNavbarVisibility';
 import ButtonGroup from './ButtonGroup';
 import MobileActions from './MobileActions';
 import MobileToggle from './MobileToggle';
@@ -45,9 +44,25 @@ const Navbar: React.FC<NavbarProps> = ({
   const isMobile = useIsMobile();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
 
   const navItemsDropdownRef = useRef<HTMLDivElement>(null);
-  const isVisible = useNavbarVisibility();
+  const navbarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > lastScrollY.current) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      lastScrollY.current = window.scrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -78,7 +93,7 @@ const Navbar: React.FC<NavbarProps> = ({
   }`;
 
   return (
-    <div className={navbarClass} onKeyDown={handleKeyDown}>
+    <div className={navbarClass} onKeyDown={handleKeyDown} ref={navbarRef}>
       {isMobile && (
         <MobileToggle
           isOpen={isMobileMenuOpen}

@@ -40,6 +40,7 @@
   z-index: 1000;
   height: 60px;
   min-height: 60px;
+  transition: transform 0.3s ease, opacity 0.3s ease; /* Плавный переход для скрытия */
 }
 
 /* Контейнер для основного контента */
@@ -124,7 +125,8 @@
 
 /* Скрытие навбара при прокрутке */
 .navbarContainer.hidden {
-  transform: translateY(-100%);
+  transform: translateY(-100%); /* Скрываем навбар */
+  opacity: 0; /* Убираем видимость */
 }
 
 /* Навигационные элементы */

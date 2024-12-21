@@ -97,7 +97,6 @@ export const pageConfig: Record<string, PageConfig> = {
       { to: '/home', iconClass: 'fas fa-home', label: 'Вернуться на главный экран' },
     ],
     staticButtons: [
-      { action: 'add-plant', icon: 'seedling', label: 'Добавить растение' },
       { action: 'add-area', icon: 'map-marked-alt', label: 'Добавить область' },
       { action: 'edit-area', icon: 'edit', label: 'Редактировать область' },
       { action: 'delete-plants-in-area', icon: 'trash', label: 'Удалить растения в области' },
