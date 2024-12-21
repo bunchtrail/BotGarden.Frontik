@@ -100,9 +100,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
       {/* Рендерим статические кнопки */}
       {config.staticButtons?.map((btn) => {
         const isActive = activeMode === btn.action;
-        
-        console.log('Button action:', btn.action, 'Active mode:', activeMode, 'Is active:', isActive);
-        
+
         return (
           <button
             key={btn.action}
@@ -123,7 +121,9 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
             title={btn.label}
           >
             <i className={`fas fa-${btn.icon} ${styles.icon}`} />
-            {!isMobile && <span style={{ marginLeft: '5px' }}>{btn.label}</span>}
+            {!isMobile && (
+              <span style={{ marginLeft: '5px' }}>{btn.label}</span>
+            )}
           </button>
         );
       })}
@@ -151,7 +151,9 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
             title={btn.label}
           >
             <i className={`fas fa-${btn.icon} ${styles.icon}`} />
-            {!isMobile && <span style={{ marginLeft: '5px' }}>{btn.label}</span>}
+            {!isMobile && (
+              <span style={{ marginLeft: '5px' }}>{btn.label}</span>
+            )}
           </button>
         );
       })}
@@ -163,14 +165,61 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
         setSelectedColumns && (
           <div className={styles.dropdownContainer} ref={dropdownRef}>
             <button
-              className={styles.columnsButton}
+              className={`${styles.columnsButton} ${selectedColumns.length > 0 ? styles.hasSelected : ''}`}
               onClick={() => setIsColumnsDropdownOpen((prev) => !prev)}
               title='Выбрать столбцы для поиска'
               aria-haspopup='true'
               aria-expanded={isColumnsDropdownOpen}
             >
-              <FaColumns />
-              {!isMobile && <span style={{ marginLeft: '8px' }}>Столбцы</span>}
+              <div className={styles.columnsButtonContent}>
+                <div className={styles.columnsIconWrapper}>
+                  <FaColumns className={styles.columnsIcon} />
+                  {selectedColumns.length > 0 && (
+                    <span className={styles.columnCount}>
+                      {selectedColumns.length}
+                    </span>
+                  )}
+                </div>
+                {!isMobile && (
+                  <>
+                    <span className={styles.columnsLabel}>Столбцы</span>
+                    {selectedColumns.length > 0 && (
+                      <div className={styles.selectedPreview}>
+                        {availableColumns
+                          .filter(col => selectedColumns.includes(col.field))
+                          .slice(0, 2)
+                          .map((col, idx) => (
+                            <span 
+                              key={col.field} 
+                              className={styles.previewTag}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleColumnSelection(col.field);
+                              }}
+                            >
+                              {col.label}
+                              <span className={styles.removeTag}>×</span>
+                            </span>
+                          ))}
+                        {selectedColumns.length > 2 && (
+                          <div className={styles.moreCount} title={
+                            availableColumns
+                              .filter(col => selectedColumns.includes(col.field))
+                              .slice(2)
+                              .map(col => col.label)
+                              .join(', ')
+                          }>
+                            +{selectedColumns.length - 2}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+                <div className={`${styles.dropdownArrow} ${isColumnsDropdownOpen ? styles.open : ''}`}>
+                  ▼
+                </div>
+              </div>
             </button>
             {isColumnsDropdownOpen && (
               <div

@@ -436,27 +436,187 @@
   }
 }
 
-/* Кнопка выбора столбцов */
+/* Обновляем стили для кнопки выбора столбцов */
 .columnsButton {
   background-color: var(--button-bg-color);
   border: 1px solid var(--navbar-border-color);
-  padding: 0 16px;
+  padding: 0 12px;
   border-radius: var(--border-radius);
   cursor: pointer;
-  transition: background-color var(--navbar-transition), transform var(--navbar-transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: var(--navbar-text-hover-color);
   height: 42px;
   min-height: 42px;
-  min-width: 120px;
+  min-width: 140px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .columnsButton:hover {
   background-color: var(--button-hover-bg-color);
-  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.columnsButton.hasSelected {
+  background-color: rgba(var(--primary-color-rgb), 0.15);
+  border-color: rgba(var(--primary-color-rgb), 0.3);
+}
+
+.columnsButtonContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.columnsIconWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.columnsIcon {
+  font-size: 16px;
+  color: var(--navbar-text-color);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.columnCount {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 8px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scaleIn 0.2s ease-out;
+}
+
+.columnsLabel {
+  color: var(--navbar-text-color);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.selectedPreview {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 4px;
+  max-width: 300px;
+  overflow: hidden;
+  height: 26px;
+}
+
+.previewTag {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--navbar-text-color);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75em;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.previewTag:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.removeTag {
+  cursor: pointer;
+  opacity: 0.6;
+  font-size: 14px;
+  font-weight: bold;
+  transition: opacity 0.2s ease;
+}
+
+.removeTag:hover {
+  opacity: 1;
+}
+
+.moreCount {
+  color: var(--navbar-text-color);
+  font-size: 0.75em;
+  padding: 2px 6px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  cursor: help;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.moreCount:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dropdownArrow {
+  font-size: 10px;
+  color: var(--navbar-text-color);
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+  margin-left: auto;
+  padding-left: 4px;
+}
+
+.dropdownArrow.open {
+  transform: rotate(180deg);
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Анимация для тегов */
+.previewTag {
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Медиа-запрос для мобильных устройств */
+@media (max-width: 768px) {
+  .columnsButton {
+    min-width: auto;
+    padding: 0 10px;
+  }
+  
+  .columnCount {
+    position: static;
+    margin-left: 4px;
+  }
 }
 
 /* Выпадающее меню столбцов */
@@ -876,4 +1036,44 @@ input:checked + .slider:before {
     margin: 10px 0; /* Отступы в мобильной версии */
     width: 100%;
   }
+}
+
+/* Добавляем стили для тегов выбранных столбцов */
+
+.columnsButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 400px;
+  overflow: hidden;
+}
+
+.selectedColumnTags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  max-width: 300px;
+}
+
+.columnTag {
+  background-color: var(--primary-color-light);
+  color: var(--text-color);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* Добавляем эффект затухания для длинного списка тегов */
+.selectedColumnTags::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 20px;
+  background: linear-gradient(to right, transparent, var(--background-color));
+  pointer-events: none;
 }
