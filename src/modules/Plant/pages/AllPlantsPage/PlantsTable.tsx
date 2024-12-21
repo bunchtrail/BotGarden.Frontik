@@ -1,14 +1,17 @@
 // src/components/AllPlantsPage/PlantsTable.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Plant } from '../../../../types/types';
 import styles from './AllPlantsPage.module.css';
-import PlantRow from './PlantRow';
 
 interface PlantsTableProps {
   plants: Plant[];
-  onPlantUpdate: (updatedPlant: Plant) => void;
+  onPlantUpdate: (plant: Plant) => void;
   isEditing: boolean;
+  selectedPlantIds: number[];
+  onSelectPlant: (plantId: number, event: React.MouseEvent) => void;
+  onDeletePlant: (plantId: number) => void;
+  onClearSelection: () => void;
 }
 
 interface Column {
@@ -54,9 +57,127 @@ const PlantsTable: React.FC<PlantsTableProps> = ({
   plants,
   onPlantUpdate,
   isEditing,
+  selectedPlantIds,
+  onSelectPlant,
+  onDeletePlant,
+  onClearSelection,
 }) => {
+  const [editingCell, setEditingCell] = useState<{
+    plantId: number;
+    field: keyof Plant;
+  } | null>(null);
+
+  const handleTableClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClearSelection();
+    }
+  };
+
+  const handleCellClick = (plantId: number, field: keyof Plant) => {
+    if (isEditing) {
+      setEditingCell({ plantId, field });
+    }
+  };
+
+  const handleCellChange = (
+    plantId: number,
+    field: keyof Plant,
+    value: any
+  ) => {
+    const plant = plants.find((p) => p.plantId === plantId);
+    if (plant) {
+      const updatedPlant = {
+        ...plant,
+        [field]: value,
+      };
+      onPlantUpdate(updatedPlant);
+    }
+  };
+
+  const renderCell = (plant: Plant, field: keyof Plant) => {
+    const isEditing =
+      editingCell?.plantId === plant.plantId && editingCell?.field === field;
+    const value = plant[field];
+
+    if (isEditing) {
+      if (typeof value === 'boolean') {
+        return (
+          <div className={styles.booleanCell}>
+            <input
+              type='checkbox'
+              className={styles.booleanToggle}
+              checked={value}
+              onChange={(e) => {
+                handleCellChange(plant.plantId, field, e.target.checked);
+                setEditingCell(null);
+              }}
+              autoFocus
+            />
+          </div>
+        );
+      }
+
+      if (
+        field === 'dateOfPlanting' ||
+        field === 'phenophaseDate' ||
+        field === 'date'
+      ) {
+        return (
+          <input
+            type='date'
+            className={styles.editInput}
+            value={value ? new Date(value).toISOString().split('T')[0] : ''}
+            onChange={(e) => {
+              handleCellChange(plant.plantId, field, e.target.value);
+            }}
+            onBlur={() => setEditingCell(null)}
+            autoFocus
+          />
+        );
+      }
+
+      if (typeof value === 'number') {
+        return (
+          <input
+            type='number'
+            className={styles.editInput}
+            value={value || ''}
+            onChange={(e) => {
+              handleCellChange(
+                plant.plantId,
+                field,
+                parseFloat(e.target.value)
+              );
+            }}
+            onBlur={() => setEditingCell(null)}
+            autoFocus
+          />
+        );
+      }
+
+      return (
+        <input
+          type='text'
+          className={styles.editInput}
+          value={value || ''}
+          onChange={(e) => {
+            handleCellChange(plant.plantId, field, e.target.value);
+          }}
+          onBlur={() => setEditingCell(null)}
+          autoFocus
+        />
+      );
+    }
+
+    if (typeof value === 'boolean') {
+      return value ? 'Да' : 'Нет';
+    }
+
+    return value || '—';
+  };
+
   return (
-    <div className={styles.tableWrapper}>
+    <div className={styles.tableWrapper} onClick={handleTableClick}>
       <table
         className={`${styles.plantsTable} ${
           isEditing ? styles.editingTable : ''
@@ -67,17 +188,59 @@ const PlantsTable: React.FC<PlantsTableProps> = ({
             {columns.map((col) => (
               <th key={col.field}>{col.label}</th>
             ))}
+            <th className={styles.actionColumn}>
+              {selectedPlantIds.length > 0 ? (
+                <button
+                  className={styles.deleteButton}
+                  onClick={() => onDeletePlant(selectedPlantIds[0])}
+                >
+                  Удалить выбранные
+                </button>
+              ) : (
+                'Действия'
+              )}
+            </th>
           </tr>
         </thead>
         <tbody>
           {plants.map((plant) => (
-            <PlantRow
-              key={plant.id ?? plant.plantId}
-              plant={plant}
-              onUpdate={onPlantUpdate}
-              isEditing={isEditing}
-              columns={columns}
-            />
+            <tr
+              key={plant.plantId}
+              className={`${styles.tableRow} ${
+                selectedPlantIds.includes(plant.plantId)
+                  ? styles.selectedRow
+                  : ''
+              }`}
+              onClick={(event) =>
+                !isEditing && onSelectPlant(plant.plantId, event)
+              }
+            >
+              {columns.map((col) => (
+                <td
+                  key={col.field}
+                  className={`${
+                    editingCell?.plantId === plant.plantId &&
+                    editingCell?.field === col.field
+                      ? styles.editing
+                      : ''
+                  }`}
+                  onClick={() => handleCellClick(plant.plantId, col.field)}
+                >
+                  {renderCell(plant, col.field)}
+                </td>
+              ))}
+              <td className={styles.actionColumn}>
+                <button
+                  className={styles.deleteButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDeletePlant(plant.plantId);
+                  }}
+                >
+                  Удалить
+                </button>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>

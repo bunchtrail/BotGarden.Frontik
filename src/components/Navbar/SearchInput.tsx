@@ -1,7 +1,7 @@
 // src/components/Navbar/SearchInput.tsx
 
 import React from 'react';
-import styles from './SearchInput.module.css'; // Создайте соответствующий CSS модуль
+import styles from './Navbar.module.css';
 
 interface SearchInputProps {
   searchQuery: string;
@@ -13,13 +13,16 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onSearchChange,
 }) => {
   return (
-    <input
-      type='text'
-      value={searchQuery}
-      onChange={onSearchChange}
-      placeholder='Поиск...'
-      className={styles.searchInput}
-    />
+    <div className={styles.searchWrapper}>
+      <input
+        type='text'
+        className={styles.searchInput}
+        placeholder='Поиск...'
+        value={searchQuery}
+        onChange={onSearchChange}
+      />
+      <i className={`fas fa-search ${styles.searchIcon}`} />
+    </div>
   );
 };
 

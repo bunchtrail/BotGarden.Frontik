@@ -3,11 +3,18 @@
 import equal from 'fast-deep-equal'; // Добавляем библиотеку для глубокой оптимизированной проверки
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPlantsBySector, updatePlants } from '../../../../api/plantService';
+import {
+  deletePlant,
+  getPlantsBySector,
+  updatePlants,
+} from '../../../../api/plantService';
 import Button from '../../../../components/Button/Button';
+import ConfirmationModal from '../../../../components/ConfirmationModal/ConfirmationModal';
+import Loader from '../../../../components/Loader/Loader'; // Если у вас есть компонент лоадера
 import Navbar from '../../../../components/Navbar/Navbar';
 import useDebounce from '../../../../hooks/useDebounce';
 import { Plant, PlantUpdateDto } from '../../../../types/types';
+import TableHints from '../../components/TableHints/TableHints';
 import styles from './AllPlantsPage.module.css';
 import PlantsTable from './PlantsTable';
 
@@ -32,11 +39,25 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({ sectorId }) => {
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
 
+  // Заменяем состояние selectedPlantId на selectedPlantIds
+  const [selectedPlantIds, setSelectedPlantIds] = useState<number[]>([]);
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [plantsToDelete, setPlantsToDelete] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const fetchPlants = async () => {
-      const fetchedPlants = await getPlantsBySector(sectorId);
-      setPlants(fetchedPlants);
-      setOriginalPlants(fetchedPlants);
+      setIsLoading(true);
+      try {
+        const fetchedPlants = await getPlantsBySector(sectorId);
+        setPlants(fetchedPlants);
+        setOriginalPlants(fetchedPlants);
+      } catch (error) {
+        console.error('Ошибка при загрузке растений:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchPlants();
   }, [sectorId]);
@@ -187,6 +208,84 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({ sectorId }) => {
     );
   }, [plants, debouncedSearchQuery, selectedColumns]);
 
+  // Обновляем функцию handleSelectPlant для работы с событиями React
+  const handleSelectPlant = (plantId: number, event: React.MouseEvent) => {
+    setSelectedPlantIds((prev) => {
+      if (prev.includes(plantId)) {
+        // Если строка уже выделена - убираем её из выделения
+        return prev.filter((id) => id !== plantId);
+      } else {
+        // Если строка не выделена - добавляем её к выделенным
+        // При зажатом Shift выделяем все строки между последней выделенной и текущей
+        if (event.shiftKey && prev.length > 0) {
+          const allPlantIds = plants.map((p) => p.plantId);
+          const lastSelectedIndex = allPlantIds.indexOf(prev[prev.length - 1]);
+          const currentIndex = allPlantIds.indexOf(plantId);
+          const start = Math.min(lastSelectedIndex, currentIndex);
+          const end = Math.max(lastSelectedIndex, currentIndex);
+          const newSelection = allPlantIds.slice(start, end + 1);
+          return [...new Set([...prev, ...newSelection])];
+        }
+        // При зажатом Ctrl (или Cmd на Mac) добавляем строку к существующему выделению
+        if (event.ctrlKey || event.metaKey) {
+          return [...prev, plantId];
+        }
+        // Без модификаторов - выделяем только текущую строку
+        return [plantId];
+      }
+    });
+  };
+
+  // Добавляем функцию для очистки выделения
+  const clearSelection = () => {
+    setSelectedPlantIds([]);
+  };
+
+  const handleDeleteConfirmation = (plantId: number) => {
+    const idsToDelete = selectedPlantIds.includes(plantId)
+      ? selectedPlantIds
+      : [plantId];
+
+    setPlantsToDelete(idsToDelete);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    try {
+      for (const id of plantsToDelete) {
+        const response = await deletePlant(id);
+        if (response.success) {
+          setPlants((prev) => prev.filter((plant) => plant.plantId !== id));
+        } else {
+          alert(`Ошибка при удалении растения ${id}: ${response.message}`);
+        }
+      }
+      setSelectedPlantIds([]);
+    } catch (error) {
+      console.error('Ошибка при удалении растений:', error);
+      alert('Произошла ошибка при удалении растений');
+    } finally {
+      setIsDeleteModalOpen(false);
+      setPlantsToDelete([]);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = async (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        clearSelection();
+      } else if (event.key === 'Delete' && selectedPlantIds.length > 0) {
+        event.preventDefault();
+        handleDeleteConfirmation(selectedPlantIds[0]);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedPlantIds]);
+
   return (
     <>
       <Navbar
@@ -196,10 +295,12 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({ sectorId }) => {
         isEditing={isEditing}
         toggleEditing={toggleEditing}
         handleSave={handleSave}
-        searchableColumns={searchableColumns} // Передаём список доступных для поиска столбцов с метками
+        searchableColumns={searchableColumns}
       />
       <div className={styles.plantsAllContainer}>
-        {filteredPlants.length === 0 ? (
+        {isLoading ? (
+          <Loader /> // Или любой другой индикатор загрузки
+        ) : plants.length === 0 ? (
           <>
             <h1>Растения в данном разделе отсутствуют</h1>
             <Button
@@ -209,14 +310,35 @@ const AllPlantsPage: React.FC<AllPlantPageProp> = ({ sectorId }) => {
               Добавить растение
             </Button>
           </>
+        ) : filteredPlants.length === 0 && debouncedSearchQuery ? (
+          <h1>По вашему запросу ничего не найдено</h1>
         ) : (
           <PlantsTable
-            plants={filteredPlants} // Передаём отфильтрованные растения
+            plants={filteredPlants}
             onPlantUpdate={handlePlantUpdate}
             isEditing={isEditing}
+            selectedPlantIds={selectedPlantIds}
+            onSelectPlant={handleSelectPlant}
+            onDeletePlant={handleDeleteConfirmation}
+            onClearSelection={clearSelection}
           />
         )}
+        {plants.length > 0 && <TableHints />}
       </div>
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        title='Подтверждение удаления'
+        message={`Вы уверены, что хотите удалить ${
+          plantsToDelete.length > 1
+            ? `выбранные растения (${plantsToDelete.length} шт.)?`
+            : 'это растение?'
+        }`}
+        onConfirm={handleDeleteConfirmed}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setPlantsToDelete([]);
+        }}
+      />
     </>
   );
 };

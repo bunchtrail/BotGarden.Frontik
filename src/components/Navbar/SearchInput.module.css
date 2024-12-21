@@ -1,40 +1,124 @@
 /* src/components/Navbar/SearchInput.module.css */
 
-.searchInput {
-  padding: 12px 20px 12px 45px;
-  border-radius: 12px;
-  border: none;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 15px;
+.searchWrapper {
+  position: relative;
   width: 300px;
-  backdrop-filter: blur(10px);
+  height: 42px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: 15px center;
-  background-size: 20px;
+}
+
+.searchInput {
+  width: 100%;
+  height: 100%;
+  padding: 0 40px;
+  border: none;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .searchInput:focus {
   outline: none;
-  background-color: rgba(255, 255, 255, 0.15);
-  width: 400px;
-  box-shadow: 0 0 0 2px var(--color-primary, #007bff);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .searchInput::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 400;
+  color: rgba(255, 255, 255, 0.4);
 }
 
-@media (max-width: 813px) {
-  .searchInput {
-    width: 100%;
-  }
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 16px;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
 
-  .searchInput:focus {
+.searchWrapper:focus-within .searchIcon {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.clearButton {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%) scale(0.9);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.clearButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.clearButton:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* Медиа-запросы */
+@media (max-width: 768px) {
+  .searchWrapper {
     width: 100%;
   }
+  
+  .searchInput {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .searchInput:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Анимация появления */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.searchWrapper {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Анимация для кнопки очистки */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.8);
+  }
+  to {
+    opacity: 0.7;
+    transform: translateY(-50%) scale(0.9);
+  }
+}
+
+.clearButton {
+  animation: fadeIn 0.2s ease-out;
 }

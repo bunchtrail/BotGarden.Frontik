@@ -37,8 +37,8 @@ export interface Plant {
   naturalHabitat?: string;
   ecologyBiology?: string;
   economicUse?: string;
-  latitude?: number;
-  longitude?: number;
+  latitude?: string;
+  longitude?: string;
   originator?: string;
   date?: string;
   country?: string;
@@ -168,7 +168,7 @@ export interface PlantUpdateDto {
   year?: number;
   measurementType?: string;
   value?: string;
-  latitude?: number;
-  longitude?: number;
+  latitude?: string;
+  longitude?: string;
   herbariumPresence?: boolean;
 }

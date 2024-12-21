@@ -178,7 +178,7 @@ export const MapView: React.FC<MapViewProps> = ({
       />
 
       <MapMarkers
-        markers={markers}
+        markers={markers.filter(marker => marker.title !== 'Украинский флаг')}
         markersLayerRef={markersLayerRef}
         mapImageURL={mapImageURL}
       />

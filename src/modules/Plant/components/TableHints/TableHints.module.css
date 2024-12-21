@@ -1,0 +1,125 @@
+.hintsContainer {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1000;
+}
+
+.hintsHeader {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px 8px;
+  gap: 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: background-color 0.15s ease;
+  opacity: 0.8;
+}
+
+.hintsHeader:hover {
+  background: rgba(255, 255, 255, 0.95);
+  opacity: 1;
+}
+
+.hintsTitle {
+  font-size: 12px;
+  font-weight: 400;
+  color: #777;
+  margin: 0;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s ease;
+  opacity: 0.7;
+}
+
+.toggleButton:hover {
+  color: #777;
+  opacity: 1;
+}
+
+.toggleButton.collapsed {
+  transform: rotate(-180deg);
+  transition: transform 0.15s ease;
+}
+
+.toggleButton:not(.collapsed) {
+  transform: rotate(0);
+  transition: transform 0.15s ease;
+}
+
+.hintsList {
+  list-style: none;
+  padding: 8px 10px;
+  margin: 0;
+  overflow: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  opacity: 0;
+  transform: translateY(-2px);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+  min-width: 240px;
+}
+
+.hintsList.expanded {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.hintItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #777;
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+
+.hintItem:last-child {
+  margin-bottom: 0;
+}
+
+.keyboardKey {
+  background: rgba(0, 0, 0, 0.02);
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-size: 10px;
+  color: #666;
+  font-family: monospace;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+@media (max-width: 768px) {
+  .hintsContainer {
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  .hintsHeader {
+    padding: 3px 6px;
+  }
+  
+  .hintsTitle {
+    font-size: 11px;
+  }
+} 

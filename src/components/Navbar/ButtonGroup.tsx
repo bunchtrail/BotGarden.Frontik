@@ -97,7 +97,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
         accept='image/*'
         onChange={handleFileUpload}
       />
-      {/* Рендерим статические кнопки */}
+      {/* Обновляем рендер статических кнопок */}
       {config.staticButtons?.map((btn) => {
         const isActive = activeMode === btn.action;
 
@@ -120,15 +120,15 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
             }}
             title={btn.label}
           >
-            <i className={`fas fa-${btn.icon} ${styles.icon}`} />
-            {!isMobile && (
-              <span style={{ marginLeft: '5px' }}>{btn.label}</span>
-            )}
+            <div className={styles.buttonContent}>
+              <i className={`fas fa-${btn.icon} ${styles.icon}`} />
+              {!isMobile && <span>{btn.label}</span>}
+            </div>
           </button>
         );
       })}
 
-      {/* Рендерим динамические кнопки */}
+      {/* Обновляем рендер динамических кнопок */}
       {config.dynamicButtons?.map((btn) => {
         const shouldRender = btn.condition === 'isEditing' ? isEditing : true;
         const isActive = activeMode === btn.action;
@@ -150,10 +150,10 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
             }}
             title={btn.label}
           >
-            <i className={`fas fa-${btn.icon} ${styles.icon}`} />
-            {!isMobile && (
-              <span style={{ marginLeft: '5px' }}>{btn.label}</span>
-            )}
+            <div className={styles.buttonContent}>
+              <i className={`fas fa-${btn.icon} ${styles.icon}`} />
+              {!isMobile && <span>{btn.label}</span>}
+            </div>
           </button>
         );
       })}
@@ -165,7 +165,9 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
         setSelectedColumns && (
           <div className={styles.dropdownContainer} ref={dropdownRef}>
             <button
-              className={`${styles.columnsButton} ${selectedColumns.length > 0 ? styles.hasSelected : ''}`}
+              className={`${styles.columnsButton} ${
+                selectedColumns.length > 0 ? styles.hasSelected : ''
+              }`}
               onClick={() => setIsColumnsDropdownOpen((prev) => !prev)}
               title='Выбрать столбцы для поиска'
               aria-haspopup='true'
@@ -186,11 +188,11 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
                     {selectedColumns.length > 0 && (
                       <div className={styles.selectedPreview}>
                         {availableColumns
-                          .filter(col => selectedColumns.includes(col.field))
+                          .filter((col) => selectedColumns.includes(col.field))
                           .slice(0, 2)
                           .map((col, idx) => (
-                            <span 
-                              key={col.field} 
+                            <span
+                              key={col.field}
                               className={styles.previewTag}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -202,13 +204,16 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
                             </span>
                           ))}
                         {selectedColumns.length > 2 && (
-                          <div className={styles.moreCount} title={
-                            availableColumns
-                              .filter(col => selectedColumns.includes(col.field))
+                          <div
+                            className={styles.moreCount}
+                            title={availableColumns
+                              .filter((col) =>
+                                selectedColumns.includes(col.field)
+                              )
                               .slice(2)
-                              .map(col => col.label)
-                              .join(', ')
-                          }>
+                              .map((col) => col.label)
+                              .join(', ')}
+                          >
                             +{selectedColumns.length - 2}
                           </div>
                         )}
@@ -216,7 +221,11 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
                     )}
                   </>
                 )}
-                <div className={`${styles.dropdownArrow} ${isColumnsDropdownOpen ? styles.open : ''}`}>
+                <div
+                  className={`${styles.dropdownArrow} ${
+                    isColumnsDropdownOpen ? styles.open : ''
+                  }`}
+                >
                   ▼
                 </div>
               </div>

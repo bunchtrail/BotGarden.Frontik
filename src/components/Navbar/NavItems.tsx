@@ -32,24 +32,29 @@ const NavItems: React.FC<NavItemsProps> = ({
     <div
       className={`${styles.navItems} ${isMobileMenuOpen ? styles.show : ''}`}
     >
-      {config.navLinks.map((link) => (
-        <Link to={link.to} className={styles.navItem} key={link.to}>
-          <i className={`${link.iconClass} ${styles.icon}`} />
-          <LinkTitle title={link.label} />
-        </Link>
-      ))}
+      <div className={styles.navItemsContainer}>
+        {config.navLinks.map((link) => (
+          <Link to={link.to} className={styles.navItem} key={link.to}>
+            <div className={styles.navItemContent}>
+              <i className={`${link.iconClass} ${styles.navIcon}`} />
+              <LinkTitle title={link.label} className={styles.navLabel} />
+            </div>
+          </Link>
+        ))}
 
-      {/* Показываем Dropdown, если задан sectorId и есть dropdownItems */}
-      {config.dropdownItems && (
-        <Dropdown
-          sectorId={sectorId}
-          pageType={pageType}
-          isOpen={isDropdownOpen}
-          toggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
-          dropdownRef={dropdownRef}
-          onAction={onAction}
-        />
-      )}
+        {config.dropdownItems && (
+          <div className={styles.dropdownWrapper}>
+            <Dropdown
+              sectorId={sectorId}
+              pageType={pageType}
+              isOpen={isDropdownOpen}
+              toggleDropdown={() => setIsDropdownOpen(!isDropdownOpen)}
+              dropdownRef={dropdownRef}
+              onAction={onAction}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

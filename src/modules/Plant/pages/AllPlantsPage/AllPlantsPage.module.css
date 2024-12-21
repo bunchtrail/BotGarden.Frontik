@@ -9,6 +9,8 @@
   margin: 0 auto;
   max-width: 1600px;
   gap: 2rem;
+  position: relative;
+  min-height: calc(100vh - 60px);
 }
 
 .plantsAllContainer h1 {
@@ -37,30 +39,35 @@
 /* Обертка для таблицы */
 .tableWrapper {
   width: 100%;
-  overflow-x: auto;
-  border-radius: 16px;
+  overflow: auto;
+  border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   background: #ffffff;
-  margin: 4rem auto;
-  max-height: 80vh;
+  margin: 2rem auto;
+  max-height: calc(100vh - 200px);
+  position: relative;
+  user-select: none;
 }
 
 /* Стили скроллбара в стиле macOS */
 .tableWrapper::-webkit-scrollbar {
-  height: 8px;
-}
-
-.tableWrapper::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-
-.tableWrapper::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.3);
+  width: 10px;
+  height: 10px;
 }
 
 .tableWrapper::-webkit-scrollbar-track {
-  background-color: transparent;
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 5px;
+  border: 2px solid #f1f1f1;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 /* Основная таблица */
@@ -69,7 +76,7 @@
   border-collapse: separate;
   border-spacing: 0;
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
 }
@@ -77,42 +84,142 @@
 /* Таблица в режиме редактирования */
 .editingTable {
   background-color: #fafbfc;
+  position: relative;
+}
+
+.editingTable::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+  animation: editingPulse 2s ease-in-out infinite;
+}
+
+@keyframes editingPulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }
 
 /* Ячейки и заголовки таблицы */
 .plantsTable th,
 .plantsTable td {
-  padding: 1rem 1.5rem;
+  padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  max-width: 250px;
-  font-size: 0.95rem;
-  color: #000000;
-  font-weight: 400;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  color: #2c3e50;
+  position: relative;
 }
 
 /* Заголовки таблицы */
 .plantsTable th {
-  background-color: #f5f5f7;
+  background-color: #f8f9fa;
   font-weight: 600;
-  font-size: 0.9rem;
-  color: #000000;
-  letter-spacing: 0.3px;
-  text-transform: none;
+  color: #2c3e50;
   position: sticky;
   top: 0;
   z-index: 2;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
 
-/* Ховер на строках таблицы */
-.plantsTable tr:hover {
-  background-color: rgba(0, 0, 0, 0.02);
+/* Строки таблицы */
+.plantsTable tr {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  position: relative;
 }
 
-.plantsTable tbody tr:last-child td {
-  border-bottom: none;
+/* Ховер для строк */
+.plantsTable tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.04);
+}
+
+/* Выделенная строка */
+.selectedRow {
+  background-color: rgba(13, 110, 253, 0.08) !important;
+}
+
+/* Индикатор выделения */
+.selectedRow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #0d6efd;
+  border-radius: 0;
+}
+
+/* Стили для ячеек в выделенной строке */
+.selectedRow td {
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+/* Кнопка удаления */
+.deleteButton {
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.deleteButton:hover {
+  background-color: #dc3545;
+  color: white;
+  opacity: 1;
+}
+
+/* Показываем кнопку удаления при наведении на строку */
+.plantsTable tr:hover .deleteButton {
+  opacity: 0.8;
+  transform: translateX(0);
+}
+
+/* Колонка с действиями */
+.actionColumn {
+  width: 120px;
+  text-align: center;
+  padding: 8px 16px;
+}
+
+/* Стили для множественного выделения */
+.selecting {
+  background-color: rgba(13, 110, 253, 0.04);
+}
+
+/* Кнопка удаления для множественного выделения */
+.deleteButton.multiDelete {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  opacity: 1;
+  transform: none;
 }
 
 /* Отдельные строки растений */
@@ -277,4 +384,424 @@ input[type="checkbox"] {
 input[type="checkbox"]:checked {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
+}
+
+.selectedRow {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.deleteButton {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background-color: #c82333;
+}
+
+.actionColumn {
+  width: 100px;
+  text-align: center;
+}
+
+/* Обновляем стили для строк таблицы */
+.plantsTable tr {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.plantsTable tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Улучшаем стиль выделенной строки */
+.selectedRow {
+  background-color: rgba(0, 123, 255, 0.1) !important;
+  border-left: 4px solid #0d6efd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.selectedRow td {
+  padding-left: calc(1.5rem - 4px) !important; /* Компенсируем border-left */
+}
+
+.selectedRow:hover {
+  background-color: rgba(0, 123, 255, 0.15) !important;
+}
+
+/* Улучшаем стиль кнопки удаления */
+.deleteButton {
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.deleteButton:hover {
+  background-color: #dc3545;
+  color: white;
+  opacity: 1;
+}
+
+/* Добавляем стиль для колонки с действиями */
+.actionColumn {
+  width: 120px;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+/* Анимация для появления кнопки удаления */
+.plantsTable tr td:last-child .deleteButton {
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.2s ease;
+}
+
+.plantsTable tr:hover td:last-child .deleteButton {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Добавляем стиль для ячеек в выделенной строке */
+.selectedRow td {
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+/* Стили для множественного выделения */
+.selectedRow {
+  background-color: rgba(13, 110, 253, 0.08) !important;
+  border-left: 4px solid #0d6efd;
+}
+
+/* Стиль для выделения при зажатом Shift */
+.selecting {
+  background-color: rgba(13, 110, 253, 0.04);
+}
+
+/* Обновляем стиль для кнопки удаления выбранных элементов */
+.deleteButton.multiDelete {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  opacity: 1;
+}
+
+/* Добавляем подсветку для строк при наведении */
+.tableRow:hover:not(.selectedRow) {
+  background-color: rgba(0, 123, 255, 0.03);
+}
+
+/* Стиль для отображения количества выбранных элементов */
+.selectionInfo {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  font-size: 0.9rem;
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.tableHintsVisible {
+  animation: slideUp 0.3s ease forwards;
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+  .plantsTable th,
+  .plantsTable td {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  .deleteButton {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.tableRow {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Стили для пустых ячеек */
+.plantsTable td:empty::before {
+  content: '—';
+  color: #95a5a6;
+}
+
+/* Улучшенные стили для четных/нечетных строк */
+.plantsTable tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Стили для ячеек при наведении */
+.plantsTable td:hover {
+  background-color: rgba(0, 123, 255, 0.02);
+}
+
+/* Стили для последней строки */
+.plantsTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Стили для первой и последней ячейки в строке */
+.plantsTable tr td:first-child {
+  padding-left: 20px;
+}
+
+.plantsTable tr td:last-child {
+  padding-right: 20px;
+}
+
+/* Стили для режима редактирования */
+.editingTable {
+  background-color: #fafbfc;
+  position: relative;
+}
+
+.editingTable::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+  animation: editingPulse 2s ease-in-out infinite;
+}
+
+@keyframes editingPulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Ячейки в режиме редактирования */
+.editingTable td {
+  position: relative;
+  cursor: text;
+  transition: all 0.2s ease;
+}
+
+.editingTable td:hover:not(.editing) {
+  background-color: rgba(13, 110, 253, 0.04);
+}
+
+.editingTable td:hover:not(.editing)::after {
+  content: '✎';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #0d6efd;
+  opacity: 0.5;
+  font-size: 14px;
+}
+
+/* Активная редактируемая ячейка */
+.editing {
+  padding: 0 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 2px #0d6efd, 0 4px 12px rgba(13, 110, 253, 0.15) !important;
+  border-radius: 4px;
+  position: relative;
+  z-index: 3;
+  animation: cellFocus 0.2s ease-out;
+}
+
+/* Анимация появления редактируемой ячейки */
+@keyframes cellFocus {
+  0% {
+    transform: scale(0.97);
+    box-shadow: 0 0 0 1px #0d6efd, 0 0 0 rgba(13, 110, 253, 0.1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 2px #0d6efd, 0 4px 12px rgba(13, 110, 253, 0.15);
+  }
+}
+
+/* Поле ввода в ячейке */
+.editInput {
+  width: 100%;
+  height: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  font-size: 0.9rem;
+  color: #2c3e50;
+  font-family: inherit;
+  outline: none;
+  border-radius: 4px;
+}
+
+/* Стили для ячеек в режиме редактирования */
+.editingTable td {
+  position: relative;
+  cursor: text;
+  transition: all 0.2s ease;
+}
+
+/* Эффект при наведении на редактируемую ячейку */
+.editingTable td:hover:not(.editing) {
+  background-color: rgba(13, 110, 253, 0.04);
+  position: relative;
+}
+
+/* Иконка редактирования при наведении */
+.editingTable td:hover:not(.editing)::after {
+  content: '✎';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #0d6efd;
+  opacity: 0;
+  font-size: 14px;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+/* Подсветка строки в режиме редактирования */
+.editingTable tr:hover td:not(.editing) {
+  background-color: rgba(13, 110, 253, 0.02);
+}
+
+/* Стили для активной ячейки при фокусе */
+.editing:focus-within {
+  box-shadow: 0 0 0 3px #0d6efd, 0 8px 20px rgba(13, 110, 253, 0.2) !important;
+}
+
+/* Стили для поля ввода при фокусе */
+.editInput:focus {
+  background-color: #ffffff;
+}
+
+/* Индикатор изменений */
+.modified {
+  position: relative;
+}
+
+.modified::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  background-color: #0d6efd;
+  border-radius: 50%;
+  animation: modifiedPulse 1.5s ease-in-out infinite;
+}
+
+/* Анимация для индикатора изменений */
+@keyframes modifiedPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+/* Стили для разных типов полей ввода */
+.editInput[type="date"] {
+  min-width: 150px;
+}
+
+.editInput[type="number"] {
+  text-align: right;
+  padding-right: 20px;
+}
+
+/* Улучшенный стиль для boolean значений */
+.booleanCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 8px;
+}
+
+.booleanToggle {
+  appearance: none;
+  width: 44px;
+  height: 24px;
+  background-color: #e9ecef;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.booleanToggle:checked {
+  background-color: #0d6efd;
+}
+
+.booleanToggle::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: white;
+  top: 1px;
+  left: 1px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.booleanToggle:checked::before {
+  transform: translateX(20px);
+}
+
+.booleanToggle:focus {
+  border-color: #0d6efd;
+  outline: none;
 }

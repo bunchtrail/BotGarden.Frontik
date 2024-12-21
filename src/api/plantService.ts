@@ -84,7 +84,7 @@ export const getPlantsBySector = async (sectorId: number): Promise<Plant[]> => {
     if (response.data.success && response.data.data) {
       return response.data.data.map((plant: Plant) => ({
         ...plant,
-        id: plant.plantId, // Если необходимо переименовать поле
+        id: plant.plantId, 
       }));
     } else {
       console.error('Ошибка при получении растений:', response.data.message);
@@ -110,6 +110,25 @@ export const updatePlants = async (plantUpdates: PlantUpdateDto[]): Promise<ApiR
     return {
       success: false,
       message: 'Произошла ошибка при обновлении растений.',
+      errors: error.response?.data || error.message,
+    };
+  }
+};
+
+/**
+ * Функция для удаления растения.
+ * @param plantId Идентификатор растения.
+ * @returns Ответ API.
+ */
+export const deletePlant = async (plantId: number): Promise<ApiResponse<any>> => {
+  try {
+    const response = await client.delete<ApiResponse<any>>(`/api/plant/delete/${plantId}`);
+    return response.data;
+  } catch (error: any) {
+    console.error('Ошибка при удалении растения:', error);
+    return {
+      success: false,
+      message: 'Произошла ошибка при удалении растения.',
       errors: error.response?.data || error.message,
     };
   }

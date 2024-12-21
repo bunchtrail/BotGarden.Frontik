@@ -86,47 +86,49 @@ const Navbar: React.FC<NavbarProps> = ({
         />
       )}
 
-      <NavItems
-        sectorId={sectorId}
-        pageType={pageType}
-        isMobileMenuOpen={isMobileMenuOpen}
-        isDropdownOpen={isNavItemsDropdownOpen}
-        setIsDropdownOpen={setIsNavItemsDropdownOpen}
-        dropdownRef={navItemsDropdownRef}
-        onAction={onAction}
-      />
-
-      {config.showSearch && (
-        <div className={styles.searchContainer}>
-          <SearchInput
-            searchQuery={searchQuery}
-            onSearchChange={(e) => {
-              const query = e.target.value;
-              setSearchQuery(query);
-              if (onSearch) {
-                onSearch(query, selectedColumns);
-              }
-            }}
-          />
-        </div>
-      )}
-
-      {config.showButtonGroup && (
-        <ButtonGroup
+      <div className={styles.navContent}>
+        <NavItems
+          sectorId={sectorId}
           pageType={pageType}
-          isEditing={isEditing}
-          toggleEditing={toggleEditing}
-          handleSave={handleSave}
-          isMobile={isMobile}
-          availableColumns={searchableColumns}
-          selectedColumns={selectedColumns}
-          setSelectedColumns={setSelectedColumns}
-          onSearch={onSearch}
-          searchQuery={searchQuery}
+          isMobileMenuOpen={isMobileMenuOpen}
+          isDropdownOpen={isNavItemsDropdownOpen}
+          setIsDropdownOpen={setIsNavItemsDropdownOpen}
+          dropdownRef={navItemsDropdownRef}
           onAction={onAction}
-          activeMode={activeMode}
         />
-      )}
+
+        {config.showSearch && (
+          <div className={styles.searchContainer}>
+            <SearchInput
+              searchQuery={searchQuery}
+              onSearchChange={(e) => {
+                const query = e.target.value;
+                setSearchQuery(query);
+                if (onSearch) {
+                  onSearch(query, selectedColumns);
+                }
+              }}
+            />
+          </div>
+        )}
+
+        {config.showButtonGroup && (
+          <ButtonGroup
+            pageType={pageType}
+            isEditing={isEditing}
+            toggleEditing={toggleEditing}
+            handleSave={handleSave}
+            isMobile={isMobile}
+            availableColumns={searchableColumns}
+            selectedColumns={selectedColumns}
+            setSelectedColumns={setSelectedColumns}
+            onSearch={onSearch}
+            searchQuery={searchQuery}
+            onAction={onAction}
+            activeMode={activeMode}
+          />
+        )}
+      </div>
 
       {isMobile && <MobileActions isOpen={isMobileMenuOpen} />}
     </div>
