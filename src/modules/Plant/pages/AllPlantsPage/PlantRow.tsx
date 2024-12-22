@@ -55,13 +55,11 @@ const PlantRow: React.FC<PlantRowProps> = ({
     longitude: 'number',
     dateOfPlanting: 'date',
     date: 'date',
-    herbariumPresence: 'checkbox', 
+    herbariumPresence: 'checkbox',
   };
 
   return (
-    <tr
-      className={`${styles.plantRow} ${isEditing ? styles.editingRow : ''}`}
-    >
+    <tr className={`${styles.plantRow} ${isEditing ? styles.editingRow : ''}`}>
       {columns.map((column) => {
         const field = column.field;
         const inputType = fieldInputTypes[field] || 'text';
@@ -81,13 +79,19 @@ const PlantRow: React.FC<PlantRowProps> = ({
                 <input
                   className={styles.editInput}
                   type={inputType}
-                  value={cellValue !== undefined && cellValue !== null ? String(cellValue) : ''}
+                  value={
+                    cellValue !== undefined && cellValue !== null
+                      ? String(cellValue)
+                      : ''
+                  }
                   onChange={(e) => handleChange(e, field)}
                   onBlur={() => onUpdate(editedPlant)}
                 />
               )
+            ) : cellValue !== undefined && cellValue !== null ? (
+              String(cellValue)
             ) : (
-              cellValue !== undefined && cellValue !== null ? String(cellValue) : ''
+              ''
             )}
           </td>
         );

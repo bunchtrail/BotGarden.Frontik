@@ -1,16 +1,16 @@
 /* src/modules/Map/pages/MapPage.module.css */
 .mapPageContainer {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 63px); /* Полная высота окна минус высота навбара */
-  margin-top: 63px; /* Отступ сверху равный высоте навбара */
 }
 
 .mapWrapper {
-  flex: 1; /* Заполняет оставшееся пространство */
+  flex-grow: 1;
   position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+}
+
+/* Добавляем правило для скрытия флага */
+:global(.leaflet-attribution-flag) {
+  display: none !important;
 }

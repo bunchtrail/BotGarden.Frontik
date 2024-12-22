@@ -3,6 +3,7 @@ import { Layer, Polygon } from 'leaflet';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Navbar from '../../../components/Navbar/Navbar';
 import useDebounce from '../../../hooks/useDebounce';
+// import { useOptimizedImage } from '../../../hooks/useOptimizedImage'; // Удалено
 import { SearchableColumn } from '../../../types/types';
 import { AreaPathModal } from '../components/AreaPathModal/AreaPathModal';
 import { MapView } from '../components/MapView/MapView';
@@ -15,27 +16,32 @@ import {
   fetchMarkers,
   MarkerData,
   updateAreaOnServer,
+  uploadMapImage,
 } from '../services/mapService';
 import { MapMode } from '../types/mapControls';
-import { uploadMapFile } from '../utils/mapUploader';
 import styles from './MapPage.module.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const MapPage: React.FC = () => {
   const [mapImageURL, setMapImageURL] = useState<string | null>(null);
+  // const optimizedMapImageURL = useOptimizedImage({
+  //   originalUrl: mapImageURL,
+  //   maxWidth: 2048,
+  //   maxHeight: 2048,
+  // });
   const [currentMode, setCurrentMode] = useState<MapMode>(MapMode.VIEW);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pendingArea, setPendingArea] = useState<Layer | null>(null);
   const [areas, setAreas] = useState<AreaData[]>([]);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
-  // Состояния для поиска и фильтрации
+  // States for search
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
 
-  // Определение столбцов, доступных для поиска с русскими метками
+  // Доступные для поиска колонки
   const searchableColumns: SearchableColumn[] = useMemo(() => {
     return [
       { field: 'plantId', label: 'ID растения' },
@@ -45,24 +51,22 @@ const MapPage: React.FC = () => {
     ];
   }, []);
 
-  // Фильтрация маркеров на основе поискового запроса
+  // Фильтрация маркеров
   const filteredMarkers = useMemo(() => {
     if (!debouncedSearchQuery.trim() || selectedColumns.length === 0) {
       return markers;
     }
-
     const lowerCaseQuery = debouncedSearchQuery.toLowerCase();
-
     return markers.filter((marker) => {
       return selectedColumns.some((col) => {
         const value = marker[col as keyof MarkerData];
-        if (value === null || value === undefined) return false;
+        if (value == null) return false;
         return String(value).toLowerCase().includes(lowerCaseQuery);
       });
     });
   }, [markers, debouncedSearchQuery, selectedColumns]);
 
-  // Загрузка областей и карты при монтировании
+  // Загрузка областей и карты
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -70,10 +74,12 @@ const MapPage: React.FC = () => {
         setAreas(fetchedAreas);
 
         const mapPath = await fetchMapImage();
-
         if (mapPath) {
-          const normalizedPath = mapPath.replace(/\\/g, '/');
-          const fullURL = `${API_BASE_URL}/${normalizedPath}`;
+          // Формируем прямой URL к изображению
+          const fullURL = `${API_BASE_URL}/${mapPath}`.replace(
+            /([^:])(\/\/+)/g,
+            '$1/'
+          );
           setMapImageURL(fullURL);
         } else {
           console.log('No map path received from server');
@@ -85,20 +91,20 @@ const MapPage: React.FC = () => {
     loadData();
   }, []);
 
+  // Загрузка маркеров
   useEffect(() => {
     const loadMarkers = async () => {
       try {
         const fetchedMarkers = await fetchMarkers();
-        console.log('Загруженные маркеры:', fetchedMarkers);
         setMarkers(fetchedMarkers);
       } catch (error) {
         console.error('Ошибка при загрузке маркеров:', error);
       }
     };
-
     loadMarkers();
   }, []);
 
+  // Обработка действий с Navbar
   const handleAction = (action: string) => {
     switch (action) {
       case 'upload-image':
@@ -131,31 +137,37 @@ const MapPage: React.FC = () => {
     }
   };
 
-  // Обработчик поиска
+  // Поиск
   const handleSearch = (query: string, columns: string[]) => {
     setSearchQuery(query);
     setSelectedColumns(columns);
   };
 
+  // Загрузка нового файла карты
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      const path = await uploadMapFile(file);
+      const path = await uploadMapImage(file);
       if (path) {
         const normalizedPath = path.replace(/\\/g, '/').replace(/"/g, '');
-        const fullURL = `${API_BASE_URL}/${normalizedPath}`;
+        const fullURL = `${API_BASE_URL}/${normalizedPath}`.replace(
+          /([^:])(\/\/+)/g,
+          '$1/'
+        );
         setMapImageURL(fullURL);
       }
       event.target.value = '';
     }
   };
 
+  // Новая область нарисована
   const handleAreaCreated = (area: Layer) => {
     setPendingArea(area);
   };
 
+  // Сохранение имени области
   const handlePathSave = async (path: string) => {
     if (pendingArea && pendingArea instanceof Polygon) {
       try {
@@ -163,14 +175,12 @@ const MapPage: React.FC = () => {
         const coordinates = latLngs.map(
           (ll) => [ll.lat, ll.lng] as [number, number]
         );
-
         const areaData: AreaData = {
           id: 0,
           positions: coordinates,
           title: path,
           description: '',
         };
-
         const result = await addAreaToServer(areaData);
         if (result) {
           setAreas((prev) => [
@@ -188,6 +198,7 @@ const MapPage: React.FC = () => {
     }
   };
 
+  // Отмена сохранения области
   const handlePathCancel = () => {
     if (pendingArea) {
       const map = (pendingArea as any)._map;
@@ -198,6 +209,7 @@ const MapPage: React.FC = () => {
     setPendingArea(null);
   };
 
+  // Редактирование области
   const handleAreaEdited = async (
     areaId: number,
     newPositions: [number, number][]
@@ -220,6 +232,7 @@ const MapPage: React.FC = () => {
     }
   };
 
+  // Удаление области
   const handleAreaDeleted = async (areaId: number) => {
     const success = await deleteAreaOnServer(areaId);
     if (success) {
@@ -227,6 +240,7 @@ const MapPage: React.FC = () => {
     }
   };
 
+  // Обновление маркеров (после добавления/удаления)
   const handleMarkersUpdated = (updatedMarkers: MarkerData[]) => {
     setMarkers(updatedMarkers);
   };
@@ -240,7 +254,6 @@ const MapPage: React.FC = () => {
         onSearch={handleSearch}
         searchableColumns={searchableColumns}
       />
-
       <div className={styles.mapPageContainer}>
         <input
           type='file'
@@ -251,7 +264,8 @@ const MapPage: React.FC = () => {
         />
         <div className={styles.mapWrapper}>
           <MapView
-            mapImageURL={mapImageURL}
+            mapImageURL={mapImageURL} // Используем прямой URL
+            // mapImageURL={optimizedMapImageURL} // Удалено
             mode={currentMode}
             areas={areas}
             markers={filteredMarkers}

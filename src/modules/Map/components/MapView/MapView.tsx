@@ -139,15 +139,15 @@ export const MapView: React.FC<MapViewProps> = ({
     if (!pendingPlant) return;
 
     const plantData: AddPlantRequest = {
-      Species: data.species,
-      Variety: data.variety,
-      FamilyId: data.familyId,
-      BiometricId: data.biometricId,
-      SectorId: data.sectorId,
-      GenusId: data.genusId,
-      Latitude: pendingPlant.position[0],
-      Longitude: pendingPlant.position[1],
-      Note: data.note,
+      species: data.species,
+      variety: data.variety,
+      familyId: data.familyId,
+      biometricId: data.biometricId,
+      sectorId: data.sectorId,
+      genusId: data.genusId,
+      latitude: pendingPlant.position[0],
+      longitude: pendingPlant.position[1],
+      note: data.note,
     };
 
     const result = await addPlantToMap(plantData);
@@ -178,7 +178,7 @@ export const MapView: React.FC<MapViewProps> = ({
       />
 
       <MapMarkers
-        markers={markers.filter((marker) => marker.title !== 'Украинский флаг')}
+        markers={markers}
         markersLayerRef={markersLayerRef}
         mapImageURL={mapImageURL}
       />

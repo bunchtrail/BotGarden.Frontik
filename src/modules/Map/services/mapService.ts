@@ -3,12 +3,7 @@
 import client from '../../../api/client';
 
 export interface MarkerData {
-  plantId: number;
-  species: string;
-  variety: string;
-  latitude: number;
-  longitude: number;
-  note: string;
+  id: number;
   position: [number, number];
   title: string;
   description: string;
@@ -52,24 +47,27 @@ export interface PlantIdsDto {
 }
 
 export interface AddPlantRequest {
-  Species: string;
-  Variety: string;
-  Latitude: number;
-  Longitude: number;
-  Note: string;
+  familyId: number;
+  biometricId: number;
+  sectorId: number;
+  genusId: number;
+  species: string;
+  variety: string;
+  note: string;
+  latitude: number;
+  longitude: number;
 }
 
 // Fetch all plants (markers)
 export async function fetchMarkers(): Promise<MarkerData[]> {
   try {
     const response = await client.get<PlantDto[]>('/api/map/GetAll');
-    console.log('Ответ сервера:', response.data);
     const plants = response.data;
     return plants.map((p) => ({
-      ...p,
+      id: p.plantId,
       position: [p.latitude, p.longitude] as [number, number],
       title: p.species || 'Неизвестный вид',
-      description: [p.variety, p.note].filter(Boolean).join(' - ') || 'Нет описания'
+      description: [p.variety, p.note].filter(Boolean).join(' - ') || 'Нет описания',
     }));
   } catch (error) {
     console.error('Ошибка при загрузке растений:', error);
@@ -86,7 +84,7 @@ export async function fetchAreas(): Promise<AreaData[]> {
       id: a.locationId,
       positions: parseWKTPolygon(a.geometry),
       title: a.locationPath,
-      description: '', // Добавьте описание, если доступно
+      description: '', // Дополните при необходимости
     }));
   } catch (error) {
     return [];
@@ -157,14 +155,14 @@ export async function deletePlantsInArea(plantIds: number[]): Promise<boolean> {
   }
 }
 
-// Helper: Convert coordinates to WKT polygon
+// Convert coordinates to WKT polygon
 function coordsToWKT(coords: [number, number][]): string {
   const coordStrings = coords.map((c) => `${c[1]} ${c[0]}`).join(', ');
-  // Ensure polygon is closed by repeating the first coordinate at the end
+  // Закрываем полигон
   return `POLYGON((${coordStrings}, ${coords[0][1]} ${coords[0][0]}))`;
 }
 
-// Export the parseWKTPolygon helper
+// Parse WKT Polygon
 export function parseWKTPolygon(wkt: string): [number, number][] {
   const match = wkt.match(/\(\(([^)]+)\)\)/);
   if (!match) return [];
@@ -173,9 +171,9 @@ export function parseWKTPolygon(wkt: string): [number, number][] {
     const [lon, lat] = pair.trim().split(' ').map(Number);
     return [lat, lon] as [number, number];
   });
-  // Remove last coordinate if it's same as first
+  // Убираем последний повтор, если совпадает с первым
   if (
-    coords.length > 0 &&
+    coords.length > 1 &&
     coords[0][0] === coords[coords.length - 1][0] &&
     coords[0][1] === coords[coords.length - 1][1]
   ) {
@@ -188,26 +186,32 @@ export function parseWKTPolygon(wkt: string): [number, number][] {
 export async function fetchMapImage(): Promise<string | null> {
   try {
     const response = await client.get<{ mapImagePath: string }>('/api/map/GetMapImage');
-    if (response.data && response.data.mapImagePath) {
-      return response.data.mapImagePath.replace(/"/g, '');
+    if (response.data?.mapImagePath) {
+      // Заменяем обратные слэши на прямые
+      const normalizedPath = response.data.mapImagePath.replace(/\\/g, '/');
+      // Формируем прямой URL к изображению
+      return `${normalizedPath}`;
     }
     return null;
   } catch (error) {
+    console.error('Error fetching map image:', error);
     return null;
   }
 }
 
-// Загрузить изображение карты на сервер
+// Загрузка файла карты
 export async function uploadMapImage(file: File): Promise<string | null> {
   try {
     const formData = new FormData();
     formData.append('file', file);
-    
-    const response = await client.post<{ mapImagePath: string }>('/api/map/UploadMapImage', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    
-    if (response.data && response.data.mapImagePath) {
+
+    const response = await client.post<{ mapImagePath: string }>(
+      '/api/map/UploadMapImage',
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+
+    if (response.data?.mapImagePath) {
       return response.data.mapImagePath.replace(/"/g, '');
     }
     return null;
@@ -225,3 +229,5 @@ export async function addPlantToMap(plantData: AddPlantRequest): Promise<PlantDt
     return null;
   }
 }
+
+// Удалена функция fetchOptimizedMapImage, так как оптимизация не требуется
