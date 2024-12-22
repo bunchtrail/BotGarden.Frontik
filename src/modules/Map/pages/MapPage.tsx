@@ -1,7 +1,9 @@
 // src/modules/Map/pages/MapPage.tsx
 import { Layer, Polygon } from 'leaflet';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Navbar from '../../../components/Navbar/Navbar';
+import useDebounce from '../../../hooks/useDebounce';
+import { SearchableColumn } from '../../../types/types';
 import { AreaPathModal } from '../components/AreaPathModal/AreaPathModal';
 import { MapView } from '../components/MapView/MapView';
 import {
@@ -27,6 +29,38 @@ const MapPage: React.FC = () => {
   const [pendingArea, setPendingArea] = useState<Layer | null>(null);
   const [areas, setAreas] = useState<AreaData[]>([]);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
+
+  // Состояния для поиска и фильтрации
+  const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
+
+  // Определение столбцов, доступных для поиска с русскими метками
+  const searchableColumns: SearchableColumn[] = useMemo(() => {
+    return [
+      { field: 'plantId', label: 'ID растения' },
+      { field: 'species', label: 'Вид' },
+      { field: 'variety', label: 'Разновидность' },
+      { field: 'note', label: 'Примечание' },
+    ];
+  }, []);
+
+  // Фильтрация маркеров на основе поискового запроса
+  const filteredMarkers = useMemo(() => {
+    if (!debouncedSearchQuery.trim() || selectedColumns.length === 0) {
+      return markers;
+    }
+
+    const lowerCaseQuery = debouncedSearchQuery.toLowerCase();
+
+    return markers.filter((marker) => {
+      return selectedColumns.some((col) => {
+        const value = marker[col as keyof MarkerData];
+        if (value === null || value === undefined) return false;
+        return String(value).toLowerCase().includes(lowerCaseQuery);
+      });
+    });
+  }, [markers, debouncedSearchQuery, selectedColumns]);
 
   // Загрузка областей и карты при монтировании
   useEffect(() => {
@@ -97,6 +131,12 @@ const MapPage: React.FC = () => {
     }
   };
 
+  // Обработчик поиска
+  const handleSearch = (query: string, columns: string[]) => {
+    setSearchQuery(query);
+    setSelectedColumns(columns);
+  };
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -150,7 +190,6 @@ const MapPage: React.FC = () => {
 
   const handlePathCancel = () => {
     if (pendingArea) {
-      // Удаляем нарисованную область
       const map = (pendingArea as any)._map;
       if (map) {
         map.removeLayer(pendingArea);
@@ -194,7 +233,13 @@ const MapPage: React.FC = () => {
 
   return (
     <>
-      <Navbar pageType='map' onAction={handleAction} activeMode={currentMode} />
+      <Navbar
+        pageType='map'
+        onAction={handleAction}
+        activeMode={currentMode}
+        onSearch={handleSearch}
+        searchableColumns={searchableColumns}
+      />
 
       <div className={styles.mapPageContainer}>
         <input
@@ -209,7 +254,7 @@ const MapPage: React.FC = () => {
             mapImageURL={mapImageURL}
             mode={currentMode}
             areas={areas}
-            markers={markers}
+            markers={filteredMarkers}
             onAreaCreated={handleAreaCreated}
             onAreaEdited={handleAreaEdited}
             onAreaDeleted={handleAreaDeleted}

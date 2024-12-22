@@ -3,7 +3,12 @@
 import client from '../../../api/client';
 
 export interface MarkerData {
-  id: number;
+  plantId: number;
+  species: string;
+  variety: string;
+  latitude: number;
+  longitude: number;
+  note: string;
   position: [number, number];
   title: string;
   description: string;
@@ -49,10 +54,6 @@ export interface PlantIdsDto {
 export interface AddPlantRequest {
   Species: string;
   Variety: string;
-  FamilyId: number;
-  BiometricId: number;
-  SectorId: number;
-  GenusId: number;
   Latitude: number;
   Longitude: number;
   Note: string;
@@ -64,16 +65,12 @@ export async function fetchMarkers(): Promise<MarkerData[]> {
     const response = await client.get<PlantDto[]>('/api/map/GetAll');
     console.log('Ответ сервера:', response.data);
     const plants = response.data;
-    return plants.map((p) => {
-      const marker = {
-        id: p.plantId,
-        position: [p.latitude, p.longitude] as [number, number],
-        title: p.species,
-        description: p.variety || p.note || '',
-      };
-      console.log('Преобразованный маркер с координатами:', marker.position);
-      return marker;
-    });
+    return plants.map((p) => ({
+      ...p,
+      position: [p.latitude, p.longitude] as [number, number],
+      title: p.species || 'Неизвестный вид',
+      description: [p.variety, p.note].filter(Boolean).join(' - ') || 'Нет описания'
+    }));
   } catch (error) {
     console.error('Ошибка при загрузке растений:', error);
     return [];

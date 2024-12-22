@@ -86,9 +86,9 @@ export const pageConfig: Record<string, PageConfig> = {
     dynamicButtons: [],
   },
   map: {
-    showSearch: false,
+    showSearch: true,
     showButtonGroup: true,
-    showColumnsDropdown: false,
+    showColumnsDropdown: true,
     dropdownBasePath: '/map',
     dropdownItems: [
       { pathSuffix: '/upload-image', iconClass: 'fas fa-image', label: 'Загрузить изображение' },

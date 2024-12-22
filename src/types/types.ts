@@ -3,7 +3,13 @@ export interface Sector {
     id: number;
     name: string;
   }
-  export interface ApiResponse<T> {
+
+export interface SearchableColumn {
+  field: string;
+  label: string;
+}
+
+export interface ApiResponse<T> {
     success: boolean;
     message: string;
     data?: T;

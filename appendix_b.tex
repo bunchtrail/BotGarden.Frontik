@@ -1,0 +1,65 @@
+\appendix
+\section*{Приложение Б\\(обязательное)\\Исходный код основных компонентов карты}
+
+\subsection*{Б.1 Основной компонент карты (MapPage.tsx)}
+\begin{lstlisting}[language=TypeScript,caption=MapPage.tsx]
+// Полный код из src/modules/Map/pages/MapPage.tsx
+import { Layer, Polygon } from 'leaflet';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+// ... (весь код файла)
+export default MapPage;
+\end{lstlisting}
+
+\subsection*{Б.2 Компонент отображения карты (MapView.tsx)}
+\begin{lstlisting}[language=TypeScript,caption=MapView.tsx]
+// Код из src/modules/Map/components/MapView/MapView.tsx
+// ... (весь код файла)
+\end{lstlisting}
+
+\subsection*{Б.3 Модальное окно области (AreaPathModal.tsx)}
+\begin{lstlisting}[language=TypeScript,caption=AreaPathModal.tsx]
+// Код из src/modules/Map/components/AreaPathModal/AreaPathModal.tsx
+// ... (весь код файла)
+\end{lstlisting}
+
+\subsection*{Б.4 Сервис работы с картой (mapService.ts)}
+\begin{lstlisting}[language=TypeScript,caption=mapService.ts]
+// Код из src/modules/Map/services/mapService.ts
+// ... (весь код файла)
+\end{lstlisting}
+
+\subsection*{Б.5 Определение режимов работы карты (mapControls.ts)}
+\begin{lstlisting}[language=TypeScript,caption=mapControls.ts]
+// Код из src/modules/Map/config/mapControls.ts
+// ... (весь код файла)
+\end{lstlisting}
+
+% Преамбула документа должна содержать следующие настройки для корректного отображения листингов:
+
+% \usepackage{listings}
+% \usepackage{xcolor}
+
+% \lstset{
+%     basicstyle=\small\ttfamily,
+%     numbers=left,
+%     numberstyle=\tiny,
+%     stepnumber=1,
+%     numbersep=5pt,
+%     backgroundcolor=\color{white},
+%     showspaces=false,
+%     showstringspaces=false,
+%     showtabs=false,
+%     frame=single,
+%     tabsize=2,
+%     captionpos=b,
+%     breaklines=true,
+%     breakatwhitespace=false,
+%     escapeinside={\%*}{*)},
+%     morekeywords={import, export, default, from, class, extends, interface, type, const, let, var},
+%     keywordstyle=\color{blue},
+%     commentstyle=\color{green!60!black},
+%     stringstyle=\color{orange},
+%     keepspaces=true
+% }
+
+\end{document} 
