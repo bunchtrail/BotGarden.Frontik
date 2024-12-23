@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: build
+    container_name: botgarden-front
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev -- --host
+
+  # Добавьте этот сервис, если у вас есть production-сборка
+  app-prod:
+    build: .
+    container_name: botgarden-front-prod
+    ports:
+      - "80:80"
+    # Раскомментируйте, если нужно указать переменные окружения
+    # environment:
+    #   - VITE_API_URL=http://api.example.com 
