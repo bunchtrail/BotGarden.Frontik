@@ -30,6 +30,44 @@ export const savePlant = async (plantData: FormData): Promise<ApiResponse<Plant>
 };
 
 /**
+ * Функция для создания нового семейства растений.
+ * @param familyName Название семейства.
+ * @returns Ответ API с созданным семейством.
+ */
+export const createFamily = async (familyName: string): Promise<ApiResponse<FamilyType>> => {
+  try {
+    const response = await client.post<ApiResponse<FamilyType>>('/api/plant/create_family', { familyName });
+    return response.data;
+  } catch (error: any) {
+    console.error('Ошибка при создании семейства:', error);
+    return {
+      success: false,
+      message: 'Произошла ошибка при создании семейства.',
+      errors: error.response?.data || error.message,
+    };
+  }
+};
+
+/**
+ * Функция для создания нового рода растений.
+ * @param genusName Название рода.
+ * @returns Ответ API с созданным родом.
+ */
+export const createGenus = async (genusName: string): Promise<ApiResponse<GenusType>> => {
+  try {
+    const response = await client.post<ApiResponse<GenusType>>('/api/plant/create_genus', { genusName });
+    return response.data;
+  } catch (error: any) {
+    console.error('Ошибка при создании рода:', error);
+    return {
+      success: false,
+      message: 'Произошла ошибка при создании рода.',
+      errors: error.response?.data || error.message,
+    };
+  }
+};
+
+/**
  * Функция для получения всех семейств растений.
  * @returns Массив объектов с id и name семейств.
  */
