@@ -20,106 +20,107 @@ export interface ApiResponse<T> {
 export interface Plant {
   id: number | null | undefined;
   plantId: number;
-  familyId?: number;
-  biometricId?: number;
-  sectorId?: number;
-  genusId?: number;
-  inventorNumber?: string;
-  species?: string;
-  variety?: string;
-  form?: string;
-  determined?: string;
-  yearOfObs?: string;
-  phenophaseDate?: string;
-  year?: string;
-  measurementType?: string;
-  value?: string;
-  dateOfPlanting?: string;
-  protectionStatus?: string;
-  filledOut?: string;
-  herbariumDuplicate?: string;
-  synonyms?: string;
-  plantOrigin?: string;
-  naturalHabitat?: string;
-  ecologyBiology?: string;
-  economicUse?: string;
-  latitude?: string;
-  longitude?: string;
-  originator?: string;
-  date?: string;
-  country?: string;
-  imagePath?: string;
+  familyId?: number | null;
+  biometricId?: number | null;
+  sectorId?: number | null;
+  genusId?: number | null;
+  inventorNumber?: string | null;
+  species?: string | null;
+  variety?: string | null;
+  form?: string | null;
+  determined?: string | null;
+  yearOfObs?: number | null;
+  phenophaseDate?: string | null;
+  year?: number | null;
+  measurementType?: string | null;
+  value?: string | null;
+  dateOfPlanting?: string | null;
+  protectionStatus?: string | null;
+  filledOut?: string | null;
+  herbariumDuplicate?: string | null;
+  synonyms?: string | null;
+  plantOrigin?: string | null;
+  naturalHabitat?: string | null;
+  ecologyBiology?: string | null;
+  economicUse?: string | null;
+  latitude?: string | null;
+  longitude?: string | null;
+  originator?: string | null;
+  date?: string | null;
+  country?: string | null;
+  imagePath?: string | null;
   herbariumPresence?: boolean;
-  note?: string;
+  note?: string | null;
 }
 
   
   export interface FormData {
-    familyId: number;
-    biometricId: number;
-    sectorId: number;
-    genusId: number;
-    inventorNumber: string;
-    species: string;
-    variety: string;
-    form: string;
-    determined: string;
-    yearOfObs: string;
-    phenophaseDate: string;
-    year: string;
-    measurementType: string;
-    value: string;
-    dateOfPlanting: string;
-    protectionStatus: string;
-    filledOut: string;
-    herbariumDuplicate: string;
-    synonyms: string;
-    plantOrigin: string;
-    naturalHabitat: string;
-    ecologyBiology: string;
-    economicUse: string;
-    latitude: string;
-    longitude: string;
-    originator: string;
-    date: string;
-    country: string;
-    imagePath: string;
+    plantId?: number;
+    familyId: number | null;
+    biometricId: number | null;
+    sectorId: number | null;
+    genusId: number | null;
+    inventorNumber: string | null;
+    species: string | null;
+    variety: string | null;
+    form: string | null;
+    determined: string | null;
+    yearOfObs: number | null;
+    phenophaseDate: string | null;
+    year: number | null;
+    measurementType: string | null;
+    value: string | null;
+    dateOfPlanting: string | null;
+    protectionStatus: string | null;
+    filledOut: string | null;
+    herbariumDuplicate: string | null;
+    synonyms: string | null;
+    plantOrigin: string | null;
+    naturalHabitat: string | null;
+    ecologyBiology: string | null;
+    economicUse: string | null;
+    latitude: string | null;
+    longitude: string | null;
+    originator: string | null;
+    date: string | null;
+    country: string | null;
+    imagePath: string | null;
     herbariumPresence: boolean;
-    note: string;
+    note: string | null;
   }
 
 export const initialFormData: FormData = {
-  familyId: 0,
-  biometricId: 0,
-  sectorId: 0,
-  genusId: 0,
-  inventorNumber: '',
-  species: '',
-  variety: '',
-  form: '',
-  determined: '',
-  yearOfObs: '',
-  phenophaseDate: '',
-  year: '',
-  measurementType: '',
-  value: '',
-  dateOfPlanting: '',
-  protectionStatus: '',
-  filledOut: '',
-  herbariumDuplicate: '',
-  synonyms: '',
-  plantOrigin: '',
-  naturalHabitat: '',
-  ecologyBiology: '',
-  economicUse: '',
-  latitude: '',
-  longitude: '',
-  originator: '',
-  date: '',
-  country: '',
-  imagePath: '',
+  familyId: null,
+  biometricId: null,
+  sectorId: null,
+  genusId: null,
+  inventorNumber: null,
+  species: null,
+  variety: null,
+  form: null,
+  determined: null,
+  yearOfObs: null,
+  phenophaseDate: null,
+  year: null,
+  measurementType: null,
+  value: null,
+  dateOfPlanting: null,
+  protectionStatus: null,
+  filledOut: null,
+  herbariumDuplicate: null,
+  synonyms: null,
+  plantOrigin: null,
+  naturalHabitat: null,
+  ecologyBiology: null,
+  economicUse: null,
+  latitude: null,
+  longitude: null,
+  originator: null,
+  date: null,
+  country: null,
+  imagePath: null,
   herbariumPresence: false,
-  note: '',
+  note: null
 };
 
 

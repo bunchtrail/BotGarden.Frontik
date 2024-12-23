@@ -11,16 +11,50 @@ export const savePlant = async (plantData: FormData): Promise<ApiResponse<Plant>
   try {
     // Преобразуем данные перед отправкой
     const preparedData = {
-      ...plantData,
-      // Убедимся, что координаты отправляются как строки
-      latitude: plantData.latitude?.toString(),
-      longitude: plantData.longitude?.toString()
+      plantId: plantData.plantId || 0,
+      familyId: plantData.familyId,
+      biometricId: plantData.biometricId,
+      sectorId: plantData.sectorId,
+      genusId: plantData.genusId,
+      inventorNumber: plantData.inventorNumber || '',
+      species: plantData.species || '',
+      variety: plantData.variety || '',
+      form: plantData.form || '',
+      determined: plantData.determined || '',
+      yearOfObs: plantData.yearOfObs || '',
+      phenophaseDate: plantData.phenophaseDate || '',
+      year: plantData.year || '',
+      measurementType: plantData.measurementType || '',
+      value: plantData.value || '',
+      dateOfPlanting: plantData.dateOfPlanting || '',
+      protectionStatus: plantData.protectionStatus || '',
+      filledOut: plantData.filledOut || '',
+      herbariumDuplicate: plantData.herbariumDuplicate || '',
+      synonyms: plantData.synonyms || '',
+      plantOrigin: plantData.plantOrigin || '',
+      naturalHabitat: plantData.naturalHabitat || '',
+      ecologyBiology: plantData.ecologyBiology || '',
+      economicUse: plantData.economicUse || '',
+      latitude: plantData.latitude,
+      longitude: plantData.longitude,
+      originator: plantData.originator || '',
+      date: plantData.date || '',
+      country: plantData.country || '',
+      imagePath: plantData.imagePath || '',
+      herbariumPresence: plantData.herbariumPresence,
+      note: plantData.note || '',
+      rowVersion: plantData.rowVersion || null
     };
 
+    console.log('Подготовленные данные для отправки:', preparedData);
     const response = await client.post<ApiResponse<Plant>>('/api/plant/add', preparedData);
+    console.log('Ответ сервера:', response.data);
     return response.data;
   } catch (error: any) {
     console.error('Ошибка при сохранении растения:', error);
+    if (error.response?.data?.errors) {
+      console.error('Детали ошибки валидации:', error.response.data.errors);
+    }
     return {
       success: false,
       message: 'Произошла ошибка при сохранении растения.',

@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './CollapsibleSection.module.css';
 
 interface CollapsibleSectionProps {
-  title: string;
+  title: React.ReactNode;
   isOpen: boolean;
   onToggle: () => void;
   children: React.ReactNode;

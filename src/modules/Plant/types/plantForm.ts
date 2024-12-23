@@ -1,6 +1,33 @@
 export interface PlantFormData {
-  sectorId: number;
+  familyId: number | null;
+  biometricId: number | null;
+  sectorId: number | null;
+  genusId: number | null;
+  inventorNumber: string;
+  species: string;
+  variety: string;
+  form: string;
+  determined: string;
+  yearOfObs: string;
+  phenophaseDate: string;
+  year: string;
+  measurementType: string;
+  value: string;
+  dateOfPlanting: string;
+  protectionStatus: string;
+  filledOut: string;
+  herbariumDuplicate: string;
+  synonyms: string;
+  plantOrigin: string;
+  naturalHabitat: string;
+  ecologyBiology: string;
+  economicUse: string;
   latitude: number | null;
   longitude: number | null;
-  // другие поля формы...
+  originator: string;
+  date: string;
+  country: string;
+  imagePath: string;
+  herbariumPresence: boolean;
+  note: string;
 } 

@@ -1,95 +1,116 @@
-import React, { useEffect, useState } from 'react';
-import { fetchFamilies, fetchGenera } from '../../../api/plantService';
+import React from 'react';
+import { FormData } from '../../../types/types';
 import styles from '../pages/AddPlantPage/AddPlantPage.module.css';
 
-interface OptionType {
-  id: number;
-  name: string;
-}
-
 interface IdentificationSectionProps {
-  formData: any;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  formData: FormData;
+  handleChange: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => void;
 }
 
 const IdentificationSection: React.FC<IdentificationSectionProps> = ({
   formData,
   handleChange,
 }) => {
-  const [families, setFamilies] = useState<OptionType[]>([]);
-  const [genera, setGenera] = useState<OptionType[]>([]);
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const familiesData = await fetchFamilies();
-        setFamilies(familiesData);
-        
-        const generaData = await fetchGenera();
-        setGenera(generaData);
-      } catch (error) {
-        console.error('Ошибка при загрузке данных:', error);
-      }
-    };
-
-    loadData();
-  }, []);
-
   return (
-    <div className={styles.formRow}>
-      <div className={styles.inputContainer}>
-        <label className={styles.inputLabel} htmlFor="inventorNumber">
-          Инвентарный Номер
-        </label>
-        <input
-          className={styles.inputField}
-          id="inventorNumber"
-          value={formData.inventorNumber || ''}
-          onChange={handleChange}
-          placeholder="Введите инвентарный номер"
-        />
+    <div>
+      {/* Первая строка с тремя инпутами */}
+      <div className={styles.inputRow}>
+        <div className={styles.inputGroup}>
+          <label className={styles.label} htmlFor='inventorNumber'>
+            Инвентарный номер
+          </label>
+          <input
+            className={styles.input}
+            type='text'
+            id='inventorNumber'
+            value={formData.inventorNumber || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.inputGroup}>
+          <label className={styles.label} htmlFor='species'>
+            Вид
+          </label>
+          <input
+            className={styles.input}
+            type='text'
+            id='species'
+            value={formData.species || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.inputGroup}>
+          <label className={styles.label} htmlFor='variety'>
+            Разновидность
+          </label>
+          <input
+            className={styles.input}
+            type='text'
+            id='variety'
+            value={formData.variety || ''}
+            onChange={handleChange}
+          />
+        </div>
       </div>
 
-      <div className={styles.inputContainer}>
-        <label className={styles.inputLabel} htmlFor="familyId">
-          Семейство
-        </label>
-        <select
-          className={styles.inputField}
-          id="familyId"
-          value={formData.familyId || ''}
-          onChange={handleChange}
-        >
-          <option value="" disabled>
-            Выберите семейство
-          </option>
-          {families.map((family) => (
-            <option key={family.id} value={family.id}>
-              {family.name}
-            </option>
-          ))}
-        </select>
+      {/* Вторая строка с тремя инпутами */}
+      <div className={styles.inputRow}>
+        <div className={styles.inputGroup}>
+          <label className={styles.label} htmlFor='form'>
+            Форма
+          </label>
+          <input
+            className={styles.input}
+            type='text'
+            id='form'
+            value={formData.form || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.inputGroup}>
+          <label className={styles.label} htmlFor='determined'>
+            Определил
+          </label>
+          <input
+            className={styles.input}
+            type='text'
+            id='determined'
+            value={formData.determined || ''}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.inputGroup}>
+          <label className={styles.label} htmlFor='date'>
+            Дата определения
+          </label>
+          <input
+            className={styles.input}
+            type='date'
+            id='date'
+            value={formData.date || ''}
+            onChange={handleChange}
+          />
+        </div>
       </div>
 
-      <div className={styles.inputContainer}>
-        <label className={styles.inputLabel} htmlFor="genusId">
-          Род
-        </label>
-        <select
-          className={styles.inputField}
-          id="genusId"
-          value={formData.genusId || ''}
-          onChange={handleChange}
-        >
-          <option value="" disabled>
-            Выберите род
-          </option>
-          {genera.map((genus) => (
-            <option key={genus.id} value={genus.id}>
-              {genus.name}
-            </option>
-          ))}
-        </select>
+      {/* Третья строка с текстовой областью на всю ширину */}
+      <div className={styles.inputRow}>
+        <div className={styles.inputGroup} style={{ gridColumn: '1 / -1' }}>
+          <label className={styles.label} htmlFor='synonyms'>
+            Синонимы
+          </label>
+          <textarea
+            className={styles.input}
+            id='synonyms'
+            value={formData.synonyms || ''}
+            onChange={handleChange}
+            rows={3}
+          />
+        </div>
       </div>
     </div>
   );

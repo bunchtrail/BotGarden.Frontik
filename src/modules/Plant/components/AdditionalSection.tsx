@@ -1,9 +1,14 @@
 import React from 'react';
+import { FormData } from '../../../types/types';
 import styles from '../pages/AddPlantPage/AddPlantPage.module.css';
 
 interface AdditionalSectionProps {
-  formData: any;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  formData: FormData;
+  handleChange: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => void;
 }
 
 const AdditionalSection: React.FC<AdditionalSectionProps> = ({
@@ -11,18 +16,49 @@ const AdditionalSection: React.FC<AdditionalSectionProps> = ({
   handleChange,
 }) => {
   return (
-    <div className={styles.formRow}>
-      <div className={styles.inputContainer}>
-        <label className={styles.inputLabel} htmlFor="notes">
-          Примечания
-        </label>
-        <textarea
-          className={styles.inputField}
-          id="notes"
-          value={formData.notes || ''}
-          onChange={handleChange}
-          placeholder="Дополнительные примечания"
-        />
+    <div>
+      <div className={styles.inputRow}>
+        <div className={styles.inputGroup} style={{ gridColumn: 'span 2' }}>
+          <label className={styles.label} htmlFor='note'>
+            Примечания
+          </label>
+          <textarea
+            className={styles.input}
+            id='note'
+            value={formData.note || ''}
+            onChange={handleChange}
+            rows={4}
+          />
+        </div>
+        <div className={styles.inputGroup}>
+          <label className={styles.label} htmlFor='filledOut'>
+            Заполнил
+          </label>
+          <input
+            className={styles.input}
+            type='text'
+            id='filledOut'
+            value={formData.filledOut || ''}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+
+      <div className={styles.inputRow}>
+        <div className={styles.inputGroup}>
+          <label className={styles.label} htmlFor='imagePath'>
+            Изображение растения
+          </label>
+          <div className={styles.fileInputWrapper}>
+            <input
+              className={styles.input}
+              type='file'
+              id='imagePath'
+              onChange={handleChange}
+              accept='image/*'
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
