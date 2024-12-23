@@ -1,10 +1,10 @@
 // src/api/client.ts
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from '../services/tokenService';
-import { API_URL } from '../utils/data';
 import { refreshToken as refreshTokenFunc } from './authService'; // Переименованный импорт
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://localhost:7076';
+const API_BASE_URL = process.env.VITE_API_URL || 'http://localhost:8080';
+console.log('API_BASE_URL:', API_BASE_URL);
 
 const client = axios.create({
   baseURL: API_BASE_URL,
